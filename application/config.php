@@ -30,7 +30,7 @@ return [
     '__ROOT__' => '/',
     ],
     'URL_HTML_SUFFIX'       =>  '',  // URL伪静态后缀设置
-    'URL_DENY_SUFFIX'       =>  'ico|png|gif|jpg|bmp', // URL禁止访问的后缀设置
+    'URL_DENY_SUFFIX'       =>  'ico|png|gif|jpg', // URL禁止访问的后缀设置
     'db_bind_param'    =>    true,
     'DB_BIND_PARAM'    =>    true,
     //'default_return_type'=>'json' //默认的数据输出格式
