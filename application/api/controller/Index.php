@@ -11,7 +11,8 @@ class Index extends Base
     private $groupUnModfileView;
     private $groupNotiView;
     private $dispatchModel;
-    private $msgView;
+    private $msgCometView;
+    private $notiCometView;
     private $groupNotiSendmsgView;
     private $groupNotiCreateGroupView;
     public function __construct()
@@ -24,7 +25,8 @@ class Index extends Base
         $this->groupUnModfileView=D('api/ViewGroupUnmodfile');
         $this->groupNotiView=D('api/ViewGroupNoti');
         $this->dispatchModel=D('api/Dispatch');
-        $this->msgView=D('api/ViewMsg');
+        $this->msgCometView=D('api/ViewMsgComet');
+        $this->notiCometView=D('api/ViewNotiComet');
         $this->groupNotiSendmsgView=D('api/ViewGroupNotiSendmsg');
         $this->groupNotiCreateGroupView=D('api/ViewGroupNotiCreateGroup');
 
@@ -42,6 +44,10 @@ class Index extends Base
         if(S('cFileList')==null)
         {
             S('cFileList',[0=>['name'=>'文件夹','type'=>'folder'],1=>['name'=>'笔记','type'=>'note'],2=>['name'=>'Markdown','type'=>'md'],3=>['name'=>'表格','type'=>'table']]);
+        }
+        if(S('msgType')==null)
+        {
+            //S('msgType',[])
         }
         //从session中获取用户群组信息和角色
         $groupList=$this->user->group;
@@ -130,12 +136,20 @@ class Index extends Base
             {
                 ini_set("max_execution_time", "0");
                 session_write_close();
-                //while (true) 
-                //{
+                while (true) 
+                {
                     //1.查找这个gid的通知数据
                     //2.查找这个用户其他gid的通知数量
-                    #return ni:noti-item, l:group-new-noti-num-list
-                //}
+                    #return ni:noti-item, nl:group-new-noti-num-list
+                    $numList=$this->notiCometView->findNoti($this->user->id,$gid);
+                    $notiItem=$this->notiCometView->findNotiByGid($uid,$gid);
+                    if($numList)
+                    {                       
+                        return ['nl'=>$numList,'ni'=>];
+                        break;
+                    }
+                    usleep(1000000);
+                }
             }
         }
     }
@@ -148,7 +162,7 @@ class Index extends Base
         $count=0;
         while (true) 
         {
-            $num=$this->msgView->findMsg($this->user->id);
+            $num=$this->msgCometView->findMsg($this->user->id);
             if($num>=1)
             {
                 //$this->ajaxReturn(['status'=>1]);

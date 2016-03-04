@@ -148,6 +148,47 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	$scope.openFolderId=1111;
 	$scope.type='folder';
 	$scope.text='text';
+	//comet获取群通知
+	$rootScope.cometNoti=function(){
+		console.log(1);
+		$http({
+			method:'GET',
+			url:'api/notification/'+$routeParams.gid
+		}).success(function(re){
+			if(re.ni['group_id']==$rootScope.openGroupId){
+				/*for(i in $scope.notiList){
+					if($scope.notiList[i]['id']==re.ni['id'])
+						break;
+					else
+						if(i==$scope.notiList.length-1)
+							$scope.notiList.push(re.ni);
+				}*/
+				/*$scope.notiList.forEach(function(v,k,arr){
+					if(v==re.ni['id'])
+						break;
+					else
+						if(k==arr.length-1)
+							$scope.notiList.push(re.ni);
+				});*/
+				$scope.notiList.forEach(function(value, index, array){
+					if(value==re.ni['id'])
+						return;
+					else
+						if(index==array.length-1)
+							$scope.notiList.push(re.ni);
+				});
+			}
+			else
+			{
+				//把group_id和num取出来，存进gnl中
+				
+			}
+			console.log(re.nl);
+			$rootScope.cometNoti();
+		}).error(function(){
+			$rootScope.cometNoti();
+		});
+	}
 	//点击群组时刷新群组数据
 	$scope.$on('$routeChangeSuccess', function (){
 		$scope.loading=true;
@@ -200,38 +241,10 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             	}
             	$scope.notiList=re.ml;
             	$scope.loading=false;
-            	$rootScope.cometNoti=function(){
-            		$http({
-            			method:'GET',
-            			url:'api/'
-            		}).success(function(re){
-            			if(re.ni['group_id']==$rootScope.openGroupId){
-            				/*for(i in $scope.notiList){
-            					if($scope.notiList[i]['id']==re.ni['id'])
-            						break;
-            					else
-            						if(i==$scope.notiList.length-1)
-            							$scope.notiList.push(re.ni);
-            				}*/
-            				/*$scope.notiList.forEach(function(v,k,arr){
-            					if(v==re.ni['id'])
-            						break;
-            					else
-            						if(k==arr.length-1)
-            							$scope.notiList.push(re.ni);
-            				});*/
-            				$scope.notiList.forEach(console.log);
-            			}
-            			else
-            			{
-
-            			}
-            		}).error(function(){
-            			$rootScope.cometNoti();
-            		})
-            	}
-            })
-	    ;
+            	$rootScope.cometNoti();
+            }).error(function(){
+            	location.href="";
+            });
 	});
 	//ng-repeat之后执行的方法
 	$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
