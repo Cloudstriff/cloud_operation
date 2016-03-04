@@ -126,8 +126,17 @@ class Index extends Base
         {
             //返回两个数据，一个是当前群组的通知数据，直接插入到dom后面
             //一个是其他群组的消息数量，都是key---value组合，key为gid
-            ini_set("max_execution_time", "0");
-            return;
+            if(in_array($gid,$this->user->groupList))
+            {
+                ini_set("max_execution_time", "0");
+                session_write_close();
+                //while (true) 
+                //{
+                    //1.查找这个gid的通知数据
+                    //2.查找这个用户其他gid的通知数量
+                    #return ni:noti-item, l:group-new-noti-num-list
+                //}
+            }
         }
     }
     //群消息推送接口
@@ -137,7 +146,8 @@ class Index extends Base
         ini_set("max_execution_time", "0");
         session_write_close();
         $count=0;
-        while (true) {
+        while (true) 
+        {
             $num=$this->msgView->findMsg($this->user->id);
             if($num>=1)
             {

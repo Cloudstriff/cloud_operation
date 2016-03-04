@@ -14,8 +14,16 @@
 	<div class="header" >
 		<div class="head-box">
 			<div class="logo"><a href="#group"></a></div>
-			<span class="top bot-4"><a class="cursor-p"><img src="__PUBLIC__/imgs/icon-logout.png"></a></span>
-			<span class="top bot-4"><a class="cursor-p" id="icon-msg" ng-click="readMsg()"><img src="__PUBLIC__/imgs/icon-msg.png"></a></span>
+			<span class="top bot-4">
+				<a class="cursor-p" data-toggle="tooltip" data-placement="bottom" title="退出">
+   					<img src="__PUBLIC__/imgs/icon-logout.png">
+   				</a>
+   			</span>
+			<span class="top bot-4">
+				<a class="cursor-p c-b" id="icon-msg" ng-click="readMsg()" data-toggle="tooltip" data-placement="bottom" title="有新消息">
+   					<img src="__PUBLIC__/imgs/icon-msg.png">
+   				</a>
+   			</span>
 			<span class="top cursor-d" ng-bind="getTime()"></span>
 		</div>
 	</div>

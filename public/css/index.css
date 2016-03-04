@@ -41,6 +41,7 @@
 		.hide{ display: none; }
 		.show{ display: block; }
 		.t-a-c{ text-align: center; }
+		.c-w{ color: black; }
 		.folder{width: 24px; height: 20px; background: url('/public/imgs/type/folder.png') no-repeat;}
 		.text{width: 24px; height: 20px; background: url('/public/imgs/type/text.png') no-repeat;}
 		.note{ width: 24px; height: 20px; background: url('/public/imgs/type/note.png') no-repeat;}

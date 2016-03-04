@@ -56,10 +56,14 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 				if(re.status==1){
 					$('#icon-msg img').attr('src','/public/imgs/icon-msg-new.png');
 		        	console.log('有'+re.num+'条新的群消息');
+		        	$("[data-toggle='tooltip']").tooltip();
 				}
 		        else
 		        	$rootScope.cometMsg();
-			});
+			}).error(function(){
+    			//出错重新进行请求
+    			$rootScope.cometMsg();
+    		});
 		}
 
 		//初始化加载数据方法
@@ -94,6 +98,7 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			}).success(function(re){
 				if(re.status==1){
 					$('#icon-msg img').attr('src','/public/imgs/icon-msg.png');
+					$("[data-toggle='tooltip']").tooltip('hide');
 		        	console.log('re');
 				}
 			});
@@ -195,9 +200,36 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             	}
             	$scope.notiList=re.ml;
             	$scope.loading=false;
-            	$rootScope.cometNoti=$.ajax({
-            		
-            	});
+            	$rootScope.cometNoti=function(){
+            		$http({
+            			method:'GET',
+            			url:'api/'
+            		}).success(function(re){
+            			if(re.ni['group_id']==$rootScope.openGroupId){
+            				/*for(i in $scope.notiList){
+            					if($scope.notiList[i]['id']==re.ni['id'])
+            						break;
+            					else
+            						if(i==$scope.notiList.length-1)
+            							$scope.notiList.push(re.ni);
+            				}*/
+            				/*$scope.notiList.forEach(function(v,k,arr){
+            					if(v==re.ni['id'])
+            						break;
+            					else
+            						if(k==arr.length-1)
+            							$scope.notiList.push(re.ni);
+            				});*/
+            				$scope.notiList.forEach(console.log);
+            			}
+            			else
+            			{
+
+            			}
+            		}).error(function(){
+            			$rootScope.cometNoti();
+            		})
+            	}
             })
 	    ;
 	});
