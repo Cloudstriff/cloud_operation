@@ -1,0 +1,319 @@
+*{ margin: 0px; padding: 0px; font-family: "source-han-sans-simplified-c",sans-serif; font-family: 	Microsoft YaHei; font-size: 12px; text-decoration: none; list-style: none;}
+		::-webkit-scrollbar {
+		    width: 15px;
+		    display: none;
+		} /* 这是针对缺省样式 (必须的) */
+		::-webkit-scrollbar-track {
+		  background-color: #3d464d;		  
+		} /* 滚动条的滑轨背景颜色 */
+
+		::-webkit-scrollbar-thumb {	
+			   display: none;
+			   background-color: #ebf7fa; filter:alpha(opacity:30); opacity:0.3;		   
+		} /* 滑块颜色 */
+
+		::-webkit-scrollbar-button {
+			  display: none;
+		} /* 滑轨两头的监听按钮颜色 */
+
+		::-webkit-scrollbar-corner {
+			  background-color: black;
+		} /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
+		.clear{ clear: both;}
+		.cursor-p{ cursor: pointer;}
+		.cursor-d{ cursor: default;}
+		.in-block{ display: inline-block;}
+		.m-b-6{ margin-bottom: 6px;}
+		.x-t-hidden{overflow: hidden;white-space: nowrap; text-overflow:ellipsis;}
+		.f-l{ float:left;}
+		.f-r{ float: right;}
+		.w-22-h-22{ width: 25px;height: 22px;}
+		.m-t-15{ margin-top: 15px;}
+		.p-r{ position:relative;}
+		.btn:focus{outline:none}
+		.13b0cf{ color: #13b0cf;}
+		.selected{ background:#e8f6f9;}
+		.40bfd8{ color: #40bfd8;}
+		.m-l-23{ margin-left: 23px;}
+		.h-30 { height: 30px; line-height: 30px;}
+		.m-r-10{ margin-right: 10px;}
+		.m-r-8{ margin-right: 8px;}
+		.hide{ display: none; }
+		.show{ display: block; }
+		.t-a-c{ text-align: center; }
+		.folder{width: 24px; height: 20px; background: url('/public/imgs/type/folder.png') no-repeat;}
+		.text{width: 24px; height: 20px; background: url('/public/imgs/type/text.png') no-repeat;}
+		.note{ width: 24px; height: 20px; background: url('/public/imgs/type/note.png') no-repeat;}
+		.image{ width: 24px; height: 20px; background: url('/public/imgs/type/image.png') no-repeat;}
+		.office{ width: 24px; height: 20px; background: url('/public/imgs/type/word.png') no-repeat;}
+		.allfileSelected { background: #e8f6f9; color: #3fbed8;}
+		.allfileSelected>.icon-all-file{ background: url(/public/imgs/icon-all-file-hover.png) no-repeat 2px 9px;}
+		.starSelected{ background: #e8f6f9; color: #3fbed8;}
+		.starSelected>.icon-star{ background: url(/public/imgs/icon-star-hover.png) no-repeat 2px 9px;}
+		.starSelected>.icon-share{ background: url(/public/imgs/icon-share-hover.png) no-repeat 2px 9px;}
+		.trashSelected{ background: #e8f6f9; color: #3fbed8;}
+		.trashSelected>.icon-trash{ background: url(/public/imgs/icon-trash-hover.png) no-repeat 2px 9px;}
+		.folderSelected{ background: #e8f6f9; color: #3fbed8;}
+		.folderSelected>.icon-dir{ background: url(/public/imgs/icon-dir-hover.png) no-repeat 2px 9px;}
+		.header{ height: 50px; background: #02aacc;}
+			.logo{  width: 182px; height: 30px; margin-top: 11px; margin-left: 13px; background: #019ab9; float: left;}
+			.head-box{  line-height: 50px;}
+				.top{ float: right; color: white; font-weight: bold; display: inline; margin: 0px 14px;}
+				.bot-4{ margin-top: -2px;}
+		.main{ height: 100%;}
+			.main-left{ height: 100%; width: 208px; float: left; box-shadow: 1px 0px 5px #888888; color: white;}
+				.main-left .left-top{ height: 180px; background: #31383e; position:relative;}
+					.left-top .top-box-avatar{ width:96px; height:96px; border-radius:50%; overflow:hidden;position: absolute; top:19%; left: 25%;}
+					.left-top .top-box-name{ margin-left: 60px; width: 68px; text-align: center;
+						float: left;}
+					.left-top .top-box-menu{ float: left; margin-left: 2px;}
+						.top-box-menu img{ margin-bottom: 2px;}
+					.left-top ul{ margin:-25px 0 0 0px;}
+				.main-left .left-cent{ background: #3d464d;}
+					.main-left .group-add-join{ height: 45px; color: white; line-height: 45px; text-indent: 25px; }
+						.group-add-join .box:hover{ color: #02abcc;}
+						.group-add-join ul{margin:-10px 0 0 114px; }
+					.main-left .group-list{scrollbar-face-color:#F00;/*滚动条凸出部分的颜色(前景色),包括两端的方形按钮、水平或竖直滑动的滑块的颜色*/
+					scrollbar-track-color:#FFF;/*滚动条的背景颜色,如果省略的话将出现虚点，颜色将采用face-color的颜色*/
+					scrollbar-arrow-color:#FFF;/*按钮(上下或者左右可以点击使滑块滚动的方形按钮)上三角箭头的颜色*/
+					scrollbar-3dlight-color:#0F0;/*滚动条亮边的颜色,形成3D效果，有层次感，肉眼观察在滚动条左边及上边出现一条有色线（竖直方向滚动）*/
+					scrollbar-darkshadow-color:#00F;/*滚动条强阴影的颜色,肉眼观察出现滚动条下边及右边*/
+					scrollbar-highlight-color:#F0F;/*滚动条空白部分的颜色,肉眼观察改变不明显，具体颜色改变出现在左边和上边空白处，介于face-color效果与3dlingt-color效果之间有个空白颜色（默认为白色）。此外，滚动条前景色有种凹陷的感觉，周边线条颜色凸起*/
+					scrollbar-shadow-color:#006600;/*立体滚动条阴影的颜色，具体出现在滑块及方形按钮的右边及下边，形成阴影效果，颜色介于face-color效果和darkshadow-color效果之间，不是很明显*/
+					height:320px;overflow:auto; position: relative;
+					border-top: 1px solid #31383e;
+					}
+						.main-left .group-list .group-item{height: 42px; line-height: 42px; overflow: hidden;white-space: nowrap; text-overflow:ellipsis; text-indent: 47px; color: white;}
+						.main-left .group-list .group-item:hover{ background: #02aacc;}
+						.main-left .group-list .group-item:hover .noti-warning{ background: white; color:#02aacc; }
+							.group-list .group-item .noti-warning{ background: red; color: white; margin-top: 10px; margin-right: 4px;border-radius: 50%; display: inline-block;height: 20px; line-height:20px; width: 20px; text-align:center;text-indent: 0px;}
+								   .group-list .selected{ background: #02aacc;}
+				.main-left .left-bot{ height: 40px; background-color: #3d464d; border-top: 1px solid #32393f; }
+					.left-bot .bot-chat{ background: url(/public/imgs/icon-chat.png) no-repeat 0px 14px; line-height: 40px; text-indent: 18px; width: 54px; margin-left:28px; }
+					.left-bot .bot-chat:hover{ background: url(/public/imgs/icon-chat-hover.png) no-repeat 0px 14px;}
+			.main-right{ float: left; }
+				.main-right .main-r-top{ height: 59px; border-bottom: 1px solid #ecefef; }
+					.main-r-top .group-name{ text-indent: 24px; line-height: 59px; font-size: 16px;}
+					.main-r-top .search .icon-search{background:url(/public/imgs/icon-search.png) no-repeat;
+							position: absolute;
+					  top: 8px;
+					  left: 13px;
+						  display: inline-block;
+						  cursor: pointer;
+						  width: 20px;
+						  height: 20px;}
+					.main-r-top .search .search-input{color: #595959;
+						  padding: 4px 4px 4px 36px;
+						  line-height: 28px;
+						  height: 28px;
+						  width: 160px;
+						  background-color: rgba(255, 255, 255, 0.8);
+						  border: 1px solid rgba(148, 157, 166, 0.36);
+						  border-radius: 40px;
+						  outline: none;}
+					.main-r-top .setting{ margin:16px 15px 16px 5px; background:url(/public/imgs/icon-setting.png) no-repeat center center;}
+						.setting:hover { background:url(/public/imgs/icon-setting-hover.png) no-repeat center center;}
+					.main-r-top .member{ margin:16px 10px 16px 18px; background:url(/public/imgs/icon-member.png) no-repeat 0px 5px; line-height: 22px; text-align: right; color: #a09f9f;}
+						.member:hover { background:url(/public/imgs/icon-member-hover.png) no-repeat 0px 5px;; color: #5e5e5e;}
+					.main-r-top .vline{ margin: 17px 0px 0px; color: rgba(148, 157, 166, 0.36);}
+				.main-right .main-r-center{}
+					.nav{ width: 190px; height: 100%; border-right: 1px solid #ecefef;  }	
+						.nav .function{ height: 49px; border-bottom: 1px solid #ecefef; }
+							.function .fun-box{ margin: 10px; }
+								.fun-box .upload ul{ position: fixed; top:154px; left: 304px;}
+								.fun-box .create{ margin-right: 6px;}
+									.create ul{position: fixed; top:154px; left: 218px;}
+									.fun-box ul a:hover,.group-add-join ul a:hover{background:#ebf7fa}
+									.create .icon-new{width: 18px; height: 17px;  background: url(/public/imgs/icon-new.png) no-repeat -1px 1px;}
+									.upload .icon-upload{width: 18px; height: 17px;  background: url(/public/imgs/icon-upload.png) no-repeat -1px 1px;}
+						.nav .side-bar{ margin: 26px 0px;}
+							 .side-bar .icon{ margin-right: 7px;}
+							 .side-bar .dir-list{ margin:0px auto; margin-left: 40px;}
+							 	.dir-list li:hover{ background: #e8f6f9; color: #3fbed8;}
+							 	.dir-list li:hover .icon-dir{ background: url(/public/imgs/icon-dir-hover.png) no-repeat 2px 9px;}
+							 		.icon-star{width: 18px; height: 30px; background: url(/public/imgs/icon-star.png) no-repeat 2px 9px;}
+							 		.icon-share{width: 18px; height: 30px; background: url(/public/imgs/icon-share.png) no-repeat 2px 9px; }
+							 		.icon-all-file{width: 18px; height: 30px; background: url(/public/imgs/icon-all-file.png) no-repeat 2px 9px;}
+							 		.icon-dir{width: 18px; height: 30px; background: url(/public/imgs/icon-dir.png) no-repeat 2px 9px;}
+							 		.icon-trash{width: 18px; height: 30px; background: url(/public/imgs/icon-trash.png) no-repeat 2px 9px;}
+							.star-file:hover { background: #e8f6f9; color: #3fbed8;}
+							.star-file:hover .icon-star{background: url(/public/imgs/icon-star-hover.png) no-repeat 2px 9px;}
+							.star-file:hover .icon-share{background: url(/public/imgs/icon-share-hover.png) no-repeat 2px 9px;}
+							.all-file:hover { background: #e8f6f9; color: #3fbed8;}
+							.all-file:hover .icon-all-file{ background: url(/public/imgs/icon-all-file-hover.png) no-repeat 2px 9px;}
+							.trash:hover { background: #e8f6f9; color: #3fbed8;}
+							.trash:hover .icon-trash{background: url(/public/imgs/icon-trash-hover.png) no-repeat 2px 9px;}
+					.enter-loading { background: url(/public/imgs/enter-loading.gif) no-repeat; width: 100%; height: 200px; background-position: center;}
+					.enter-loading-s { background: url(/public/imgs/small-loading.gif) no-repeat; width: 100%; height: 200px; background-position: center;}
+					.show{ height: 100%; border-right: 1px solid #ecefef;}
+						.show .head{ height: 53px;}
+							.show .head .head-title{ text-indent: 10px; padding-top: 10px;}
+						.show .file-name{width:200px;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+						.show .file-name span:hover{text-decoration: underline;}
+						.dataTables_scrollBody::-webkit-scrollbar {
+						    width: 10px;
+						    display: block;
+						    z-index: 10;
+						} /* 这是针对缺省样式 (必须的) */
+						 .dataTables_scrollBody::-webkit-scrollbar-track {
+						  background-color: white;		  
+						} /* 滚动条的滑轨背景颜色 */						
+						 .dataTables_scrollBody::-webkit-scrollbar-thumb {	
+							   display: block;
+							   background: #c6edf6; border-radius: 0;
+										    			opacity: 0.6;	
+										    			z-index: 10;
+										    			filter:alpha(opacity=80);/*  IE滤镜，透明度50% */
+								-moz-opacity:0.8;/*  Firefox私有，透明度50% */
+								opacity:0.8;/* 其他，透明度50%	  */  
+						} /* 滑块颜色 */
+						
+						 .dataTables_scrollBody::-webkit-scrollbar-button {
+							  display: none;
+						} /* 滑轨两头的监听按钮颜色 */
+						
+						 .dataTables_scrollBody::-webkit-scrollbar-corner {
+							  background-color: black;
+						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
+						.show .btn-list{ display:none;}
+							.show .btn-list .share{width: 13px; height: 15px; background: url(/public/imgs/icon-share.png) no-repeat 0px 4px;}
+							.show .btn-list .star{width: 13px; height: 15px; background: url(/public/imgs/icon-star.png) no-repeat 0px 3px;}
+							.show .btn-list .stared{width: 13px; height: 15px; background: url(/public/imgs/icon-stared.png) no-repeat 0px 3px;}
+							.show .btn-list .download{width: 13px; height: 15px; background: url(/public/imgs/icon-download.png) no-repeat 0px 3px;}
+							.show .btn-list .drop{width: 13px; height: 20px; background: url(/public/imgs/icon-drop.png) no-repeat 0px 3px;}
+								.show .btn-list .share:hover{background: url(/public/imgs/icon-share-hover.png) no-repeat 0px 4px;}
+								.show .btn-list .star:hover{background: url(/public/imgs/icon-star-hover.png) no-repeat 0px 3px;}
+								.show .btn-list .download:hover{background: url(/public/imgs/icon-download-hover.png) no-repeat 0px 3px;}
+								.show .btn-list .drop:hover{background: url(/public/imgs/icon-drop-hover.png) no-repeat 0px 3px;}
+					.msg{ width: 252px; height:100%; }
+						.chat-send{ height: 25px;}
+						.chat-send .vline {
+						    position: absolute;
+						    right: 90px;
+						    bottom: 0px;
+						    color: #dedfe0;
+						    height: 40px;
+						    border-right: 1px solid #fff;
+						}
+												.msg .chat-input{position: absolute;
+											    width: 100%;
+											    bottom: 40px;}
+											    .msg .actions {
+													    margin: 13px 0 7px 20px;
+						}
+			
+						.chat-send .emoji{
+							position: absolute;
+						    right: 205px;
+						    bottom: 7px;
+						    width: 20px;
+						    height: 20px;
+						    background: url('/public/imgs/icon-emoji.png') no-repeat 0px 0px;
+						    margin: 0;
+						    padding: 0 5px;
+						    line-height: 40px;
+						    box-sizing: border-box;
+						    border: none;
+						    cursor: pointer;
+						    outline: none;
+						}
+						.chat-send .emoji:hover{
+							background: url('/public/imgs/icon-emoji-hover.png') no-repeat 0px 0px;
+						}
+						.chat-send .send-image{
+							position: absolute;
+						    right: 180px;
+						    bottom: 7px;
+						    width: 20px;
+						    height: 20px;
+						    background: url('/public/imgs/icon-image.png') no-repeat 0px 0px;
+						    margin: 0;
+						    padding: 0 5px;
+						    line-height: 40px;
+						    box-sizing: border-box;
+						    border: none;
+						    cursor: pointer;
+						    outline: none;
+						}
+						.chat-send .send-image:hover{
+							background: url('/public/imgs/icon-image-hover.png') no-repeat 0px 0px;
+						}
+						.chat-send .send-msg {
+						    position: absolute;
+						    right: 0px;
+						    bottom: 0px;
+						    width: 90px;
+						    height: 40px;
+						    margin: 0;
+						    padding: 0 5px;
+						    line-height: 40px;
+						    box-sizing: border-box;
+						    background-color: #f6f7f9;
+						    border: none;
+						    cursor: pointer;
+						    outline: none;
+						    font: 12px '微软雅黑', 'Microsoft Yahei', Helvetica Neue, Hiragino Sans GB, '宋体', 'simsun', '黑体', Arial, sans-serif;
+						    color: #b0bac4;
+						}
+						.chat-send .send-msg:hover {
+						    color: #fff;
+						    background-color: #398dee;
+						}
+						.msg textarea{resize: none;
+									    background: #fdfdfd;
+									    width: 100%;
+									    height: 100px;
+									    padding: 10px 12px;
+									    border-radius: 0;
+									    line-height: 18px;
+									    border: none;
+									    box-sizing: border-box;
+									    color: #797979;
+									    box-shadow: none;
+									    border-top: 1px solid #e0e1e5;
+									    border-bottom: 1px solid #e0e1e5;
+									    position: absolute;
+									    bottom: 0px;
+									    z-index: 10;}
+		.msg .msg-list{height: 75%; width: 100%;overflow:auto; position: relative; }
+			.msg-list::-webkit-scrollbar {
+		    width: 10px;
+		    display: block;
+		} /* 这是针对缺省样式 (必须的) */
+		.msg-list::-webkit-scrollbar-track {
+		  background-color: white;		  
+		} /* 滚动条的滑轨背景颜色 */
+
+		.msg-list::-webkit-scrollbar-thumb {	
+			   display: block;
+			   background-color:#c6edf6; filter:alpha(opacity:30); opacity:0.3;		   
+		} /* 滑块颜色 */
+
+		.msg-list::-webkit-scrollbar-button {
+			  display: none;
+		} /* 滑轨两头的监听按钮颜色 */
+
+		.msg-list::-webkit-scrollbar-corner {
+			  background-color: black;
+		} /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
+			 .msg-list .msg-item{ width: 100%;  margin-bottom: 5px;}
+			 	.msg-item .date{ font-weight: bold;text-indent: 20px;width: 100px; margin: 15px auto; height: 20px; background: url(/public/imgs/icon-date.png) no-repeat 0px 2px;}
+				.msg-item .message{ margin:10px 1px 10px 10px;}
+			 		.msg-item .avatar{  width:36px; height:36px; border-radius:50%; overflow:hidden;}
+						.msg-item .content{ margin-left: 8px;}
+							.c-head .name{ width: 70px; font-weight: bold;}
+								.name span:hover{text-decoration: underline;}
+							.c-head .type{ color: #c8c8c8; width: 80px;}
+							.c-head .time{ color: #c8c8c8; width: 30px;}
+						.c-file{ background: #f2f2f2; padding: 13px 10px 10px 10px; margin-top: 4px;}
+							.c-file .file-name{ width: 120px; margin-left: 6px;}
+							.c-file span:hover{ text-decoration: underline;}
+							.bubble-split {
+							    margin: 10px 0 7px 0px;
+							    width: 100%;
+							    height: 1px;
+							    background-color: #dee5e7;
+							    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5);
+							}
+							.open-file{ margin-left: 105px; color:#c8c8c8; }
+								.open-file:hover{ color: #398dee;}

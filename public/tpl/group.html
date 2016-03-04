@@ -1,0 +1,159 @@
+<div ng-include="'/public/include/m-r-top.html'"></div>
+<div class="main-r-center" adapt>
+	<div class="nav f-l">
+		<div class="function">
+			<div class="fun-box">
+				<div class="create f-l">
+					<button class="btn btn-default dropdown-toggle" style="color:#13b0cf" data-toggle="dropdown"><div class="icon-new f-l"></div>新建<span class="caret"></span></button>
+					<ul class="dropdown-menu" role="menu">
+					      <li class="cursor-p" ng-repeat="fileType in createItemList" ng-click="createFile(fileType.type)"><a style="color:#40bfd8">{{fileType.name}}</a></li>	
+					</ul>
+				</div>
+				<div class="upload f-l">
+					<button class="btn btn-default dropdown-toggle" style="color:#13b0cf" data-toggle="dropdown"><div class="icon-upload f-l"></div>上传<span class="caret"></span></button>
+					<ul class="dropdown-menu" role="menu">
+					      <li class="cursor-p"><a style="color:#40bfd8">文件</a></li>
+					      <li class="cursor-p"><a style="color:#40bfd8">文件夹</a></li>
+					      <li class="cursor-p" ng-click="download()"><a style="color:#40bfd8">下载</a></li>	
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="side-bar">
+			<div class="h-30 star-file cursor-p" ng-class="{starSelected:stared}">
+				<div class="icon m-l-23 icon-star f-l"></div>加星文件
+			</div>
+			<div class="h-30 star-file cursor-p" ng-class="{starSelected:shared}">
+				<div class="icon m-l-23 icon-share f-l"></div>分享文件
+			</div>
+			<div class="tree-file">
+				<div class="h-30 all-file cursor-p" ng-class="{allfileSelected:expanded}">
+					<div class="icon m-l-23 icon-all-file f-l"></div>全部文件
+				</div>
+				<ul class="dir-list" ng-show="expanded">
+					<li class="h-30 cursor-p" ng-class="{folderSelected:openFolderId==folder.id}">
+						<div class="icon icon-dir f-l"></div>校园内云协作
+					</li>
+					<li class="h-30 cursor-p" ng-class="{folderSelected:openFolderId==folder.id}">
+						<div class="icon icon-dir f-l"></div>毕设相关
+					</li>
+					<li class="h-30 cursor-p" ng-class="{folderSelected:openFolderId==folder.id}">
+						<div class="icon icon-dir f-l"></div>论文相关
+					</li>
+				</ul>
+			</div>
+			<div class="h-30 trash cursor-p" ng-class="{trashSelected:trashed}">
+				<div class="icon m-l-23 icon-trash f-l"></div>回收站
+			</div>
+		</div>
+	</div>
+	<div class="show f-l" adapt-width="true">
+		<div class="head">
+			<div class="head-title cursor-d">
+			全部文件
+			</div>
+		</div>
+		<table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                	<th class="cursor-p" width="35%">文件名</th>
+                    <th width="18%"></th>
+                    <th class="cursor-p" width="22%">修改时间</th>
+                    <th class="cursor-p" width="15%">最近修改人</th>
+                    <th class="cursor-p" width="10%">文件大小</th>
+                </tr>
+            </thead>
+            <tbody ng-show="loading==false">
+                <tr hover="true" ng-repeat="file in fileList"  on-finish-render-filters>
+                	<td>
+                		<div class="cursor-p f-l m-r-8" ng-class="file.type"></div>
+                		<div class="file-name f-l"><span class="cursor-p" ng-bind="file.name" ng-click=""></span></div>
+                	</td>
+					<td>
+						<div class="btn-list">
+							<div class="share f-l cursor-p m-r-10" title="分享文件"></div>
+							<div class="star f-l cursor-p m-r-10" title="设为星标文件" ng-class="{stared:file.star!='0', star:file.star=='0'}"></div>
+							<div class="download f-l cursor-p m-r-10" title="下载文件" ng-if="enableDownload(file)"></div>
+							<div class="drop f-l cursor-p" title="下拉更多"></div>
+						</div>
+					</td>
+                    <td class="cursor-d" ng-bind="::(file.time | date:'yyyy-M-dd HH:mm')"></td>
+                    <td class="cursor-d" ng-bind="file.user_name"></td>
+                    <td class="cursor-d" ng-bind="file.size"></td>
+            	</tr>
+                <tr hover="true">
+                	<td>
+                		<div class="cursor-p f-l m-r-8" ng-class="type"></div>
+                		<div class="file-name f-l"><span class="cursor-p">校园内云协作</span></div>
+                	</td>
+					<td>
+						<div class="btn-list">
+							<div class="share f-l cursor-p m-r-10"></div>
+							<div class="star f-l cursor-p m-r-10" ng-class="{stared:stared, star:!stared}"></div>
+							<div class="download f-l cursor-p m-r-10"></div>
+							<div class="drop f-l cursor-p"></div>
+						</div>
+					</td>
+                    <td class="cursor-d">2016-2-13 15:50</td>
+                    <td class="cursor-d">Cloud</td>
+                    <td class="cursor-d">----</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="enter-loading" ng-show="loading"></div>
+	</div>
+	<div class="msg f-r" id="navbar-msg">
+		<div class="enter-loading-s" ng-show="loading"></div>
+		<div class="msg-list" data-spy="scroll" ng-show="loading==false" data-target="#navbar-msg">
+		<div class="msg-item" ng-repeat="msg in notiList" adapt-height>
+				<div class="msg-date">
+					<div class="date" ng-bind="::(msg.time | date:'yyyy-M-dd')">2016-02-10</div>
+				</div>
+				<div class="message">
+					<div class="avatar f-l">
+						<a href="#"><img ng-src="{{msg.avatar_url}}" width="36px" height="36px"></a>
+					</div>
+					<div class="content f-l">
+						<div class="c-head">
+							<div class="name x-t-hidden f-l"><span class="cursor-p" ng-bind="msg.user_name">Cloud</span></div>
+							<div class="type f-l" ng-bind="msg.type">上传了文件</div>
+							<div class="time f-r" ng-bind="::(msg.time | date:'HH:mm')">15:50</div>
+							<div class="clear"></div>
+						</div>
+						<div class="c-file" ng-if="msg.belong">
+							<div class="f-l cursor-p" ng-class="msg.file_type"></div>
+							<div class="file-name x-t-hidden f-l"><span class="cursor-p" ng-bind="msg.name" file-open file-id="msg.file_id">测试.txt</span></div>
+							<div class="clear"></div>
+							<div ng-if="msg.file_type!='folder'">
+								<div class="bubble-split">
+                    			</div>
+								<div class="open-file cursor-p" folder-open file-id="msg.belong">打开文件夹</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="c-file" ng-if="msg.role">
+							<div class="f-l x-t-hidden t-a-c" ng-if="msg.name" ng-bind="msg.name"></div>
+							<div class="clear"></div>
+						</div>
+						<div class="c-file" ng-if="msg.content">
+							<div class="f-l x-t-hidden" ng-if="msg.content" ng-bind="msg.content"></div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div>
+		</div>
+		</div>
+		<div class="chat-send">
+		    <div class="chat-input">
+		        <textarea widget-at="" at-members="atMembers" placeholder="@群成员或直接输入…" ng-model="message" ng-trim="false" max-input-length="200" class="ng-pristine ng-untouched ng-valid">        </textarea>
+		    </div>
+		    <span class="vline"></span>
+		    <div class="emoji"></div>
+		    <div class="send-image"></div>
+		    <button ng-click="sendText()" class="send-msg">发&nbsp;送</button>
+		</div>
+	</div>
+</div>
+<div class="main-r-right"></div>
