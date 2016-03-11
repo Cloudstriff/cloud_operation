@@ -17,10 +17,6 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 		$scope.createGroup=function(){
 		$('#group-c').modal();
 		};
-		//创建文件方法
-		$scope.createFile=function(type){
-			console.log('创建文件'+type);
-		};
 		//返回上一个页面方法
 		$scope.restore=function(){
 			var urlList=location.pathname.split('/');
@@ -33,20 +29,107 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 		$rootScope.forward=function(url){
 			$location.path('/group/'+$rootScope.openGroupId+url);
 		}
+		//复制分享链接方法
+		$scope.copyLink=function(){
+			$('#input-link')[0].select(); //选择对象 
+			document.execCommand("Copy");
+			$('#btn-copy').html('复制成功').attr('class','btn btn-default').attr('disabled',true);
+			/*setCopy($('#input-link').val());*/
+		}
 		//打开群组方法
-		$scope.forwardGroup=function(gid){
-			$location.path('/group/'+gid);
+		$scope.forwardGroup=function(group){
+			$rootScope.openGroupName=group.name;
+			if($rootScope.openGroupId==group.group_id)
+			{
+				$scope.$broadcast('$routeChangeSuccess');
+			}
+			else
+				$location.path('/group/'+group.group_id);
 		};
 		//搜索框回车事件
 		$scope.enter = function(e) {
-			if (e.keyCode == 13)
+			//console.log(e);
+			if (e.charCode == 13)
 			{
-				console.log($rootScope.sContent);
+				console.log($scope.sContent);
 				//$location.path('/group/'+$rootScope.openGroupId);
 				//$location.path('/group/'+$rootScope.openGroupId+'/search/'+$rootScope.sContent);
 				//$rootScope.forward('/search/'+$rootScope.sContent);
 			}
 		}
+			//comet获取群通知
+	$rootScope.cometNoti=function(){
+		/*$http({
+			method:'POST',
+			url:'api/notification',
+			data: {'rl':$rootScope.readedList}
+			//params: {'rl':$rootScope.readedList}
+		}).success(function(re){
+			console.log(re.nl);
+			$rootScope.groupList.forEach(function(value,index,array){
+				for(i in re.nl){
+					if(re.nl[i]['group_id']==value['group_id'])
+						$rootScope.groupList[index]['num']=re.nl[i]['num'];
+				}
+			});
+			re.nl.forEach(function(value,index,array){
+				if(!in_array(value['group_id'],$rootScope.readedList))
+					$rootScope.readedList.push(value['group_id']);
+			});
+			$rootScope.cometNoti();
+		}).error(function(){
+			$rootScope.cometNoti();
+		});*/
+		$.ajax({
+			method:'POST',
+			url:'api/notification',
+			data: {'rl':$rootScope.readedList,'oi':$rootScope.openGroupId},
+			success:function(re){
+				//console.log(re.nl);
+				//console.log(re);
+				if(re.ni!==null)
+				{
+					//console.log('re.ni存在');
+					if(re.ni.length!=0)
+					{
+						//console.log('re.ni长度不等于0');
+						if(re.ni[0].group_id==$rootScope.openGroupId)
+						{
+							/*console.log('re.ni属于当前群组');
+							console.log('打印出通知列表');
+							console.log($rootScope.notiList);*/
+							$rootScope.notiList=$rootScope.notiList.concat(re.ni);
+							/*console.log('打印出连接后的通知列表');
+							console.log($rootScope.notiList);*/
+							//$rootScope.$apply();
+						}
+						else
+						{
+							tmp={'group_id':re.ni[0].group_id,'num':re.ni.length};
+							re.nl.push(tmp);
+						}
+					}
+				}
+				$rootScope.groupList.forEach(function(value,index,array){
+					for(i in re.nl){
+						if(re.nl[i]['group_id']==value['group_id'])
+							$rootScope.groupList[index]['num']=re.nl[i]['num'];
+					}
+				});
+				$rootScope.$apply();
+				//console.log($rootScope.groupList);
+				re.nl.forEach(function(value,index,array){
+					if(!in_array(value['group_id'],$rootScope.readedList))
+						$rootScope.readedList.push(value['group_id']);
+				});
+				$rootScope.cometNoti();
+			},
+			error: function(re){
+				$rootScope.cometNoti();
+			}
+			//params: {'rl':$rootScope.readedList}
+		});
+	}
 		//comet方法
 		$rootScope.cometMsg=function(){
 			$http({
@@ -68,8 +151,8 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 
 		//初始化加载数据方法
 		$scope.load=function(){
-			$rootScope.sContent='';
-			$http.get('/api/info')
+			//$rootScope.sContent='';
+			$.post('/api/info')
     		.success(function(re) {
     			//开始群消息轮询接口
     			$rootScope.cometMsg();
@@ -81,9 +164,23 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
     			if(location.href.substring(7,location.href.length)!=document.domain+'/')
     				$location.path(get_url_relative_path());
     			else{
+    				$rootScope.openGroupName=$rootScope.groupList[0]['name'];
     				$rootScope.openGroupId=$rootScope.groupList[0]['group_id'];
     				$location.path('/group/'+$rootScope.groupList[0]['group_id']);
     			}
+    			$rootScope.cometNoti();
+    			/*Array.prototype.indexOf = function(val) {              
+				    for (var i = 0; i < this.length; i++) {  
+				        if (this[i] == val) return i;  
+				    }  
+				    return -1;  
+				};  
+				Array.prototype.remove = function(val) {
+				    var index = this.indexOf(val);  
+				    if (index > -1) {  
+				        this.splice(index, 1);  
+				    }  
+				};*/
     		});
 		}
 		//获取群消息方法
@@ -148,47 +245,315 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	$scope.openFolderId=1111;
 	$scope.type='folder';
 	$scope.text='text';
-	//comet获取群通知
-	$rootScope.cometNoti=function(){
-		console.log(1);
-		$http({
-			method:'GET',
-			url:'api/notification/'+$routeParams.gid
-		}).success(function(re){
-			if(re.ni['group_id']==$rootScope.openGroupId){
-				/*for(i in $scope.notiList){
-					if($scope.notiList[i]['id']==re.ni['id'])
-						break;
-					else
-						if(i==$scope.notiList.length-1)
-							$scope.notiList.push(re.ni);
-				}*/
-				/*$scope.notiList.forEach(function(v,k,arr){
-					if(v==re.ni['id'])
-						break;
-					else
-						if(k==arr.length-1)
-							$scope.notiList.push(re.ni);
-				});*/
-				$scope.notiList.forEach(function(value, index, array){
-					if(value==re.ni['id'])
-						return;
-					else
-						if(index==array.length-1)
-							$scope.notiList.push(re.ni);
-				});
-			}
-			else
-			{
-				//把group_id和num取出来，存进gnl中
-				
-			}
-			console.log(re.nl);
-			$rootScope.cometNoti();
-		}).error(function(){
-			$rootScope.cometNoti();
-		});
-	}
+	$rootScope.readedList=[];
+	//创建文件or文件夹
+	$scope.createFile=function(type){
+		switch(type)
+		{
+			case 'folder':
+				newFolder=$('<tr hover="true"><td><div class="cursor-p f-l m-r-8 folder"></div><input style="width:300px" value="新建文件夹"></td></tr>');
+				$('tbody').prepend(newFolder);
+				newFolder.find('input')[0].select();
+				newFolder.find('input').keyup(function(e){
+	            	if(e.which==13)
+	            	{
+	            		newName=$(this).val();
+	            		$http({
+	            			type:'get',
+	            			url: 'api/newFolder',
+	            			params:{name:newName,belong:$rootScope.belong,gid:$rootScope.openGroupId}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{
+	            				$rootScope.fileList.unshift(re.file);
+	            				$('.alert-success').html('创建成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				$('.alert-success').html('创建失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            		}).error(function(){
+	            			$('.alert-success').html('创建失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+	            		});
+	            		//parent=$(this).parent();
+	            		newFolder.remove();
+	            		//parent.find('.file-name').show();
+	            	}
+	            });
+				newFolder.find('input').blur(function(e){
+            		newName=$(this).val();
+            		$http({
+            			type:'get',
+            			url: 'api/newFolder',
+            			params:{name:newName,belong:$rootScope.belong,gid:$rootScope.openGroupId}
+            		}).success(function(re){
+            			if(re.status==1)
+            			{
+            				$rootScope.fileList.unshift(re.file);
+            				$('.alert-success').html('创建成功！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+            			}
+            			else
+            			{
+            				$('.alert-success').html('创建失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+            			}
+            		}).error(function(){
+            			$('.alert-success').html('创建失败！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+            		});
+            		//parent=$(this).parent();
+            		newFolder.remove();
+            		//parent.find('.file-name').show();
+	            });
+				break;
+			case 'md':
+				console.log('创建Markdown');
+				break;
+			case 'note':
+				console.log('创建note');
+				break;
+			case 'table':
+				console.log('创建table');
+				break;
+			default :
+				break;
+		}
+	};
+	//单个文件右键菜单项
+	$scope.dropMenuData = [
+	    [{
+	        text: "历史版本",
+	        func: function() {
+	            console.log($scope.selectedFile);
+	            //console.log($(this)[0]);
+	            ///$(this).css("padding", "10px");
+	        }
+	    }, {
+	        text: "重命名",
+	        func: function() {
+	            $(this).find('.file-name').hide();
+	            inputField=$('<input rename style="width:300px" value="'+$scope.selectedFile[0]['name']+'">');
+	            $(this).find('td div:first').after(inputField);
+	            inputField[0].select();
+	            inputField.keyup(function(e){
+	            	if(e.which==13)
+	            	{
+	            		newName=inputField.val();
+	            		//console.log(newName);
+	            		oldName=$scope.selectedFile[0]['name'];
+	            		$scope.selectedFile[0]['name']=newName;
+	            		$http({
+	            			type:'get',
+	            			url: 'api/rename',
+	            			params:{fid:$scope.selectedFile[0]['fid'],name:newName}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{			
+	            				$('.alert-success').html('重命名成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				$('.alert-success').html('重命名失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+								$scope.selectedFile[0]['name']=oldName;
+	            			}
+	            		}).error(function(){
+	            			$('.alert-success').html('重命名失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+							$scope.selectedFile[0]['name']=oldName;
+	            		});
+	            		parent=$(this).parent();
+	            		$(this).remove();
+	            		parent.find('.file-name').show();
+	            	}
+	            });
+	            inputField.blur(function(e){
+	            		newName=inputField.val();
+	            		oldName=$scope.selectedFile[0]['name'];
+	            		$scope.selectedFile[0]['name']=newName;
+	            		$http({
+	            			type:'get',
+	            			url: 'api/rename',
+	            			params:{fid:$scope.selectedFile[0]['fid'],name:newName}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{			
+	            				$('.alert-success').html('重命名成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				$('.alert-success').html('重命名失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+								$scope.selectedFile[0]['name']=oldName;
+	            			}
+	            		}).error(function(){
+	            			$('.alert-success').html('重命名失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+							$scope.selectedFile[0]['name']=oldName;
+	            		});        	
+	            		parent=$(this).parent();
+	            		$(this).remove();
+	            		parent.find('.file-name').show();
+	            });
+	            $scope.$apply();
+	        }
+	     ,
+	    }, {
+	        text: "删除",
+	        func: function() {
+	            //$(this).css("background-color", "#beceeb");
+	        }
+	     ,
+	    }, {
+	        text: "下载到本地",
+	        func: function() {
+	        	if($scope.enableDownload($scope.selectedFile[0]))
+	            	$scope.download($scope.selectedFile[0]);
+	        }
+	     ,
+	    }, {
+	        text: "分享",
+	        func: function() {
+	            $scope.share($scope.selectedFile[0]);
+	        }
+	     ,
+	    },],
+	];
+	$scope.dropMenuDataNoShare = [
+	    [{
+	        text: "历史版本",
+	        func: function() {
+	            console.log($scope.selectedFile);
+	            //console.log($(this)[0]);
+	            ///$(this).css("padding", "10px");
+	        }
+	    }, {
+	        text: "重命名",
+	        func: function() {
+	            $(this).find('.file-name').hide();
+	            inputField=$('<input rename style="width:300px" value="'+$scope.selectedFile[0]['name']+'">');
+	            $(this).find('td div:first').after(inputField);
+	            inputField[0].select();
+	            inputField.keyup(function(e){
+	            	if(e.which==13)
+	            	{
+	            		newName=inputField.val();
+	            		//console.log(newName);
+	            		oldName=$scope.selectedFile[0]['name'];
+	            		$scope.selectedFile[0]['name']=newName;
+	            		$http({
+	            			type:'get',
+	            			url: 'api/rename',
+	            			params:{fid:$scope.selectedFile[0]['fid'],name:newName}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{			
+	            				$('.alert-success').html('重命名成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				$('.alert-success').html('重命名失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+								$scope.selectedFile[0]['name']=oldName;
+	            			}
+	            		}).error(function(){
+	            			$('.alert-success').html('重命名失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+							$scope.selectedFile[0]['name']=oldName;
+	            		});
+	            		parent=$(this).parent();
+	            		$(this).remove();
+	            		parent.find('.file-name').show();
+	            	}
+	            });
+	            inputField.blur(function(e){
+	            		newName=inputField.val();
+	            		oldName=$scope.selectedFile[0]['name'];
+	            		$scope.selectedFile[0]['name']=newName;
+	            		$http({
+	            			type:'get',
+	            			url: 'api/rename',
+	            			params:{fid:$scope.selectedFile[0]['fid'],name:newName}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{			
+	            				$('.alert-success').html('重命名成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				$('.alert-success').html('重命名失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+								$scope.selectedFile[0]['name']=oldName;
+	            			}
+	            		}).error(function(){
+	            			$('.alert-success').html('重命名失败！');
+							$('.alert-success').fadeIn().fadeOut(2000);
+							$scope.selectedFile[0]['name']=oldName;
+	            		});        	
+	            		parent=$(this).parent();
+	            		$(this).remove();
+	            		parent.find('.file-name').show();
+	            });
+	            $scope.$apply();
+	        }
+	     ,
+	    }, {
+	        text: "删除",
+	        func: function() {
+	            //$(this).css("background-color", "#beceeb");
+	        }
+	     ,
+	    }, {
+	        text: "下载到本地",
+	        func: function() {
+	        	if($scope.enableDownload($scope.selectedFile[0]))
+	            	$scope.download($scope.selectedFile[0]);
+	        }
+	     ,
+	    }, {
+	        text: "取消分享",
+	        func: function() {
+	            $scope.unshare($scope.selectedFile[0]);
+	        }
+	     ,
+	    }, ],
+	];
+	//多个右键菜单值
+	$scope.dropMulMenuData = [
+	    [{
+	        text: "删除",
+	        func: function() {
+	            //$(this).css("background-color", "#beceeb");
+	        }
+	     ,
+	    },{
+	        text: "下载到本地",
+	        func: function() {
+	        	enableDownloadList=[];
+	            $scope.selectedFile.forEach(function(value,index,array){
+	            	if($scope.enableDownload(value))
+	            		enableDownloadList.push(value);
+	            });
+	            $scope.mulDownload(enableDownloadList);
+	        }
+	     ,
+	    }],
+	    /*[{
+	        text: "删除",
+	        func: function() {
+	            var src = $(this).attr("src");
+	            window.open(src.replace("/s512", ""));    
+	        }
+	    }]*/
+	];
 	//点击群组时刷新群组数据
 	$scope.$on('$routeChangeSuccess', function (){
 		$scope.loading=true;
@@ -200,7 +565,14 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
                 params: {'gid':$rootScope.openGroupId}
             }).success(function(re){
             	//console.log(re);
+            	//当前目录
+            	$rootScope.belong='/';
+            	$rootScope.groupList.forEach(function(value,index,array){
+            		if(value['group_id']==$rootScope.openGroupId)
+            			$rootScope.groupList[index]['num']=null;
+            	});
             	$rootScope.groupInfo=re.gi;
+            	$rootScope.openGroupName=re.gi[0]['name'];
             	$rootScope.groupMember=re.mi;
             	var size=0;
             	for(i in re.fl){
@@ -214,8 +586,9 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             		else
             			re.fl[i]['size']=(size/1024/1024/1024).toFixed(2)+'GB';
             	}
-            	$scope.fileList=re.fl;
-            	for(i in re.ml){
+            	$rootScope.fileList=re.fl;
+            	//$rootScope.$apply();
+            	/*for(i in re.ml){
             		switch(re.ml[i]['type']){
             			case 'upload': 
             				re.ml[i]['type']='上传了文件';
@@ -238,14 +611,96 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             			default :
             				break;
             		}
-            	}
-            	$scope.notiList=re.ml;
+            	}*/
+            	$rootScope.notiList=re.ml;
             	$scope.loading=false;
-            	$rootScope.cometNoti();
+            	//$scope.$apply();
+            	//获取该群组数据完毕后设置该gid为未读
+            	$rootScope.readedList.forEach(function(value,index,array){
+            		if(value==$rootScope.openGroupId)
+            			$rootScope.readedList.splice(index,1);
+            	});
+				//$rootScope.readedList.remove($rootScope.openGroupId);
             }).error(function(){
             	location.href="";
             });
 	});
+	//鼠标任何点击事件产生选择的file
+	$scope.select=function(file){
+		//console.log(keyCode);
+		//console.log(event.which);
+		if(event.which==1||event.which==2)
+		{
+			if(typeof keyCode!=='undefined')
+			{
+				if(keyCode==17)
+					$scope.selectedFile.push(file);
+				else
+				{
+					$scope.selectedFile=[];
+					$scope.selectedFile.push(file);
+				}
+			}
+		}
+		else if(event.which==3)
+		{
+			if(typeof $scope.selectedFile=='undefined'||$scope.selectedFile.length==1)
+			{
+				$scope.selectedFile=[];
+				$scope.selectedFile.push(file);
+				if(file.share=='1')
+					$('tbody tr').smartMenu($scope.dropMenuDataNoShare, {
+			    		name: "dropShare"    
+					});
+				else
+					$('tbody tr').smartMenu($scope.dropMenuData, {
+			    		name: "drop"    
+					});
+			}
+			else{
+				$('tbody tr').smartMenu($scope.dropMulMenuData, {
+			    	name: "mulDrop"    
+				});				
+			}
+		}
+		//console.log($scope.selectedFile);
+		//$scope.selectedFile=file;
+	}
+	//检查当前file是否为选择的file
+	$scope.isSelected=function(file){
+		//console.log($scope.selectedFile);
+		if(typeof $scope.selectedFile !== 'undefined')
+		{
+/*			if($scope.selectedFile.length==='undefined')
+			{
+				if($scope.selectedFile.fid==file.fid)
+					return true;
+				return false;
+			}*/
+			/*$scope.selectedFile.forEach(function(value,index,array){
+				if(value.fid==file.fid)
+				{
+					//console.log(1);
+					return true;
+				}
+			});
+			return false;*/
+			//if($scope.selectedFile.fid==file.fid)
+			//	return true;
+			//return false;
+			for(i in $scope.selectedFile)
+			{
+				if($scope.selectedFile[i].fid==file.fid)
+					return true;
+			}
+			return false;
+		}
+	}
+	//打开文件或者文件夹方法
+	$scope.oepnOrForward=function(file){
+		console.log(file);
+		delete $scope.selectedFile;
+	}
 	//ng-repeat之后执行的方法
 	$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
           //下面是在table render完成后执行的js
@@ -299,6 +754,11 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 				if(index==0)
 					$(this).width('20.5%');
 			});
+
+			//右键菜单初始化			
+			$('tbody tr').smartMenu($scope.dropMenuData, {
+			    name: "drop"    
+			});
 	});
 	//判断文件是否可下载
 	$scope.enableDownload=function(file){
@@ -306,8 +766,8 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 			return false;
 		return true;
 	}
-	//下载文件方法
-	$scope.download=function(){
+	//单个文件下载方法
+	$scope.download=function(file){
 		downloadFrame=$('#download-frame');
         if(downloadFrame.length==0)
         {
@@ -315,7 +775,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             downloadFrame.css('display','none');
             $('body').append(downloadFrame);      
         }
-        downloadFrame.attr('src','/api/download/170800');
+        downloadFrame.attr('src','/api/download/'+file.fid);
         /*if($('#download-frame').length==0)
         {
         	var myframe=$('<iframe id="download-frame">');
@@ -328,6 +788,130 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
         	var myframe=$('<iframe id="download-frame">');
         	myframe.attr('src','/api/download/170800');
         }*/
+	}
+	//多个文件下载方法
+	$scope.mulDownload=function(fileList){
+		downloadFrame=$('#download-frame');
+        if(downloadFrame.length==0)
+        {
+            var downloadFrame=$('<iframe id="download-frame">');
+            downloadFrame.css('display','none');
+            $('body').append(downloadFrame);      
+        }
+        fid='';
+        for(i in fileList)
+        {
+        	if(i==fileList.length-1)
+        		fid+=fileList[i].fid;
+        	else
+        		fid+=fileList[i].fid+'|';
+        }
+        downloadFrame.attr('src','/api/mulDownload?fid='+fid);
+	}
+	//分享文件方法
+	$scope.share=function(file){
+		$http({
+			url:'api/share',
+			type:'GET',
+			params: {fid:file.fid}
+		}).success(function(re){
+			if(re.status==1){
+				file.share='1';
+				$('#btn-copy').html('复制链接').attr('class','btn btn-primary').attr('disabled',false);
+				$('#share-link input[type=text]').val(re.link);
+				$('#share-link').modal();
+			}
+			else{
+				$('.alert-success').html('链接生成失败！');
+				$('.alert-success').fadeIn().fadeOut(2000);
+			}
+		}).error(function(re){
+			$('.alert-success').html('链接生成失败！');
+			$('.alert-success').fadeIn().fadeOut(2000);
+		});
+	}
+	//取消分享文件方法
+	$scope.unshare=function(file){
+		console.log(file);
+		$http({
+			url:'api/unshare',
+			type:'GET',
+			params: {fid:file.fid}
+		}).success(function(re){
+			if(re.status==1){
+				file.share='0';
+				$('.alert-success').html('取消分享成功！');
+				$('.alert-success').fadeIn().fadeOut(2000);
+			}
+			else{
+				$('.alert-success').html('取消分享失败！');
+				$('.alert-success').fadeIn().fadeOut(2000);
+			}
+		}).error(function(re){
+			$('.alert-success').html('取消分享失败！');
+			$('.alert-success').fadeIn().fadeOut(2000);
+		});
+	}
+	
+	//加星文件方法
+	$scope.star=function(file){
+		//console.log(file);
+		//console.log($scope.fileList);
+		/*$scope.fileList.forEach(function(value,index,array){
+			if(file.fid==value.fid){
+				console.log(file.star=='0');
+				if(file.star=='1')
+					$scope.fileList[index]['star']='0';
+				else
+					$scope.fileList[index]['star']='1';
+			}
+		});*/
+		if(file.star=='1')
+			file.star='0';
+		else
+			file.star='1';
+		//console.log(file.star=='0');
+		if(file.star=='1')
+		{
+			$http({
+				type:'GET',
+				url:'/api/addStar/'+file.fid
+			}).success(function(re){
+				if(re.status==1){
+					$('.alert-success').html('添加星标成功！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+				}
+				else{
+					$('.alert-success').html('操作失败！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+					file.star='0';
+				}
+			}).error(function(re){
+				$('.alert-success').html('操作失败！');
+				$('.alert-success').fadeIn().fadeOut(2000);
+				file.star='0';
+			});
+		}
+		else{
+			$http({
+				type:'GET',
+				url:'/api/delStar/'+file.fid
+			}).success(function(re){
+				if(re.status==1){
+					$('.alert-success').html('取消星标成功！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+				}
+				else{
+					$('.alert-success').html('操作失败！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+					file.star='1';
+				}
+			}).error(function(re){
+				$('.alert-success').html('操作失败！');
+				$('.alert-success').fadeIn().fadeOut(2000);
+				file.star='1';
+			});
+		}
 	}
 	//group方法在页面生成时判断用户是否为该群组内用户
 	/*$scope.load=function(){

@@ -7,6 +7,7 @@ class Index extends Base
     private $memberModel;
     private $groupModel;
     private $fileModel;
+    private $shareModel;
     private $groupModfileView;
     private $groupUnModfileView;
     private $groupNotiView;
@@ -21,6 +22,7 @@ class Index extends Base
         $this->memberModel=D('api/Member');
         $this->groupModel=D('api/Group');
         $this->fileModel=D('api/File');
+        $this->shareModel=D('api/Share');
         $this->groupModfileView=D('api/ViewGroupModfile');
         $this->groupUnModfileView=D('api/ViewGroupUnmodfile');
         $this->groupNotiView=D('api/ViewGroupNoti');
@@ -36,6 +38,26 @@ class Index extends Base
     {
     	$apiList=get_class_methods(__CLASS__);
     	$this->ajaxReturn($this->getMethods(__CLASS__,'public'));
+    }
+    //创建文件夹方法
+    public function newFolder()
+    {
+        $name=I('name');
+        $belong=I('belong');
+        $gid=I('gid');
+        if($name&&$name&&$gid)
+        {
+            if(in_array($gid,$this->user->groupList))
+            {
+                $input->object=$this->user->id;
+                $input->name=$name;
+                $input->belong=$belong;
+                $input->gid=$gid;
+                $input->type='folder';
+                $input->ext='dir';
+                $re=$this->fileModel->addModFile($input);
+            }
+        }
     }
     //获取用户当前的简单数据：如个人信息、群组列表、可新建的文件列表、群组成员列表、群组信息
     public function info()
@@ -96,8 +118,8 @@ class Index extends Base
                 //print_r($_msgList1);
                 //$this->divSortWithfield($_msgList1,$msgList,'id');
                 $msgList=$this->divSortWithfield($_msgList,$msgList,'id');
-                
-                $msgList=array_merge($msgList,$_msgList1);
+                if($_msgList1!==null)
+                    $msgList=array_merge($msgList,$_msgList1);
                 //将avatar修改url，并将该用户该群组下的dispatch表标识设为1
                 foreach ($msgList as $k => $v)
                 {
@@ -119,6 +141,7 @@ class Index extends Base
             if(in_array($fileInfo['group_id'],$this->user->groupList))
             {                
                 $belongFileList1=$this->groupModfileView->getModFile($fileInfo['group_id'],$fileInfo['name']);
+                $belongFileList1=$this->getLatestModFileList($belongFileList1);
                 $belongFileList2=$this->groupUnmodfileView->getUnmodFile($fileInfo['group_id'],$fileInfo['name']);
                 return $this->divSort($belongFileList1,$belongFileList2);
             }
@@ -127,38 +150,60 @@ class Index extends Base
     //群组通知推送接口
     public function notification()
     {
-        $gid=I('gid');
-        if($gid)
+        session_write_close();
+        //已读群组通知群ID列表
+        //$readedList=json_decode(I('rl','','strip_tags'),true);
+        $readedList=$_POST['rl'];
+        $openGid=I('post.oi');
+        if(!$readedList)
+            $readedList=[$openGid];
+        else
+            array_push($readedList,$openGid);
+        //$readedList=json_decode($_POST['rl']);
+        //print_r($readedList);
+        //print_r($_POST);
+        //一个是其他群组的消息数量，都是key---value组合，key为gid
+        ini_set("max_execution_time", "0");
+        $count=0;
+        while (true) 
         {
-            //返回两个数据，一个是当前群组的通知数据，直接插入到dom后面
-            //一个是其他群组的消息数量，都是key---value组合，key为gid
-            if(in_array($gid,$this->user->groupList))
+            //usleep(3000000);
+            //1.查找这个gid的通知数据
+            //2.查找这个用户其他gid的通知数量
+            #return ni:noti-item, nl:group-new-noti-num-list
+            //$numList=$this->notiCometView->findNoti($this->user->id,$gid);
+            //$notiItem=$this->notiCometView->findNotiByGid($uid,$gid);
+            $numList=$this->notiCometView->findNoti($this->user->id,$readedList);
+            $notiItemList=$this->notiCometView->findNotiByGid($this->user->id,$openGid);
+            if(!empty($notiItemList))
             {
-                ini_set("max_execution_time", "0");
-                session_write_close();
-                while (true) 
+                foreach ($notiItemList as $k => $v)
                 {
-                    //1.查找这个gid的通知数据
-                    //2.查找这个用户其他gid的通知数量
-                    #return ni:noti-item, nl:group-new-noti-num-list
-                    $numList=$this->notiCometView->findNoti($this->user->id,$gid);
-                    $notiItem=$this->notiCometView->findNotiByGid($uid,$gid);
-                    if($numList)
-                    {                       
-                        return ['nl'=>$numList,'ni'=>];
-                        break;
-                    }
-                    usleep(1000000);
+                    $notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                    $this->dispatchModel->setReaded($v['id'],$this->user->id);
                 }
             }
+            if($numList||$notiItemList)
+            {
+                return ['nl'=>$numList,'ni'=>$notiItemList];
+                break;
+            }
+            $count++;
+            if($count==3)
+            {
+                return ['nl'=>$numList,'ni'=>$notiItemList];
+                break;
+            }
+            usleep(1000000);
         }
     }
     //群消息推送接口
     public function msg()
     {
+        session_write_close();
+        //session_cache_limiter('public');
         //查找该用户是否有未读群消息，若有直接返回true，若没有，则继续循环
         ini_set("max_execution_time", "0");
-        session_write_close();
         $count=0;
         while (true) 
         {
@@ -235,7 +280,7 @@ class Index extends Base
             }
         }
     }
-    //下载文件方法
+    //单个文件下载方法
     public function download()
     {
         C('default_return_type','text/html');
@@ -243,10 +288,10 @@ class Index extends Base
         if($fid)
         {
             $fileInfo=$this->fileModel->getGroupIdAndUrl($fid);
-            print_r($fileInfo);
+            //print_r($fileInfo);
             if(in_array($fileInfo['group_id'],$this->user->groupList))
             {
-                echo '111';
+                //echo '111';
                 header("Content-type:text/html;charset=utf-8");
                 $fileName=$fileInfo['name'];
                 //用以解决中文不能显示出来的问题 
@@ -277,12 +322,171 @@ class Index extends Base
             }
         }
     }
+    //多个文件下载方法
+    public function mulDownload()
+    {
+        C('default_return_type','application/zip');
+        $fid=I('fid');
+        if($fid)
+        {
+            $fidList=explode('|',$fid);
+            foreach ($fidList as $key => $value) 
+            {
+                $fidList[$key]=(int)($value);
+            }
+            $fidList=join(',',$fidList);
+            $fileListInfo=$this->fileModel->getGroupIdAndUrls($fidList);
+            foreach ($fileListInfo as $k => $v) 
+            {
+                if($k!=count($fileListInfo)-1)
+                {
+                    if($v['group_id']!=$fileListInfo[$k+1]['group_id'])
+                        return ['status'=>0,'msg'=>'wrong operation'];
+                }
+            }
+            if(in_array($fileListInfo[0]['group_id'],$this->user->groupList))
+            {
+                $filePathList=array();
+                foreach ($fileListInfo as $k => $v) 
+                {
+                    //$tmpPath=str_replace("//","/",$_SERVER['DOCUMENT_ROOT'].'/public/tmpfile/'.$v['name']);
+                    //system('cp '.str_replace("//","/",$_SERVER['DOCUMENT_ROOT'].$v['url']).' '.$tmpPath);
+                    //array_push($filePathList,$tmpPath);
+                    array_push($filePathList,str_replace("//","/",$_SERVER['DOCUMENT_ROOT'].$v['url']));
+                }
+                $zipName = str_replace("//","/",$_SERVER['DOCUMENT_ROOT'].'/public/tmpfile/'.time().'.zip'); //最终生成的文件名（含路径）
+                if(!file_exists($zipName))
+                {
+                    //重新生成文件   
+                    $zip = new \ZipArchive();//使用本类，linux需开启zlib，windows需取消php_zip.dll前的注释   
+                    if ($zip->open($zipName, \ZIPARCHIVE::CREATE)!==TRUE) 
+                    {   
+                        exit('file create or open error');
+                    }
+                    foreach($filePathList as $val)
+                    {
+                        if(file_exists($val))
+                        {
+                            $zip->addFile($val, basename($val));//第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下   
+                        }   
+                    }   
+                    $zip->close();//关闭   
+                }   
+                if(!file_exists($zipName))
+                {
+                    exit("can't find file"); //即使创建，仍有可能失败。。。。   
+                }
+                header("Cache-Control: public"); 
+                header("Content-Description: File Transfer"); 
+                header('Content-disposition: attachment; filename='.basename($zipName)); //文件名   
+                header("Content-Type: application/zip"); //zip格式的   
+                header("Content-Transfer-Encoding: binary"); //告诉浏览器，这是二进制文件    
+                header('Content-Length: '. filesize($zipName)); //告诉浏览器，文件大小   
+                @readfile($zipName);
+                //system('rm -f '.str_replace("//","/",$_SERVER['DOCUMENT_ROOT'].'/public/tmpfile/').'*');
+                exit();
+            }
+        }
+    }
+    //文件重命名方法
+    public function rename()
+    {
+        $fid=I('fid');
+        $newName=I('name');
+        if($fid&&$newName)
+        {
+            if($this->valid($fid))
+            {
+                if($this->fileModel->rename($fid,$newName))
+                    return ['status'=>1];
+                return ['status'=>0];
+            }
+        }
+        return ['status'=>0];
+    }
+    //文件加星方法
+    public function addStar()
+    {
+        $fid=I('fid');
+        if($fid)
+        {
+            $gid=$this->fileModel->getGroupId($fid);
+            if(in_array($gid,$this->user->groupList))
+            {
+                if($this->fileModel->addStar($fid))
+                    $this->ajaxReturn(['status'=>1]);
+                $this->ajaxReturn(['status'=>0]);
+            }
+        }
+        $this->ajaxReturn(['status'=>0]);
+    }
+    //文件去星方法
+    public function delStar()
+    {
+        $fid=I('fid');
+        if($fid)
+        {
+            $gid=$this->fileModel->getGroupId($fid);
+            if(in_array($gid,$this->user->groupList))
+            {
+                if($this->fileModel->delStar($fid))
+                    $this->ajaxReturn(['status'=>1]);
+                $this->ajaxReturn(['status'=>0]);
+            }
+        }
+        $this->ajaxReturn(['status'=>0]);
+    }
+    //生成文件链接地址方法
+    public function share()
+    {
+        $fid=I('fid');
+        if($fid)
+        {
+            if($this->valid($fid))
+            {
+                $token=$this->shareModel->getShareToken($fid);
+                if($token)
+                    return ['status'=>1,'link'=>'http://'.$_SERVER['SERVER_NAME'].U('/share').'?token='.$token.'&fid='.$fid];
+                else
+                {
+                    $token=$this->shareModel->setShareToken($fid,$this->user->id);
+                    //return ['status'=>0,'sql'=>$re];
+                    //exit();
+                    if($token)
+                        return ['status'=>1,'link'=>'http://'.$_SERVER['SERVER_NAME'].U('/share').'?token='.$token.'&fid='.$fid];
+                    /*else if($token===0)
+                        return ['status'=>0,'msg'=>'更新file表出错'];*/
+                    else
+                        return ['status'=>0,'msg'=>'operation error'];
+                }
+            }
+            return ['status'=>0,'msg'=>'no permission'];
+        }
+        //return ['status'=>1,'link'=>'www.baidu.com','fid'=>$fid];
+    }
+    //文件取消分享方法
+    public function unshare()
+    {
+        $fid=I('fid');
+        if($fid)
+        {
+            if($this->valid($fid))
+            {
+                if($this->shareModel->unshare($fid,$this->user->id))
+                    return ['status'=>1];
+            }
+            return ['status'=>0,'msg'=>'no permission'];
+        }
+        //return ['status'=>1,'link'=>'www.baidu.com','fid'=>$fid];
+    }
     //获取真实图片文件URL
     public function image()
     {
         $cipher=I('get.img','strip_tags/s');
         $imgUrl=$this->rc4Decode($cipher);
         $img = file_get_contents($imgUrl,true);
+        header("Cache-Control: public");
+        header("Pragma: cache");
         header("Content-Type: image/jpeg;text/html; charset=utf-8");
         echo $img;
         exit(0);
@@ -291,6 +495,14 @@ class Index extends Base
     private function encryptAvatar($url)
     {
         return U('Index/image','img='.base64_encode($this->rc4Encode($url)));
+    }
+    //判断文件所在群组是否为当前用户的群组
+    private function valid($fid)
+    {
+        $gid=$this->fileModel->getGroupId($fid);
+        if(in_array($gid,$this->user->groupList))
+            return true;
+        return false;
     }
     /*//json格式返回数据方法
     protected function ajaxReturn($array)
@@ -341,10 +553,10 @@ class Index extends Base
     //按field值从小到大排序
     private function divSortWithfield($temp,$unModFileList,$field)
     {
-        if(count($temp)==0)
+        if($temp==null||count($temp)==0)
             return $unModFileList;
-        if(count($unModFileList)==0)
-            return $unModFileList;
+        if($unModFileList==null||count($unModFileList)==0)
+            return $temp;
         foreach ($temp as $k => $v) 
         {
             $low=0;
@@ -381,6 +593,25 @@ class Index extends Base
             }
         }
         return $unModFileList;
+    }
+    //获取可编辑文件最新文件信息方法
+    private function getLatestModFileList($modFileList)
+    {
+        $temp=[];
+        foreach ($modFileList as $k => $v) 
+        {
+            if($k!=0)
+            {
+                foreach ($temp as $kk => $vv) 
+                {
+                    if($vv['fid']!=$v['fid']&&$kk==count($temp)-1)
+                        $temp[]=$v;
+                }
+            }
+            else
+                $temp[]=$v;
+        }
+        return $temp;
     }
     //获取开放API列表方法
     protected function getMethods($classname,$access=null)

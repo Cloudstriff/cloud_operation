@@ -91,7 +91,34 @@ class Model
         // 当前模型有独立的数据库连接信息
         $this->db(0, $this->connection);
     }
+    /**
+     * 启动事务
+     * @access public
+     * @return void
+     */
+    public function startTrans() {
+        $this->commit();
+        $this->db->startTrans();
+        return ;
+    }
 
+    /**
+     * 提交事务
+     * @access public
+     * @return boolean
+     */
+    public function commit() {
+        return $this->db->commit();
+    }
+
+    /**
+     * 事务回滚
+     * @access public
+     * @return boolean
+     */
+    public function rollback() {
+        return $this->db->rollback();
+    }
     /**
      * 设置数据对象的值
      * @access public

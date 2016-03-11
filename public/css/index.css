@@ -132,14 +132,14 @@
 							 .side-bar .dir-list{ margin:0px auto; margin-left: 40px;}
 							 	.dir-list li:hover{ background: #e8f6f9; color: #3fbed8;}
 							 	.dir-list li:hover .icon-dir{ background: url(/public/imgs/icon-dir-hover.png) no-repeat 2px 9px;}
-							 		.icon-star{width: 18px; height: 30px; background: url(/public/imgs/icon-star.png) no-repeat 2px 9px;}
-							 		.icon-share{width: 18px; height: 30px; background: url(/public/imgs/icon-share.png) no-repeat 2px 9px; }
+							 		.icon-star{width: 18px; height: 30px; background: url(/public/imgs/icon-star-s.png) no-repeat 2px 9px;}
+							 		.icon-share{width: 18px; height: 30px; background: url(/public/imgs/icon-share-s.png) no-repeat 2px 9px; }
 							 		.icon-all-file{width: 18px; height: 30px; background: url(/public/imgs/icon-all-file.png) no-repeat 2px 9px;}
 							 		.icon-dir{width: 18px; height: 30px; background: url(/public/imgs/icon-dir.png) no-repeat 2px 9px;}
 							 		.icon-trash{width: 18px; height: 30px; background: url(/public/imgs/icon-trash.png) no-repeat 2px 9px;}
 							.star-file:hover { background: #e8f6f9; color: #3fbed8;}
-							.star-file:hover .icon-star{background: url(/public/imgs/icon-star-hover.png) no-repeat 2px 9px;}
-							.star-file:hover .icon-share{background: url(/public/imgs/icon-share-hover.png) no-repeat 2px 9px;}
+							.star-file:hover .icon-star{background: url(/public/imgs/icon-star-hover-s.png) no-repeat 2px 9px;}
+							.star-file:hover .icon-share{background: url(/public/imgs/icon-share-hover-s.png) no-repeat 2px 9px;}
 							.all-file:hover { background: #e8f6f9; color: #3fbed8;}
 							.all-file:hover .icon-all-file{ background: url(/public/imgs/icon-all-file-hover.png) no-repeat 2px 9px;}
 							.trash:hover { background: #e8f6f9; color: #3fbed8;}
@@ -176,16 +176,18 @@
 						 .dataTables_scrollBody::-webkit-scrollbar-corner {
 							  background-color: black;
 						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
+						.show tr .selected{ background: #f3f8fe; }
 						.show .btn-list{ display:none;}
-							.show .btn-list .share{width: 13px; height: 15px; background: url(/public/imgs/icon-share.png) no-repeat 0px 4px;}
-							.show .btn-list .star{width: 13px; height: 15px; background: url(/public/imgs/icon-star.png) no-repeat 0px 3px;}
-							.show .btn-list .stared{width: 13px; height: 15px; background: url(/public/imgs/icon-stared.png) no-repeat 0px 3px;}
-							.show .btn-list .download{width: 13px; height: 15px; background: url(/public/imgs/icon-download.png) no-repeat 0px 3px;}
-							.show .btn-list .drop{width: 13px; height: 20px; background: url(/public/imgs/icon-drop.png) no-repeat 0px 3px;}
-								.show .btn-list .share:hover{background: url(/public/imgs/icon-share-hover.png) no-repeat 0px 4px;}
-								.show .btn-list .star:hover{background: url(/public/imgs/icon-star-hover.png) no-repeat 0px 3px;}
-								.show .btn-list .download:hover{background: url(/public/imgs/icon-download-hover.png) no-repeat 0px 3px;}
-								.show .btn-list .drop:hover{background: url(/public/imgs/icon-drop-hover.png) no-repeat 0px 3px;}
+							.show .btn-list .share{width: 19px; height: 18px; background: url(/public/imgs/icon-share.png) no-repeat 0px 1px;}
+							.show .btn-list .star{width: 19px; height: 18px; background: url(/public/imgs/icon-star.png) no-repeat 0px -1px;}
+							.show .btn-list .stared{width: 19px; height: 18px; background: url(/public/imgs/icon-stared.png) no-repeat 0px -1px;}
+							.show .btn-list .download{width: 19px; height: 18px; background: url(/public/imgs/icon-download.png) no-repeat 0px 1px;}
+							.show .btn-list .drop{width: 19px; height: 19px; background: url(/public/imgs/icon-drop.png) no-repeat 0px 0px;}
+								.show .btn-list .share:hover{background: url(/public/imgs/icon-share-hover.png) no-repeat 0px 2px;}
+								.show .btn-list .star:hover{background: url(/public/imgs/icon-star-hover.png) no-repeat 0px 0px;}
+								.show .btn-list .stared:hover{background: url(/public/imgs/icon-stared.png) no-repeat 0px -1px;}
+								.show .btn-list .download:hover{background: url(/public/imgs/icon-download-hover.png) no-repeat 0px 2px;}
+								.show .btn-list .drop:hover{background: url(/public/imgs/icon-drop-hover.png) no-repeat 0px 1px;}
 					.msg{ width: 252px; height:100%; }
 						.chat-send{ height: 25px;}
 						.chat-send .vline {

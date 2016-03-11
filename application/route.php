@@ -28,9 +28,12 @@ return [
     'api/group/:gid$' => 'api/Index/group',
     'api/folder/:fid$' => 'api/Index/folder',
     'api/download/:fid$' => 'api/Index/download',
+    'api/addStar/:fid$'  => 'api/Index/addStar',
+    'api/delStar/:fid$'  => 'api/Index/delStar',
     'api/file/:fid/:t' => 'api/Index/file',
     'api/notification/:gid$' => 'api/Index/notification',
     'api/:method$' => 'api/Index/:method',
+    'share'  => 'share/Index/index', 
     //'api/image/img/:img' => 'api/Index/image:img',
     //其他路由规则
     'setting/:method$' => 'index/Index/index',

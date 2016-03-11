@@ -36,6 +36,20 @@ return [
         '__file__'   => ['config.php'],
         '__dir__'    => ['behavior', 'controller'],
         'controller' => ['Base'],
-    ]
+    ],
+    'share'    => [
+        '__file__'   => ['tags.php'],
+        '__dir__'    => ['behavior', 'controller', 'model', 'view'],
+        'controller' => ['Index', ],
+        'model'      => [],
+        'view'       => ['index/index'],
+    ],
+    'download'    => [
+        '__file__'   => ['tags.php'],
+        '__dir__'    => ['behavior', 'controller', 'model', 'view'],
+        'controller' => ['Index', ],
+        'model'      => [],
+        'view'       => ['index/index'],
+    ],
     // 。。。 其他更多的模块定义
 ];

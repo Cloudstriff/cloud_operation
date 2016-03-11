@@ -6,6 +6,7 @@
 	<title>Cloud-云协作</title>
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/index.css">
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/smartMenu.css">
 	<!--到最后完成再把字体加载进来吧，，哎-->
 	<!--<script src="https://use.typekit.net/kbf1iqt.js"></script>
 	<script>try{Typekit.load({ async: true });}catch(e){}</script>-->
@@ -56,8 +57,8 @@
 				    </ul>			
 				</div>
 				<div class="group-list" data-spy="scroll" data-target="#navbar-example" data-offset="0" >
-					<div ng-repeat="group in groupList" class="group-item cursor-p" ng-class="{selected:group.group_id==openGroupId}" ng-click="forwardGroup(group.group_id)">
-						<span ng-bind="group.name"></span><span class="noti-warning f-r" ng-bind="group.num" ng-if="group.num"></span>
+					<div ng-repeat="group in groupList" class="group-item cursor-p" ng-class="{selected:group.group_id==openGroupId}" ng-click="forwardGroup(group)">
+						<span ng-bind="group.name"></span><span class="noti-warning f-r" ng-if="group.num" ng-bind="group.num"></span>
 					</div>
 				</div>
 			</div>
@@ -134,8 +135,37 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div> 
+	<div class="modal" id="share-link" style="top:20%;">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+					<button type="button" class="close btn-large" data-dismiss="modal">&times;<span class="sr-only">Close</span></button>
+					<h4 class="modal-title">分享链接</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" >  
+						<div class="form-group">
+	                        <label class="col-sm-2 control-label no-padding-right">
+	                        	链接生成成功
+	                        </label>
+	                    </div>
+	                    <div class="form-group" >
+	                        <div class="col-sm-12">
+	                           	<input type="text" class="form-controll" id="input-link"/><button type="button" class="btn btn-primary" id="btn-copy" ng-click="copyLink()">复制链接</button>
+	                        </div>
+	                    </div> 
+	                </form>
+				</div>
+				<!-- <div class="modal-footer">
+					<button type="button" class="btn btn-default btn-large" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary">复制</button>
+				</div> -->
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div> 
 </body>
 <script type="text/javascript" src="__PUBLIC__/framework/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/framework/jquery/jquery-smartMenu-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/framework/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/framework/bootstrap/bootbox.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/framework/jquery/jquery.dataTables.min.js"></script>

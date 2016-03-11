@@ -21,6 +21,19 @@ noteDirectives.directive('adaptWidth', function(){
 		replace : true*/
 	}
 });
+//重命名输入框指令
+noteDirectives.directive('rename', function(){
+	return {
+		restrict: 'AE',
+		link:function(scope,element,attr){
+			element.focus(function(){
+				console.log(1111);
+			});
+		}
+		/*template: '<div>Hello</div>',
+		replace : true*/
+	}
+});
 /*//初始化加载数据指令
 noteDirectives.directive('onFinishRenderFilters', function ($timeout) {
     return {

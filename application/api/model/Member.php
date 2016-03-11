@@ -36,4 +36,9 @@ class Member extends Model
 	{
 		return $this->field('group_id,name,role')->join('__GROUP__ on __MEMBER__.group_id=__GROUP__.id')->where('user_id=:user_id')->bind(':user_id',$uid)->select();
 	}
+    //查询群组内成员ID
+    public function getGroupUidList($gid)
+    {
+        return $this->field('user_id')->where('group_id=:group_id')->bind(':group_id',$gid)->select();
+    }
 }
