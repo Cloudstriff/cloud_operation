@@ -41,7 +41,8 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			$rootScope.openGroupName=group.name;
 			if($rootScope.openGroupId==group.group_id)
 			{
-				$scope.$broadcast('$routeChangeSuccess');
+				$location.path('/group/'+group.group_id);
+				//$scope.$broadcast('$routeChangeSuccess');
 			}
 			else
 				$location.path('/group/'+group.group_id);
@@ -86,26 +87,62 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			data: {'rl':$rootScope.readedList,'oi':$rootScope.openGroupId},
 			success:function(re){
 				//console.log(re.nl);
-				//console.log(re);
+				//console.log(re.ni);
 				if(re.ni!==null)
 				{
 					//console.log('re.ni存在');
-					if(re.ni.length!=0)
+					if(re.ni.notiItem.length!=0)
 					{
 						//console.log('re.ni长度不等于0');
-						if(re.ni[0].group_id==$rootScope.openGroupId)
+						if(re.ni.notiItem[0].group_id==$rootScope.openGroupId)
 						{
 							/*console.log('re.ni属于当前群组');
 							console.log('打印出通知列表');
 							console.log($rootScope.notiList);*/
-							$rootScope.notiList=$rootScope.notiList.concat(re.ni);
+							for(i in re.ni.notiItem)
+							{
+								if(re.ni.notiItem[i]['type']=='create'&&re.ni.notiItem[i]['file_type']=='folder')
+									re.ni.notiItem[i]['type']='create-f';
+							}
+							$rootScope.notiList=$rootScope.notiList.concat(re.ni.notiItem);
+							//插入或替换文件树
+							if(typeof re.ni.fileList!=null && typeof re.ni.fileList.length=='undefined')
+							{
+								for(i in $rootScope.fileList)
+								{
+									if($rootScope.fileList[i].fid==re.ni.fileList.fid)
+									{
+										$rootScope.fileList[i]=re.ni.fileList;
+										break;
+									}
+									else if(i==$rootScope.fileList.length-1)
+										$rootScope.fileList.unshift(re.ni.fileList);
+								}
+								//$rootScope.fileList.unshift(re.ni.fileList);
+							}
+							else if(typeof re.ni.fileList.length!='undefined')
+							{
+								for(i in $rootScope.fileList)
+								{
+									for(j in re.ni.fileList)
+									{
+										if($rootScope.fileList[i].fid==re.ni.fileList[j].fid)
+										{
+											$rootScope.fileList[i]=re.ni.fileList[j];
+										}
+										else if(j==re.ni.fileList.length-1)
+											$rootScope.fileList.unshift(re.ni.fileList[j]);
+									}
+									
+								}
+							}
 							/*console.log('打印出连接后的通知列表');
 							console.log($rootScope.notiList);*/
 							//$rootScope.$apply();
 						}
 						else
 						{
-							tmp={'group_id':re.ni[0].group_id,'num':re.ni.length};
+							tmp={'group_id':re.ni[0].group_id,'num':re.ni.notiItem.length};
 							re.nl.push(tmp);
 						}
 					}
@@ -223,6 +260,13 @@ noteCtrls.controller('searchCtrl',['$scope','$rootScope','$routeParams',function
 	//搜索完毕
 	$scope.sFinished=true;
 }]);
+//笔记版块控制器
+noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams',function($scope,$rootScope,$routeParams){
+	$rootScope.openGroupId=$routeParams.gid;
+	$scope.publish=function(){
+		
+	}
+}]);
 //设置成员管理版块控制器
 noteCtrls.controller('membersCtrl', ['$scope','$rootScope','$http','$location','$routeParams', function($scope,$rootScope,$http,$location,$routeParams){
 	$scope.members='Angular';
@@ -265,48 +309,60 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		}).success(function(re){
 	            			if(re.status==1)
 	            			{
-	            				$rootScope.fileList.unshift(re.file);
+	            				//console.log($rootScope.fileList);
+	            				//$rootScope.fileList.unshift(re.file);
+	            				//console.log($rootScope.fileList);
+	            				newFolder.remove();
 	            				$('.alert-success').html('创建成功！');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
+	            				newFolder.remove();
 	            				$('.alert-success').html('创建失败！');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            		}).error(function(){
+	            			newFolder.remove();
 	            			$('.alert-success').html('创建失败！');
 							$('.alert-success').fadeIn().fadeOut(2000);
 	            		});
 	            		//parent=$(this).parent();
-	            		newFolder.remove();
+	            		
+	            		//$rootScope.$apply();
+	            		//$scope.$broadcast('ngRepeatFinished');
 	            		//parent.find('.file-name').show();
 	            	}
 	            });
 				newFolder.find('input').blur(function(e){
             		newName=$(this).val();
-            		$http({
-            			type:'get',
-            			url: 'api/newFolder',
-            			params:{name:newName,belong:$rootScope.belong,gid:$rootScope.openGroupId}
-            		}).success(function(re){
-            			if(re.status==1)
-            			{
-            				$rootScope.fileList.unshift(re.file);
-            				$('.alert-success').html('创建成功！');
+	            		$http({
+	            			type:'get',
+	            			url: 'api/newFolder',
+	            			params:{name:newName,belong:$rootScope.belong,gid:$rootScope.openGroupId}
+	            		}).success(function(re){
+	            			if(re.status==1)
+	            			{
+	            				//console.log($rootScope.fileList);
+	            				//$rootScope.fileList.unshift(re.file);
+	            				//console.log($rootScope.fileList); 
+	            				newFolder.remove();
+	            				$('.alert-success').html('创建成功！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            			else
+	            			{
+	            				newFolder.remove();
+	            				$('.alert-success').html('创建失败！');
+								$('.alert-success').fadeIn().fadeOut(2000);
+	            			}
+	            		}).error(function(){
+	            			newFolder.remove();
+	            			$('.alert-success').html('创建失败！');
 							$('.alert-success').fadeIn().fadeOut(2000);
-            			}
-            			else
-            			{
-            				$('.alert-success').html('创建失败！');
-							$('.alert-success').fadeIn().fadeOut(2000);
-            			}
-            		}).error(function(){
-            			$('.alert-success').html('创建失败！');
-						$('.alert-success').fadeIn().fadeOut(2000);
-            		});
-            		//parent=$(this).parent();
-            		newFolder.remove();
+	            		});
+	            		//parent=$(this).parent();
+	            		//newFolder.remove();
             		//parent.find('.file-name').show();
 	            });
 				break;
@@ -314,7 +370,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 				console.log('创建Markdown');
 				break;
 			case 'note':
-				console.log('创建note');
+				$rootScope.forward('/note/create');
 				break;
 			case 'table':
 				console.log('创建table');
@@ -566,7 +622,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             }).success(function(re){
             	//console.log(re);
             	//当前目录
-            	$rootScope.belong='/';
+            	$rootScope.belong=0;
             	$rootScope.groupList.forEach(function(value,index,array){
             		if(value['group_id']==$rootScope.openGroupId)
             			$rootScope.groupList[index]['num']=null;
@@ -577,7 +633,10 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             	var size=0;
             	for(i in re.fl){
             		size=re.fl[i]['size'];
-            		if(size<=1024)
+            		if(!size && typeof size != "undefined" && size != 0)
+            			//console.log(111);
+            			re.fl[i]['size']='----';
+            		else if(size<=1024 )
             			re.fl[i]['size']=(size/1).toFixed(2)+'B';
             		else if(size>1024&&size<=1024*1024)
             			re.fl[i]['size']=(size/1024).toFixed(2)+'KB';
@@ -612,6 +671,11 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
             				break;
             		}
             	}*/
+            	for(i in re.ml)
+            	{
+            		if(re.ml[i]['type']=='create'&&re.ml[i]['file_type']=='folder')
+            			re.ml[i]['type']='create-f';
+            	}
             	$rootScope.notiList=re.ml;
             	$scope.loading=false;
             	//$scope.$apply();
@@ -704,9 +768,18 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	//ng-repeat之后执行的方法
 	$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
           //下面是在table render完成后执行的js
+	      /*if ($('.table').hasClass('dataTable')) 
+	      {
+	　　	dttable = $('.table').dataTable();
+	　　	dttable.fnClearTable(); //清空一下table
+	　　	dttable.fnDestroy(); //还原初始化了的datatable
+			}*/
+			console.log($('.table')[0]);
           $('.table').DataTable({
+          	//"bRetrieve": true,
 			"bAutoWidth":true,
             "autoWidth": true,
+            //"bDestroy": true,
             /*"columns": [
                 {"width": "40%"},
                 {"width": "15%"},

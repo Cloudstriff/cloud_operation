@@ -15,6 +15,12 @@ noteApp.config(['$routeProvider', '$locationProvider',function($routeProvider,$l
 		}).when('/group/:gid',{
 			templateUrl: path+'/tpl/group.html',
 			controller: 'groupCtrl'
+		}).when('/group/:gid/note/create',{
+			templateUrl: path+'/tpl/create-note.html',
+			controller: 'noteCtrl'
+		}).when('/group/:gid/note/:fid',{
+			templateUrl: path+'/tpl/edit-note.html',
+			controller: 'noteCtrl'
 		}).otherwise({redirectTo:'/'});
 		$locationProvider.html5Mode(true);//启动html5模式
 	}]);

@@ -36,4 +36,24 @@ class Group extends Model
 	{
 		return $this->field('co_group.id,name,validate,capacity,count(user_id) as count')->join('__MEMBER__ on __GROUP__.id=__MEMBER__.group_id')->where('co_group.id=:id')->bind(':id',$gid)->select();
 	}
+    public function getFilesAndInfo($gid)
+    {
+        $dsn = 'mysql:dbname=cloud_operation;host=localhost';  
+        $user = 'root';  
+        $password = '';  
+        try {  
+           $dbCon = new \PDO($dsn, $user, $password);
+           $dbCon->exec("SET NAMES 'utf8';");   
+        } catch (PDOException $e) {  
+           print 'Connection failed: '.$e->getMessage();  
+           exit;  
+        }  
+        $xp_userlogon = $dbCon->prepare('CALL get_group_info(?)');  
+        $xp_userlogon->bindParam(1,$gid);          
+        $xp_userlogon->execute();
+        //$re=$xp_userlogon->fetch(\PDO::FETCH_ASSOC);
+        //return $re;
+        $re=$xp_userlogon->fetchAll(\PDO::FETCH_ASSOC);
+        return $re;
+    }
 }

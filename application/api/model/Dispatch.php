@@ -5,11 +5,12 @@ class Dispatch extends Model
 {
 	public function setReaded($msgId,$uid)
 	{
-		$where['msg_id']=':msg_id';
-		$where['user_id']=':user_id';
-		$bind[':msg_id']=$msgId;
-		$bind[':user_id']=$uid;
+		$where['read']=0;
+		$where['msg_id']=$msgId;
+		$where['user_id']=$uid;		
+		//$bind[':msg_id']=$msgId;
+		//$bind[':user_id']=$uid;
 		$data['read']=1;
-		$this->where($where)->bind($bind)->save($data);
+		$this->where($where)->save($data);
 	}
 }

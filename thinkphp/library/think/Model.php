@@ -1170,7 +1170,17 @@ class Model
         $sql = $this->parseSql($sql);
         return $this->db->query($sql);
     }
-
+    /**
+     * 存储过程调用查询
+     * @access public
+     * @param string $sql  SQL指令
+     * @return mixed
+     */
+    public function procedure($sql)
+    {
+        $sql = $this->parseSql($sql);
+        return $this->db->procedure($sql);
+    }
     /**
      * 执行SQL语句
      * @access public

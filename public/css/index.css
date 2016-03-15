@@ -42,6 +42,13 @@
 		.show{ display: block; }
 		.t-a-c{ text-align: center; }
 		.c-w{ color: black; }
+		.w-35p{ width: 35%; }
+		.w-18p{ width: 18%; }
+		.w-22p{ width: 22%; }
+		.w-15p{ width: 15%; }
+		.w-10p{ width: 10%; }
+		.t-i-5{ text-indent: 5px; }
+		.i-b{ display: inline-block; }
 		.folder{width: 24px; height: 20px; background: url('/public/imgs/type/folder.png') no-repeat;}
 		.text{width: 24px; height: 20px; background: url('/public/imgs/type/text.png') no-repeat;}
 		.note{ width: 24px; height: 20px; background: url('/public/imgs/type/note.png') no-repeat;}
@@ -93,6 +100,44 @@
 					.left-bot .bot-chat{ background: url(/public/imgs/icon-chat.png) no-repeat 0px 14px; line-height: 40px; text-indent: 18px; width: 54px; margin-left:28px; }
 					.left-bot .bot-chat:hover{ background: url(/public/imgs/icon-chat-hover.png) no-repeat 0px 14px;}
 			.main-right{ float: left; }
+				.main-right .note-head{ height: 50px; }
+					.note-head span{ color: #9199af; height: 100%; display: inline-block; }
+					.note-head .title{ width: 70%; height: 100%;}
+						.note-head .title input{ width: 100%; height: 100%; border: none; font-size: 18px;color:#595959; white-space: nowrap; outline:none;}
+						.note-head .glyphicon-chevron-left:hover{color: #6e646c; }
+						.note-head .publish{float: right; height: 100%; line-height: 50px; margin-right: 25px;}
+							.note-head .publish button{ color: #2a82dc; width: 85px;}
+							.note-head .publish button span{ color: #2a82dc; }
+				.main-right .note-content{width: 100%;}
+					.note-content iframe{ height: 500px; border: none; width: 100%; margin:0px 20px 0px 20px;}
+					.note-content .note-view-wrapper::-webkit-scrollbar {
+							    width: 10px;
+							    display: block;
+							    z-index: 10;
+							    position: absolute;
+							} /* 这是针对缺省样式 (必须的) */
+					 .note-content .note-view-wrapper::-webkit-scrollbar-track {
+						  background-color: white;
+						  display: block;	  
+						} /* 滚动条的滑轨背景颜色 */
+						.note-content .note-view-wrapper::-webkit-scrollbar-thumb {	
+					   display: block;
+					   position: absolute;
+					   background: #c6edf6; border-radius: 0;
+								    			opacity: 0.6;	
+								    			z-index: 10;
+								    			filter:alpha(opacity=80);/*  IE滤镜，透明度50% */
+						-moz-opacity:0.8;/*  Firefox私有，透明度50% */
+						opacity:0.8;/* 其他，透明度50%	  */  
+					} /* 滑块颜色 */
+					
+					.note-content .note-view-wrapper::-webkit-scrollbar-button {
+						  display: none;
+					} /* 滑轨两头的监听按钮颜色 */
+					
+					.note-content .note-view-wrapper::-webkit-scrollbar-corner {
+						  background-color: black;
+					} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
 				.main-right .main-r-top{ height: 59px; border-bottom: 1px solid #ecefef; }
 					.main-r-top .group-name{ text-indent: 24px; line-height: 59px; font-size: 16px;}
 					.main-r-top .search .icon-search{background:url(/public/imgs/icon-search.png) no-repeat;
@@ -149,6 +194,37 @@
 					.show{ height: 100%; border-right: 1px solid #ecefef;}
 						.show .head{ height: 53px;}
 							.show .head .head-title{ text-indent: 10px; padding-top: 10px;}
+						.show .file-table{ width: 100%; }
+						.show .file-list{ overflow-y: auto; width:100%; border-top:1px solid #ddd;}
+							.show .file-list::-webkit-scrollbar {
+							    width: 10px;
+							    display: block;
+							    z-index: 10;
+							    position: absolute;
+							} /* 这是针对缺省样式 (必须的) */
+							 .show .file-list::-webkit-scrollbar-track {
+								  background-color: white;
+								  display: block;	  
+								} /* 滚动条的滑轨背景颜色 */
+								.show .file-list::-webkit-scrollbar-thumb {	
+							   display: block;
+							   position: absolute;
+							   background: #c6edf6; border-radius: 0;
+										    			opacity: 0.6;	
+										    			z-index: 10;
+										    			filter:alpha(opacity=80);/*  IE滤镜，透明度50% */
+								-moz-opacity:0.8;/*  Firefox私有，透明度50% */
+								opacity:0.8;/* 其他，透明度50%	  */  
+						} /* 滑块颜色 */
+						
+						.show .file-list::-webkit-scrollbar-button {
+							  display: none;
+						} /* 滑轨两头的监听按钮颜色 */
+						
+						.show .file-list::-webkit-scrollbar-corner {
+							  background-color: black;
+						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
+							  .t-head{ font-weight: bold; height: 34px; line-height: 34px; margin-left: 10px; margin-top: -10px;}
 						.show .file-name{width:200px;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 						.show .file-name span:hover{text-decoration: underline;}
 						.dataTables_scrollBody::-webkit-scrollbar {

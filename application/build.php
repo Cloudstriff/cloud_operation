@@ -36,6 +36,7 @@ return [
         '__file__'   => ['config.php'],
         '__dir__'    => ['behavior', 'controller'],
         'controller' => ['Base'],
+        'model'      => ['native'],
     ],
     'share'    => [
         '__file__'   => ['tags.php'],

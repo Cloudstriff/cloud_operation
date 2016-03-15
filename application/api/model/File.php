@@ -1,6 +1,7 @@
 <?php
 namespace app\api\model;
 use think\Model;
+use common\Model\Native;
 class File extends Model
 {
 	//判断文件或文件夹所在群组ID和文件名
@@ -86,7 +87,7 @@ class File extends Model
 			else
 			{
 				$where['file_id']=':file_id';
-				#$data['name']=':name';
+				//$data['name']=':name';
 				$data['name']=$name;
 				$bind[':file_id']=intval($fid);
 				//$bind[':name']=$name;
@@ -105,7 +106,7 @@ class File extends Model
 		//2.插入file表
 		//3.插入modfile表
 		//4.批量插入dispatch表
-		$data['type']='create';
+		$data['type']=$input->msgType;
 		$data['group_id']=$input->gid;
 		$data['time']=time();
 		$msgId=M('Msg')->add($data);
@@ -124,6 +125,7 @@ class File extends Model
 				$data['file_id']=$fid;
 				$data['name']=$input->name;
 				$data['msg_id']=$msgId;
+				$data['content']=$input->content;
 				$data['object']=$input->object;
 				$data['time']=time();
 				$re=M('modFile')->add($data);
@@ -152,4 +154,65 @@ class File extends Model
 		}
 		return false;
 	}
+	//插入文件方法
+	public function _addModFile($input)
+	{
+		//最终决定用这个
+		$nativeModel=D('common/Native');
+		return $nativeModel->procedureWithFlag('add_mod_file',$input);
+		//$re=$nativeModel->procedure('add_mod_file',$input);
+		//return $re[0];
+
+
+
+		/*$nativeModel=D('common/Native');
+		$re=$nativeModel->procedure('add_mod_file',$input);
+		return $re;*/
+		/*$Model = new \think\Model();
+		$re=$Model->query("CALL add_mod_file(?,?,?,?,?,?,?,?,?)",[$input->msgType,$input->object,$input->name,$input->belong,$input->gid,$input->type,$input->ext,$input->content,$input->_time]);
+		return $re[0];*/
+
+
+
+
+
+		$dsn = 'mysql:dbname=cloud_operation;host=localhost';  
+		$user = 'root';  
+		$password = '';  
+		try {  
+		   $dbCon = new \PDO($dsn, $user, $password);
+		   $dbCon->exec("SET NAMES 'utf8';");   
+		} catch (PDOException $e) {  
+		   print 'Connection failed: '.$e->getMessage();  
+		   exit;  
+		}  
+		//$username = '123';
+		//$userpsw = '123';
+		 //$xp_userlogon = $dbCon ->query("exec user_logon_check '$username','$userpsw'");  
+		 //mysql->call user_logon_check('$username','$userpsw');  
+		 //mysql->call user_logon_check(?,?)  
+		$xp_userlogon = $dbCon->prepare('CALL add_mod_file(?,?,?,?,?,?,?,?,?)');  
+		$xp_userlogon->bindParam(1,$input->msgType);          
+		$xp_userlogon->bindParam(2,$input->object);
+		$xp_userlogon->bindParam(3,$input->name); 
+		$xp_userlogon->bindParam(4,$input->belong); 
+		$xp_userlogon->bindParam(5,$input->gid); 
+		$xp_userlogon->bindParam(6,$input->type); 
+		$xp_userlogon->bindParam(7,$input->ext); 
+		$xp_userlogon->bindParam(8,$input->content); 
+		$xp_userlogon->bindParam(9,$input->_time);  
+		$xp_userlogon->execute();
+		//$re=$xp_userlogon->fetch(\PDO::FETCH_ASSOC);
+		//return $re;
+		$re=$xp_userlogon->fetchAll(\PDO::FETCH_ASSOC);
+		return $re[0];
+		//$uCol = $xp_userlogon->columnCount();
+		//$sql = "SET @msgType = '".$input->msgType."'; SET @object = $input->object; SET @name = '".$input->name."'; SET @belong = $input->belong;SET @gid =$input->gid; SET @type = '".$input->type."'; SET @ext = '".$input->ext."'; SET @content = '".$input->content."'; SET @_time=$input->_time; CALL add_mod_file(@msgType,@object,@name,@belong,@gid,@type,@ext,@content,@_time);";
+		$re=$this->query($sql);
+		return $re;
+		if($re!==false)
+			return $re;
+		return false;
+	}
 }
+//": [ SQL语句 ] : SET @msgType = 'create';SET @object = '170801';SET @name = 'dfsfsd';SET @belong = '0';SET @gid = '170802';SET @type = 'folder';SET @ext = 'dir';SET @content = ''; CALL add_mod_file(@msgType,@object,@name,@belong,@gid,@type,@ext,@content);"

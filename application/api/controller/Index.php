@@ -16,9 +16,11 @@ class Index extends Base
     private $notiCometView;
     private $groupNotiSendmsgView;
     private $groupNotiCreateGroupView;
+    private $msgModel;
     public function __construct()
     {
         parent::__construct();
+        $this->msgModel=D('api/Msg');
         $this->memberModel=D('api/Member');
         $this->groupModel=D('api/Group');
         $this->fileModel=D('api/File');
@@ -43,19 +45,26 @@ class Index extends Base
     public function newFolder()
     {
         $name=I('name');
-        $belong=I('belong');
-        $gid=I('gid');
-        if($name&&$name&&$gid)
+        $belong=I('belong/d');
+        $gid=I('gid/d');
+        if($name&&$belong!==''&&$gid)
         {
             if(in_array($gid,$this->user->groupList))
             {
+                $input->msgType='create';
                 $input->object=$this->user->id;
                 $input->name=$name;
                 $input->belong=$belong;
                 $input->gid=$gid;
                 $input->type='folder';
                 $input->ext='dir';
-                $re=$this->fileModel->addModFile($input);
+                $input->content=null;
+                $input->_time=time();
+                //return ['status'=>1,'file'=>$input];
+                $re=$this->fileModel->_addModFile($input);
+                if($re==1)
+                    return ['status'=>1];
+                return ['status'=>0];
             }
         }
     }
@@ -112,6 +121,22 @@ class Index extends Base
                 //最终文件列表
                 $unModFileList=$this->divSort($temp,$unModFileList);
                 //查找该群组的通知，并将获取到的通知的msg-id和user-id作为where条件将dispatch表关于该用户的目前所获取的通知标识置为1
+                $msgList=$this->msgModel->getGroupMsg($gid);
+                //$msgList=array_merge($msgList[0],$msgList[1]);
+                if($msgList[2]!==null)
+                    $msgList=array_merge($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2]);
+                else
+                    $msgList=$this->divSortWithfield($msgList[1],$msgList[0],'id');
+                foreach ($msgList as $k => $v)
+                {
+                    //$msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                    $this->dispatchModel->setReaded($v['id'],$this->user->id);
+                }
+                
+                return ['gi'=>$groupInfo,'mi'=>$memberInfo,'fl'=>$unModFileList,'ml'=>$msgList];
+
+
+               /* //以下为删除部分
                 $msgList=$this->groupNotiView->getGroupMsg($gid);
                 $_msgList=$this->groupNotiSendmsgView->getGroupMsg($gid);
                 $_msgList1=$this->groupNotiCreateGroupView->getGroupMsg($gid);
@@ -126,7 +151,7 @@ class Index extends Base
                     $msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
                     $this->dispatchModel->setReaded($v['id'],$this->user->id);
                 }
-                return ['gi'=>$groupInfo,'mi'=>$memberInfo,'fl'=>$unModFileList,'ml'=>$msgList];
+                return ['gi'=>$groupInfo,'mi'=>$memberInfo,'fl'=>$unModFileList,'ml'=>$msgList];*/
                 //break;
             }
         }
@@ -175,11 +200,11 @@ class Index extends Base
             //$notiItem=$this->notiCometView->findNotiByGid($uid,$gid);
             $numList=$this->notiCometView->findNoti($this->user->id,$readedList);
             $notiItemList=$this->notiCometView->findNotiByGid($this->user->id,$openGid);
-            if(!empty($notiItemList))
+            if(!empty($notiItemList['notiItem']))
             {
-                foreach ($notiItemList as $k => $v)
+                foreach ($notiItemList['notiItem'] as $k => $v)
                 {
-                    $notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                    //$notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
                     $this->dispatchModel->setReaded($v['id'],$this->user->id);
                 }
             }

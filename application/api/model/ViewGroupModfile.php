@@ -3,7 +3,7 @@ namespace app\api\model;
 use think\Model;
 class ViewGroupModfile extends Model
 {
-	public function getModFile($gid,$belong=null)
+	public function getModFile($gid,$belong=0)
 	{
 		if($belong)
 		{

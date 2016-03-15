@@ -3,7 +3,7 @@ namespace app\api\model;
 use think\Model;
 class ViewGroupUnmodfile extends Model
 {
-	public function getUnmodFile($gid,$belong=null)
+	public function getUnmodFile($gid,$belong=0)
 	{
 		if($belong)
 		{

@@ -53,23 +53,46 @@
 			</div>
 			<div class="alert alert-success f-l" style="height: 33px; margin-left: 300px; line-height: 3px; display: none;"></div>
 		</div>
-		<table class="table table-hover" style="width:100%">
-            <thead>
-                <tr>
-                	<th class="cursor-p" width="35%">文件名</th>
-                    <th width="18%"></th>
-                    <th class="cursor-p" width="22%">修改时间</th>
-                    <th class="cursor-p" width="15%">最近修改人</th>
-                    <th class="cursor-p" width="10%">文件大小</th>
-                </tr>
-            </thead>
-            <tbody ng-show="loading==false">
-                <tr hover="true" ng-repeat="file in fileList"  on-finish-render-filters ng-class="{selected:isSelected(file)}" ng-mousedown="select(file)" ng-dblclick="oepnOrForward(file)" >
-                	<td>
+<!-- 		<div class="file-table" >
+	<div class="t-head">
+		<ul>
+			<li class="f-l cursor-p w-35p">文件名</li>
+			<li class="f-l cursor-p w-18p">&nbsp;</li>
+			<li class="f-l cursor-p w-22p">修改时间</li>
+			<li class="f-l cursor-p w-15p">最近修改人</li>
+			<li class="f-l cursor-p w-10p">文件大小</li>
+		</ul>
+	</div>
+</div> -->
+<!-- 		<table class="table">
+	<thead>
+	           <tr>
+	           	<th class="cursor-p" width="35%">文件名</th>
+	               <th width="18%"></th>
+	               <th class="cursor-p" width="22%">修改时间</th>
+	               <th class="cursor-p" width="15%">最近修改人</th>
+	               <th class="cursor-p" width="10%">文件大小</th>
+	           </tr>
+	        </thead>
+        </table> -->
+        <div class="t-head">
+			<ul>
+				<li class="f-l cursor-p w-35p">文件名</li>
+				<li class="f-l cursor-p w-18p">&nbsp;</li>
+				<li class="f-l cursor-p w-22p t-i-5">修改时间</li>
+				<li class="f-l cursor-p w-15p">最近修改人</li>
+				<li class="f-l cursor-p w-10p">文件大小</li>
+			</ul>
+		</div>
+		<div class="file-list" file-table-height ng-show="loading==false">
+		<table class="table table-hover" id="file-table">     
+            <tbody >
+                <tr hover="true" ng-repeat="file in fileList"   ng-class="{selected:isSelected(file)}" ng-mousedown="select(file)" ng-dblclick="oepnOrForward(file)" >
+                	<td width="35%">
                 		<div class="cursor-p f-l m-r-8" ng-class="file.type" ng-click="oepnOrForward(file)"></div>
                 		<div class="file-name f-l"><span class="cursor-p" ng-bind="file.name" ng-click="oepnOrForward(file)"></span></div>
                 	</td>
-					<td>
+					<td width="18%">
 						<div class="btn-list">
 							<div class="share f-l cursor-p m-r-10" title="分享文件" ng-click="share(file)"></div>
 							<div class="star f-l cursor-p m-r-10" title="设为星标文件" ng-class="{stared:file.star!='0', star:file.star=='0'}" ng-click="star(file)"></div>
@@ -82,29 +105,13 @@
 						    </ul>
 						</div>
 					</td>
-                    <td class="cursor-d" ng-bind="::(file.time | date:'yyyy-M-dd HH:mm')"></td>
-                    <td class="cursor-d" ng-bind="file.user_name"></td>
-                    <td class="cursor-d" ng-bind="file.size"></td>
+                    <td width="22%" class="cursor-d" ng-bind="::(file.time*1000 | date:'yyyy-M-dd HH:mm')"></td>
+                    <td width="15%" class="cursor-d" ng-bind="file.user_name"></td>
+                    <td width="10%" class="cursor-d" ng-bind="file.size"></td>
             	</tr>
-                <tr hover="true">
-                	<td>
-                		<div class="cursor-p f-l m-r-8" ng-class="type"></div>
-                		<div class="file-name f-l"><span class="cursor-p">校园内云协作</span></div>
-                	</td>
-					<td>
-						<div class="btn-list">
-							<div class="share f-l cursor-p m-r-10"></div>
-							<div class="star f-l cursor-p m-r-10" ng-class="{stared:stared, star:!stared}"></div>
-							<div class="download f-l cursor-p m-r-10"></div>
-							<div class="drop f-l cursor-p"></div>
-						</div>
-					</td>
-                    <td class="cursor-d">2016-2-13 15:50</td>
-                    <td class="cursor-d">Cloud</td>
-                    <td class="cursor-d">----</td>
-                </tr>
-            </tbody>
+            </tbody>            
         </table>
+        </div>
         <div class="enter-loading" ng-show="loading"></div>
 	</div>
 	<div class="msg f-r" id="navbar-msg">
@@ -112,7 +119,7 @@
 		<div class="msg-list" data-spy="scroll" ng-show="loading==false" data-target="#navbar-msg">
 		<div class="msg-item" ng-repeat="msg in notiList" adapt-height>
 				<div class="msg-date">
-					<div class="date" ng-bind="::(msg.time | date:'yyyy-M-dd')">2016-02-10</div>
+					<div class="date" ng-bind="::(msg.time*1000 | date:'yyyy-M-dd')">2016-02-10</div>
 				</div>
 				<div class="message">
 					<div class="avatar f-l">
@@ -123,12 +130,13 @@
 							<div class="name x-t-hidden f-l"><span class="cursor-p" ng-bind="msg.user_name">Cloud</span></div>
 							<div class="type f-l" ng-switch-when="upload">上传了文件</div>
 							<div class="type f-l" ng-switch-when="create">创建了文件</div>
+							<div class="type f-l" ng-switch-when="create-f">创建了文件夹</div>
 							<div class="type f-l" ng-switch-when="modify">修改了文件</div>
 							<div class="type f-l" ng-switch-when="send"></div>
 							<div class="type f-l" ng-switch-when="delete">删除了文件</div>
 							<div class="type f-l" ng-switch-when="new">创建了群组</div>
 							<div class="type f-l" ng-switch-default></div>
-							<div class="time f-r" ng-bind="::(msg.time | date:'HH:mm')">15:50</div>
+							<div class="time f-r" ng-bind="msg.time*1000 | date:'HH:mm'">15:50</div>
 							<div class="clear"></div>
 						</div>
 						<div class="c-file" ng-if="msg.belong">

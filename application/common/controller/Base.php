@@ -15,6 +15,7 @@ class Base extends Controller{
 	}
 	protected function rc4Encode($data)
 	{
+        //return base64_encode($data);
 		$key=C('rc4_key');
 		$pwd=md5($key);
 		$base64Encode=base64_encode($data);
@@ -22,6 +23,7 @@ class Base extends Controller{
 	}
 	protected function rc4Decode($cipher)
 	{
+        //return base64_decode($cipher);
 		$cipher=base64_decode($cipher);
 		$key=C('rc4_key');
 		$pwd=md5($key);

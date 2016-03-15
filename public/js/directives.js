@@ -34,6 +34,18 @@ noteDirectives.directive('rename', function(){
 		replace : true*/
 	}
 });
+//文件列表高度适应
+noteDirectives.directive('fileTableHeight', function(){
+	return {
+		restrict: 'A',
+		link:function(scope,element,attr){
+				//console.log($('.main-left').height());
+				element.height($('.main-left').height()-60-53-34);
+		}
+		/*template: '<div>Hello</div>',
+		replace : true*/
+	}
+});
 /*//初始化加载数据指令
 noteDirectives.directive('onFinishRenderFilters', function ($timeout) {
     return {
@@ -114,6 +126,18 @@ noteDirectives.directive('adaptHeight',function($timeout){
                 });
             }
 		}
+	}
+});
+//笔记编辑内容高度
+noteDirectives.directive('adaptNoteHeight', function(){
+	return {
+		restrict: 'A',
+		link:function(scope,element,attr){
+				//console.log($('.main-left').height());
+				element.height($('.main-left').height()-60);
+		}
+		/*template: '<div>Hello</div>',
+		replace : true*/
 	}
 });
 /*noteDirectives.directive('noteDirectives_2', ['$scope', function($scope){
