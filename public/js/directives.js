@@ -140,6 +140,22 @@ noteDirectives.directive('adaptNoteHeight', function(){
 		replace : true*/
 	}
 });
+//发布按钮指令
+noteDirectives.directive('publishBtn', function(){
+	return {
+		restrict: 'A',
+		link:function(scope,element,attr){
+				//console.log($('.main-left').height());
+				element.click(function(){
+					element.width('75');
+					element.html('<span class="glyphicon glyphicon-open"></span>&nbsp;正在发布');
+				});
+		}
+		/*template: '<div>Hello</div>',
+		replace : true*/
+	}
+});
+
 /*noteDirectives.directive('noteDirectives_2', ['$scope', function($scope){
 	
 }])*/

@@ -33,13 +33,55 @@ class Index extends Base
         $this->notiCometView=D('api/ViewNotiComet');
         $this->groupNotiSendmsgView=D('api/ViewGroupNotiSendmsg');
         $this->groupNotiCreateGroupView=D('api/ViewGroupNotiCreateGroup');
-
+        define(LOCK,true);
     }
     //获取服务器端API列表
     public function api()
     {
     	$apiList=get_class_methods(__CLASS__);
     	$this->ajaxReturn($this->getMethods(__CLASS__,'public'));
+    }
+    //删除文件方法，暂时归类到回收站
+    public function delete()
+    {
+        $fid=I('fid');
+        $fid=explode(',',$fid);
+        //return $fid;
+        $msg=0;
+        foreach ($fid as $k => $v) 
+        {
+            $gid=$this->fileModel->getGroupId($v);
+            if(in_array($gid,$this->user->groupList))
+            {
+                $input->msgType='delete';
+                $input->fid=$v;
+                $input->object=$this->user->id;
+                $input->gid=$gid;
+                $input->_state=0;
+                $input->_time=time();
+                if($this->fileModel->setState($input))
+                    $msg=$msg;
+                else
+                    $msg+=1;
+                //return ['status'=>0];
+            }
+            //return ['status'=>0];
+        }
+        return ['status'=>1,'num'=>$msg];
+        $gid=$this->fileModel->getGroupId($fid);
+        if(in_array($gid,$this->user->groupList))
+        {
+            $input->msgType='delete';
+            $input->fid=$fid;
+            $input->object=$this->user->id;
+            $input->gid=$gid;
+            $input->_state=0;
+            $input->_time=time();
+            if($this->fileModel->setState($input))
+                return ['status'=>1];
+            return ['status'=>0];
+        }
+        return ['status'=>0];
     }
     //创建文件夹方法
     public function newFolder()
@@ -67,6 +109,79 @@ class Index extends Base
                 return ['status'=>0];
             }
         }
+    }
+    //创建文件方法
+    public function newFile()
+    {
+        //C('default_return_type','text/html');
+        //PHP原生获取json POST参数
+        $data=json_decode(file_get_contents("php://input"),true);
+        $name=$data['title'];
+        $content=$data['content'];
+        //echo htmlspecialchars($content);
+        //exit();
+        $fileType=$data['type'];
+        $belong=$data['belong'];
+        $gid=$data['gid'];
+        if($name&&$fileType&&$gid)
+        {
+            if(in_array($gid,$this->user->groupList))
+            {
+                //return ['status'=>5];
+                $input->msgType='create';
+                $input->object=$this->user->id;
+                $input->name=$name;
+                $input->belong=$belong;
+                $input->gid=$gid;
+                $input->type=$fileType;
+                $input->ext='note';
+                $input->content=addslashes($content);
+                $input->_time=time();
+                //return ['status'=>1,'file'=>$input];
+                $re=$this->fileModel->_addModFile($input);
+                if($re==1)
+                    return ['status'=>1];
+                return ['status'=>0];
+            }
+            return ['status'=>0];
+        }
+        return ['status'=>0];
+    }
+    //保存文件方法
+    public function modifyFile()
+    {
+        //C('default_return_type','text/html');
+        //PHP原生获取json POST参数
+        $data=json_decode(file_get_contents("php://input"),true);
+        $fid=$data['fid'];
+        $name=$data['name'];
+        $content=$data['content'];
+        $version=$data['version'];
+        if($name&&$fid&&$version)
+        {
+            $fileInfo=$this->fileModel->getGroupIdAndVersion($fid);
+            if(in_array($fileInfo['group_id'],$this->user->groupList))
+            {
+                //查询该fid的服务器版本
+                if($fileInfo['version']>$version)
+                    return ['status'=>2];
+                $input->msgType='modify';
+                $input->_object=$this->user->id;
+                $input->_name=$name;
+                $input->gid=$fileInfo['group_id'];
+                $input->fid=$fid;
+                $input->_type=1;
+                $input->_content=addslashes($content);
+                $input->_time=time();
+                //return ['status'=>1,'file'=>$input];
+                $re=$this->fileModel->modifyFile($input);
+                if($re==1)
+                    return ['status'=>1];
+                return ['status'=>0];
+            }
+            return ['status'=>0];
+        }
+        return ['status'=>0];
     }
     //获取用户当前的简单数据：如个人信息、群组列表、可新建的文件列表、群组成员列表、群组信息
     public function info()
@@ -102,8 +217,9 @@ class Index extends Base
                 $memberInfo=D('api/ViewGroupMember')->getMemberInfo($gid);
                 $groupInfo=$this->groupModel->getGroupInfo($gid);
                 foreach ($memberInfo as $k => $v) {
-                    $memberInfo[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                    //$memberInfo[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
                 }
+                //return $modFileList;
                 $temp=[];
                 foreach ($modFileList as $k => $v) 
                 {
@@ -111,22 +227,32 @@ class Index extends Base
                     {
                         foreach ($temp as $kk => $vv) 
                         {
-                            if($vv['fid']!=$v['fid']&&$kk==count($temp)-1)
+                            if($vv['fid']==$v['fid'])
+                                break;
+                            if($kk==count($temp)-1)
                                 $temp[]=$v;
+                            /*if($vv['fid']!=$v['fid']&&$kk==count($temp)-1)
+                                $temp[]=$v;*/
+                            //elseif($vv['fid']==$v['fid'])
                         }
                     }
                     else
                         $temp[]=$v;
                 }
+                //return ['1'=>$modFileList,'2'=>$temp];
                 //最终文件列表
                 $unModFileList=$this->divSort($temp,$unModFileList);
                 //查找该群组的通知，并将获取到的通知的msg-id和user-id作为where条件将dispatch表关于该用户的目前所获取的通知标识置为1
                 $msgList=$this->msgModel->getGroupMsg($gid);
                 //$msgList=array_merge($msgList[0],$msgList[1]);
-                if($msgList[2]!==null)
-                    $msgList=array_merge($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2]);
+                //if($msgList[2]!==null)
+                   // $msgList=$this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2]);
+                //else
+                    //$msgList=$this->divSortWithfield($msgList[1],$msgList[0],'id');
+                if($msgList[3]!==null)
+                    $msgList=array_merge($this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id'),$msgList[3]);
                 else
-                    $msgList=$this->divSortWithfield($msgList[1],$msgList[0],'id');
+                    $msgList=$this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id');
                 foreach ($msgList as $k => $v)
                 {
                     //$msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
@@ -159,16 +285,41 @@ class Index extends Base
     //获取文件夹下的文件列表方法
     public function folder()
     {
-    	$folderId=I('get.fid/s');
+    	$folderId=I('get.fid');
+        $type=I('t');
         if($folderId)
         {
-            $fileInfo=$this->fileModel->getGroupIdAndName($folderId);
+            $fileInfo=$this->fileModel->getGroupIdAndBelong($folderId);
             if(in_array($fileInfo['group_id'],$this->user->groupList))
-            {                
-                $belongFileList1=$this->groupModfileView->getModFile($fileInfo['group_id'],$fileInfo['name']);
-                $belongFileList1=$this->getLatestModFileList($belongFileList1);
-                $belongFileList2=$this->groupUnmodfileView->getUnmodFile($fileInfo['group_id'],$fileInfo['name']);
-                return $this->divSort($belongFileList1,$belongFileList2);
+            {
+                if($type=='single')
+                {
+                    $belongFileList1=$this->groupModfileView->getModFile($fileInfo['group_id'],$folderId);
+                    $belongFileList1=$this->getLatestModFileList($belongFileList1);
+                    $belongFileList2=$this->groupUnModfileView->getUnmodFile($fileInfo['group_id'],$folderId);
+                    $fileList=$this->divSort($belongFileList1,$belongFileList2);
+                    return ['fl'=>$fileList,'folder'=>$fileInfo];
+                }
+                else
+                {
+                    $belongFileList1=$this->groupModfileView->getModFile($fileInfo['group_id'],$folderId);
+                    $belongFileList1=$this->getLatestModFileList($belongFileList1);
+                    $belongFileList2=$this->groupUnModfileView->getUnmodFile($fileInfo['group_id'],$folderId);
+                    $memberInfo=D('api/ViewGroupMember')->getMemberInfo($fileInfo['group_id']);
+                    $groupInfo=$this->groupModel->getGroupInfo($fileInfo['group_id']);
+                    $msgList=$this->msgModel->getGroupMsg($fileInfo['group_id']);
+                    if($msgList[3]!==null)
+                        $msgList=array_merge($this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id'),$msgList[3]);
+                    else
+                        $msgList=$this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id');
+                    foreach ($msgList as $k => $v)
+                    {
+                        //$msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                        $this->dispatchModel->setReaded($v['id'],$this->user->id);
+                    }
+                    $fileList=$this->divSort($belongFileList1,$belongFileList2);
+                    return ['gi'=>$groupInfo,'mi'=>$memberInfo,'fl'=>$fileList,'ml'=>$msgList,'folder'=>$fileInfo];
+                }
             }
         }
     }
@@ -198,27 +349,27 @@ class Index extends Base
             #return ni:noti-item, nl:group-new-noti-num-list
             //$numList=$this->notiCometView->findNoti($this->user->id,$gid);
             //$notiItem=$this->notiCometView->findNotiByGid($uid,$gid);
-            $numList=$this->notiCometView->findNoti($this->user->id,$readedList);
-            $notiItemList=$this->notiCometView->findNotiByGid($this->user->id,$openGid);
-            if(!empty($notiItemList['notiItem']))
-            {
-                foreach ($notiItemList['notiItem'] as $k => $v)
+                $numList=$this->notiCometView->findNoti($this->user->id,$readedList);
+                $notiItemList=$this->notiCometView->findNotiByGid($this->user->id,$openGid);
+                if(!empty($notiItemList['notiItem']))
                 {
-                    //$notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
-                    $this->dispatchModel->setReaded($v['id'],$this->user->id);
+                    foreach ($notiItemList['notiItem'] as $k => $v)
+                    {
+                        //$notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
+                        $this->dispatchModel->setReaded($v['id'],$this->user->id);
+                    }
                 }
-            }
-            if($numList||$notiItemList)
-            {
-                return ['nl'=>$numList,'ni'=>$notiItemList];
-                break;
-            }
-            $count++;
-            if($count==3)
-            {
-                return ['nl'=>$numList,'ni'=>$notiItemList];
-                break;
-            }
+                if($numList||$notiItemList)
+                {
+                    return ['nl'=>$numList,'ni'=>$notiItemList];
+                    break;
+                }
+                $count++;
+                if($count==3)
+                {
+                    return ['nl'=>$numList,'ni'=>$notiItemList];
+                    break;
+                }
             usleep(1000000);
         }
     }
@@ -266,7 +417,7 @@ class Index extends Base
                 {
                     if(in_array($fileInfo['group_id'],$this->user->groupList))
                     {
-                        return ['fid'=>$fid,'name'=>$fileInfo['name'],'content'=>$fileInfo['content']];
+                        return ['fid'=>$fid,'name'=>$fileInfo['name'],'content'=>stripslashes($fileInfo['content']),'version'=>$this->fileModel->getFileVersion($fid)];
                     }
                 }
             }
@@ -538,6 +689,10 @@ class Index extends Base
     //二分法对可变文件和不可变文件进行归并排序
     private function divSort($temp,$unModFileList)
     {
+        if($temp==null||count($temp)==0)
+            return $unModFileList;
+        if($unModFileList==null||count($unModFileList)==0)
+            return $temp;
         foreach ($temp as $k => $v) 
         {
             $low=0;
@@ -629,8 +784,13 @@ class Index extends Base
             {
                 foreach ($temp as $kk => $vv) 
                 {
-                    if($vv['fid']!=$v['fid']&&$kk==count($temp)-1)
+                    if($vv['fid']==$v['fid'])
+                        break;
+                    if($kk==count($temp)-1)
                         $temp[]=$v;
+                    /*if($vv['fid']!=$v['fid']&&$kk==count($temp)-1)
+                        $temp[]=$v;*/
+                    //elseif($vv['fid']==$v['fid'])
                 }
             }
             else

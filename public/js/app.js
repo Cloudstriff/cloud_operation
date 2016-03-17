@@ -18,9 +18,18 @@ noteApp.config(['$routeProvider', '$locationProvider',function($routeProvider,$l
 		}).when('/group/:gid/note/create',{
 			templateUrl: path+'/tpl/create-note.html',
 			controller: 'noteCtrl'
-		}).when('/group/:gid/note/:fid',{
+		}).when('/group/:gid/folder/:fid/note/create',{
+			templateUrl: path+'/tpl/create-note.html',
+			controller: 'noteCtrl'
+		}).when('/group/:gid/folder/:fid/note/:nid',{
 			templateUrl: path+'/tpl/edit-note.html',
 			controller: 'noteCtrl'
+		}).when('/group/:gid/note/:nid',{
+			templateUrl: path+'/tpl/edit-note.html',
+			controller: 'noteCtrl'
+		}).when('/group/:gid/folder/:fid',{
+			templateUrl: path+'/tpl/folder.html',
+			controller: 'groupCtrl'
 		}).otherwise({redirectTo:'/'});
 		$locationProvider.html5Mode(true);//启动html5模式
 	}]);

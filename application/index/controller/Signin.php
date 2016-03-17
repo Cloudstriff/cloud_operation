@@ -25,6 +25,9 @@ class Signin extends Controller{
 		$user=['username'=>'Cloud','id'=>1100,'role'=>$role,'group'=>$group];*/
 		$account='chenjiongwendao@qq.com';
 		$pass='wap181';
+		//用户2
+		//$account='394950633@qq.com';
+		$pass='wap181';
 		if($re=$this->userModel->login($account,$pass))
 		{
 			$groupList=[];

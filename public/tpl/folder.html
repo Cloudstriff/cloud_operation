@@ -49,7 +49,9 @@
 	<div class="show f-l" adapt-width="true">
 		<div class="head">
 			<div class="head-title cursor-d f-l">
-			全部文件
+				<div class="t-return cursor-p i-b" ng-click="back()"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;<span class="return">返回</span></div>
+				<div class="vline"></div>
+				<div class="cursor-p re-all-file i-b" ng-click="restore()">全部文件</div>
 			</div>
 			<div class="alert alert-success f-l" style="height: 33px; margin-left: 300px; line-height: 3px; display: none;"></div>
 		</div>
@@ -115,7 +117,7 @@
         <div class="enter-loading" ng-show="loading"></div>
 	</div>
 	<div class="msg f-r" id="navbar-msg">
-		<div class="enter-loading-s" ng-show="msgLoading"></div>
+		<div class="enter-loading-s" ng-show="loading"></div>
 		<div class="msg-list" data-spy="scroll" ng-show="loading==false" data-target="#navbar-msg">
 		<div class="msg-item" ng-repeat="msg in notiList" adapt-height>
 				<div class="msg-date">

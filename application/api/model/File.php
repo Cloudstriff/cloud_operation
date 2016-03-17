@@ -16,6 +16,13 @@ class File extends Model
 		$data=$this->field('co_unmod_file.name,group_id,url')->join('__UNMOD_FILE__ on co_file.id=__UNMOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->select();
 		return $data[0];
 	}
+	//查询文件所在群组ID和belong
+	public function getGroupIdAndBelong($fid)
+	{
+		$data=$this->field('group_id,belong')->where('id=:id')->bind(':id',$fid)->select();
+		$data[0]['fid']=$fid;
+		return $data[0];
+	}
 	//判断多个文件所在群组和文件名、url
 	public function getGroupIdAndUrls($fidList)
 	{
@@ -31,10 +38,22 @@ class File extends Model
 		$data=$this->field('co_unmod_file.name,type,group_id,url')->join('__UNMOD_FILE__ on co_file.id=__UNMOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->select();
 		return $data[0];
 	}
-	//判斷文件所在群組和文件名、最新版本內容
+	//查询文件所在群組和文件名、最新版本內容
 	public function getGroupIdAndContent($fid)
 	{
-		$data=$this->field('co_unmod_file.name,group_id,content')->join('__MOD_FILE__ on co_file.id=__MOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->order('co_mode_file.id desc')->limit(0,1)->select();
+		$data=$this->field('co_mod_file.name,group_id,content')->join('__MOD_FILE__ on co_file.id=__MOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->order('co_mod_file.id desc')->limit(0,1)->select();
+		return $data[0];
+	}
+	//查询文件的当前版本号
+	public function getFileVersion($fid)
+	{
+		$data=M('ModFile')->field('count(id) as version')->where("file_id=$fid")->select();
+		return $data[0]['version'];
+	}
+	//查询文件所在群组和版本号
+	public function getGroupIdAndVersion($fid)
+	{
+		$data=$this->field('group_id,count(co_mod_file.id) as version')->join('__MOD_FILE__ on co_file.id=__MOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->order('co_mod_file.id desc')->limit(0,1)->select();
 		return $data[0];
 	}
 	//文件加星方法
@@ -213,6 +232,26 @@ class File extends Model
 		if($re!==false)
 			return $re;
 		return false;
+	}
+	//回收站置文件state=0 or 1操作
+	public function setState($input)
+	{
+		$nativeModel=D('common/Native');
+		return $nativeModel->procedureWithFlag('set_file_state',$input);
+		/*$re=$this->where("fid=$fid")->save("state=$state");
+		if($re!==false)
+			return true;
+		return false;*/
+	}
+	//修改文件操作
+	public function modifyFile($input)
+	{
+		$nativeModel=D('common/Native');
+		return $nativeModel->procedureWithFlag('modify_file',$input);
+		/*$re=$this->where("fid=$fid")->save("state=$state");
+		if($re!==false)
+			return true;
+		return false;*/
 	}
 }
 //": [ SQL语句 ] : SET @msgType = 'create';SET @object = '170801';SET @name = 'dfsfsd';SET @belong = '0';SET @gid = '170802';SET @type = 'folder';SET @ext = 'dir';SET @content = ''; CALL add_mod_file(@msgType,@object,@name,@belong,@gid,@type,@ext,@content);"

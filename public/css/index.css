@@ -193,7 +193,12 @@
 					.enter-loading-s { background: url(/public/imgs/small-loading.gif) no-repeat; width: 100%; height: 200px; background-position: center;}
 					.show{ height: 100%; border-right: 1px solid #ecefef;}
 						.show .head{ height: 53px;}
-							.show .head .head-title{ text-indent: 10px; padding-top: 10px;}
+							.show .head .head-title{ text-indent: 10px; margin-top: 10px;}
+						.vline{ width: 5px; height: 10px; border-right: 1px solid; display: inline-block; color: #e0e1e5;}
+						.show .head .t-return{ color:#13b0cf; text-indent: 0px; padding: 4px 0px;}
+							.show .head .return:hover{ text-decoration: underline;}
+							.show .head .re-all-file{ color: #13b0cf; }
+								.show .head .re-all-file:hover{ text-decoration: underline;}
 						.show .file-table{ width: 100%; }
 						.show .file-list{ overflow-y: auto; width:100%; border-top:1px solid #ddd;}
 							.show .file-list::-webkit-scrollbar {
@@ -224,7 +229,7 @@
 						.show .file-list::-webkit-scrollbar-corner {
 							  background-color: black;
 						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
-							  .t-head{ font-weight: bold; height: 34px; line-height: 34px; margin-left: 10px; margin-top: -10px;}
+							  .t-head{ font-weight: bold; height: 34px; line-height: 34px; margin-left: 10px; margin-top: -20px;}
 						.show .file-name{width:200px;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 						.show .file-name span:hover{text-decoration: underline;}
 						.dataTables_scrollBody::-webkit-scrollbar {
@@ -252,7 +257,9 @@
 						 .dataTables_scrollBody::-webkit-scrollbar-corner {
 							  background-color: black;
 						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
-						.show tr .selected{ background: #f3f8fe; }
+						
+						.show .selected{ background: #f3f8fe; }
+						.show .selected:hover{ background: #f3f8fe; }
 						.show .btn-list{ display:none;}
 							.show .btn-list .share{width: 19px; height: 18px; background: url(/public/imgs/icon-share.png) no-repeat 0px 1px;}
 							.show .btn-list .star{width: 19px; height: 18px; background: url(/public/imgs/icon-star.png) no-repeat 0px -1px;}

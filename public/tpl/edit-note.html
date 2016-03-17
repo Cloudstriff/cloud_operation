@@ -1,0 +1,11 @@
+<div class="note-head">
+    <span class="glyphicon glyphicon-chevron-left cursor-p btn-lg" ng-click="restore()">返回</span>
+    <div class="title i-b"><input type="text" ng-model="file.name" placeholder=""></input></div>
+    <div class="publish i-b">
+    	<button class="btn btn-default" ng-click="save()" publish-btn><span class="glyphicon glyphicon-open"></span>&nbsp;保存</button>
+    	<span>info</span><span>分享</span><span>新窗口打开</span>第<span ng-bind="file.version"></span>版
+    </div>
+</div>
+<div class="note-content">
+<iframe id="collab-editor" src="/public/editor/collab/bulb.html" adapt-note-height></iframe>
+</div>

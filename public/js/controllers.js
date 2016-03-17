@@ -18,7 +18,7 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 		$('#group-c').modal();
 		};
 		//返回上一个页面方法
-		$scope.restore=function(){
+		$rootScope.restore=function(){
 			var urlList=location.pathname.split('/');
 			urlList.pop();
 			urlList.pop();
@@ -28,6 +28,9 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 		//群组成员、设置路由跳转方法
 		$rootScope.forward=function(url){
 			$location.path('/group/'+$rootScope.openGroupId+url);
+		}
+		$rootScope.forwardTo=function(url){
+			$location.path($location.path()+url);
 		}
 		//复制分享链接方法
 		$scope.copyLink=function(){
@@ -104,36 +107,65 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 								if(re.ni.notiItem[i]['type']=='create'&&re.ni.notiItem[i]['file_type']=='folder')
 									re.ni.notiItem[i]['type']='create-f';
 							}
-							$rootScope.notiList=$rootScope.notiList.concat(re.ni.notiItem);
+							if($rootScope.notiList!=null)
+								$rootScope.notiList=$rootScope.notiList.concat(re.ni.notiItem);
+							else
+								$rootScope.notiList=re.ni.notiItem;
 							//插入或替换文件树
-							if(typeof re.ni.fileList!=null && typeof re.ni.fileList.length=='undefined')
+							if(re.ni.fileList!=null && typeof re.ni.fileList.length=='undefined')
 							{
-								for(i in $rootScope.fileList)
+								//console.log($rootScope.fileList);
+								if($rootScope.fileList!=null && typeof $rootScope.fileList.length!='undefined' && $rootScope.fileList.length>=1)
 								{
-									if($rootScope.fileList[i].fid==re.ni.fileList.fid)
+									//console.log('进入错误循环');
+									for(i in $rootScope.fileList)
 									{
-										$rootScope.fileList[i]=re.ni.fileList;
-										break;
+										if($rootScope.fileList[i].fid==re.ni.fileList.fid)
+										{
+											//如果有相同fid而且state=0则表示是删除文件
+											if(typeof re.ni.fileList.state!='undefined' && re.ni.fileList.state==0)
+												$rootScope.fileList.splice(i,1);
+											else
+												$rootScope.fileList[i]=re.ni.fileList;
+											break;
+										}
+										else if(i==$rootScope.fileList.length-1)
+											$rootScope.fileList.unshift(re.ni.fileList);
 									}
-									else if(i==$rootScope.fileList.length-1)
-										$rootScope.fileList.unshift(re.ni.fileList);
+								}
+								else
+								{
+									//console.log('进入循环2');
+									$rootScope.fileList=[];
+									$rootScope.fileList.push(re.ni.fileList);
 								}
 								//$rootScope.fileList.unshift(re.ni.fileList);
 							}
-							else if(typeof re.ni.fileList.length!='undefined')
+							else if(re.ni.fileList!=null && typeof re.ni.fileList.length!='undefined')
 							{
-								for(i in $rootScope.fileList)
+								if($rootScope.fileList!=null)
 								{
-									for(j in re.ni.fileList)
+									for(i in $rootScope.fileList)
 									{
-										if($rootScope.fileList[i].fid==re.ni.fileList[j].fid)
+										for(j in re.ni.fileList)
 										{
-											$rootScope.fileList[i]=re.ni.fileList[j];
+											if($rootScope.fileList[i].fid==re.ni.fileList[j].fid)
+											{
+												if(typeof re.ni.fileList[j].state!='undefined' && re.ni.fileList[j].state==0)
+													$rootScope.fileList.splice(i,1);
+												else
+													$rootScope.fileList[i]=re.ni.fileList[j];
+											}
+											else if(j==re.ni.fileList.length-1)
+												$rootScope.fileList.unshift(re.ni.fileList[j]);
 										}
-										else if(j==re.ni.fileList.length-1)
-											$rootScope.fileList.unshift(re.ni.fileList[j]);
+										
 									}
-									
+								}
+								else
+								{
+									$rootScope.fileList=[];
+									$rootScope.fileList.concat(re.ni.fileList);
 								}
 							}
 							/*console.log('打印出连接后的通知列表');
@@ -261,10 +293,139 @@ noteCtrls.controller('searchCtrl',['$scope','$rootScope','$routeParams',function
 	$scope.sFinished=true;
 }]);
 //笔记版块控制器
-noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams',function($scope,$rootScope,$routeParams){
+noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$location',function($scope,$rootScope,$routeParams,$http,$location){
 	$rootScope.openGroupId=$routeParams.gid;
+	if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
+		$rootScope.belong=$routeParams.fid;
+	else
+		$rootScope.belong=0;
+	if($routeParams.nid!=null)
+	{
+		$scope.fid=$routeParams.nid;	
+		$http({
+			url: 'api/file',
+			params: { fid: $scope.fid,t: 'mod'}
+		}).success(function(re){
+			$scope.file=re;
+			$scope.setNoteContent($scope.file.content);
+		}).error(function(re){
+
+		});
+	}
+	//else
+		//$rootScope.fid=0;
+	$scope.temp={content:'',title:''};
+	//发布笔记
 	$scope.publish=function(){
-		
+		if($scope.temp.title==null)
+		{
+			bootbox.alert({  
+	            buttons: {  
+	               ok: {  
+	                    label: '确定',  
+	                }  
+	            },  
+	            message: '请输入标题',  
+	            callback: function() {  
+	                $('.note-head .title input').focus();
+	            },    
+	        });
+		}
+		else
+		{
+			$scope.temp.content= $scope.findNoteContent();
+			$http({
+				url: 'api/newFile',
+				method: 'POST',
+				data: {content:$scope.temp.content,title:$scope.temp.title,belong:$rootScope.belong,gid:$rootScope.openGroupId,type:'note'}
+			}).success(function(re){
+				if(re.status==1)
+					$rootScope.restore();
+				else{
+					bootbox.alert('发布失败！');
+					$('.note-head').find('button[publish-btn]').width(60);
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;发布');
+				}
+			}).error(function(){
+				bootbox.alert('发布失败！');
+				$('.note-head').find('button[publish-btn]').width(60);
+				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;发布');
+			});
+		}
+	}
+	//保存笔记
+	$scope.save=function(){
+		if($scope.file.name==null)
+		{
+			bootbox.alert({  
+	            buttons: {  
+	               ok: {  
+	                    label: '确定',  
+	                }  
+	            },  
+	            message: '请输入标题',  
+	            callback: function() {  
+	                $('.note-head .title input').focus();
+	            },    
+	        });
+		}
+		else
+		{
+			$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;正在保存');
+			$scope.file.content=$scope.findNoteContent();
+			$http({
+				url:'api/modifyFile',
+				data:$scope.file,
+				method:'POST'
+			}).success(function(re){
+				if(re.status==1)
+					$rootScope.restore();
+				else if(re.status==2){
+					bootbox.alert({  
+			            buttons: {  
+			               ok: {  
+			                    label: '更新',  
+			                },
+			               cancel: {
+			               		label: '取消',
+			               } 
+			            },  
+			            message: '当前编辑版本与最新版本不一致，是否更新到最新版本？',  
+			            callback: function() {  
+			                //执行查询文件内容并更新操作
+			                console.log('执行查询文件内容并更新操作');
+			            },    
+			        });
+					$('.note-head').find('button[publish-btn]').width(60);
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;保存');
+				}
+				else{
+					bootbox.alert('保存失败！');
+					$('.note-head').find('button[publish-btn]').width(60);
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;保存');
+				}
+			}).error(function(){
+				bootbox.alert('保存失败！');
+				$('.note-head').find('button[publish-btn]').width(60);
+				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;保存');
+			});
+		}
+	}
+	$scope.findNoteContent=function(){
+		var fr=document.getElementById("collab-editor");
+		var win = fr.window || fr.contentWindow;
+		return win.getContent();
+		var frdoc=fr.contentDocument || iframe.contentWindow.document;
+		var wrapper=frdoc.getElementById("wrapper");
+		return $(wrapper).find('.note-view-wrapper').html();
+	}
+	$scope.setNoteContent=function(content){
+		var fr=document.getElementById("collab-editor");
+		var win = fr.window || fr.contentWindow;
+		win.setContent(content);
+		var frdoc=fr.contentDocument || iframe.contentWindow.document;
+		var wrapper=frdoc.getElementById("wrapper");
+		$(wrapper).find('.note-view').html(content);
 	}
 }]);
 //设置成员管理版块控制器
@@ -290,6 +451,14 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	$scope.type='folder';
 	$scope.text='text';
 	$rootScope.readedList=[];
+	//文件目录返回
+	$scope.back=function(){
+		var forwarFolder=$rootScope.openFolder.belong;
+		if(forwarFolder==0)
+			$rootScope.restore();
+		else
+			$rootScope.forward('/folder/'+forwarFolder);
+	}
 	//创建文件or文件夹
 	$scope.createFile=function(type){
 		switch(type)
@@ -370,7 +539,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 				console.log('创建Markdown');
 				break;
 			case 'note':
-				$rootScope.forward('/note/create');
+				$rootScope.forwardTo('/note/create');
 				break;
 			case 'table':
 				console.log('创建table');
@@ -463,7 +632,26 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	    }, {
 	        text: "删除",
 	        func: function() {
-	            //$(this).css("background-color", "#beceeb");
+	        	console.log($scope.selectedFile);
+	            $http({
+	            	url: 'api/delete',
+	            	params: {fid:$scope.selectedFile[0].fid},
+	            }).success(function(re){
+	            	if(re.status==1)
+	            	{
+	            		$('.alert-success').html('成功删除文件！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+					}
+					else
+					{
+						$('.alert-success').html('删除文件失败！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+					}
+	            }).error(function(re){
+	            	$('.alert-success').html('删除文件失败！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+	            });
+	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
@@ -471,6 +659,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        func: function() {
 	        	if($scope.enableDownload($scope.selectedFile[0]))
 	            	$scope.download($scope.selectedFile[0]);
+	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
@@ -564,7 +753,25 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	    }, {
 	        text: "删除",
 	        func: function() {
-	            //$(this).css("background-color", "#beceeb");
+	            $http({
+	            	url: 'api/delete',
+	            	params: {fid:$scope.selectedFile[0].fid},
+	            }).success(function(re){
+	            	if(re.status==1)
+	            	{
+	            		$('.alert-success').html('成功删除文件！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+					}
+					else
+					{
+						$('.alert-success').html('删除文件失败！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+					}
+	            }).error(function(re){
+	            	$('.alert-success').html('删除文件失败！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+	            });
+	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
@@ -572,6 +779,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        func: function() {
 	        	if($scope.enableDownload($scope.selectedFile[0]))
 	            	$scope.download($scope.selectedFile[0]);
+	           	//$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
@@ -587,7 +795,39 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	    [{
 	        text: "删除",
 	        func: function() {
-	            //$(this).css("background-color", "#beceeb");
+	        	console.log($scope.selectedFile);
+	        	var fid='';
+	            for(i in $scope.selectedFile)
+	            {
+	            	if(i==$scope.selectedFile.length-1)
+	            		fid+=$scope.selectedFile[i].fid;
+	            	else
+	            		fid+=$scope.selectedFile[i].fid+',';
+	            }
+	            $http({
+	            	url: 'api/delete',
+	            	params: {fid:fid},
+	            }).success(function(re){
+	            	if(re.status==1)
+	            	{
+	            		$('.alert-success').html('成功删除文件！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+						$scope.selectedFile=[];
+						$scope.$broadcast('$routeChangeSuccess');
+						//console.log($scope.selectedFile);
+					}
+					else
+					{
+						$('.alert-success').html('删除文件失败！');
+						$('.alert-success').fadeIn().fadeOut(2000);
+						//$scope.selectedFile=null;
+					}
+					
+	            }).error(function(re){
+	            	$('.alert-success').html('删除文件失败！');
+					$('.alert-success').fadeIn().fadeOut(2000);
+					//$scope.selectedFile=null;
+	            });
 	        }
 	     ,
 	    },{
@@ -599,6 +839,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		enableDownloadList.push(value);
 	            });
 	            $scope.mulDownload(enableDownloadList);
+	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }],
@@ -613,92 +854,226 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	//点击群组时刷新群组数据
 	$scope.$on('$routeChangeSuccess', function (){
 		$scope.loading=true;
+		$scope.msgLoading=false;
+		//$scope.selectedFile=[];
 	    $rootScope.openGroupId=$routeParams.gid;
-	    //查询该群组ID的文件和通知数据
-	    $http({
-                method: 'GET',
-                url: '/api/group',
-                params: {'gid':$rootScope.openGroupId}
-            }).success(function(re){
-            	//console.log(re);
-            	//当前目录
-            	$rootScope.belong=0;
-            	$rootScope.groupList.forEach(function(value,index,array){
-            		if(value['group_id']==$rootScope.openGroupId)
-            			$rootScope.groupList[index]['num']=null;
-            	});
-            	$rootScope.groupInfo=re.gi;
-            	$rootScope.openGroupName=re.gi[0]['name'];
-            	$rootScope.groupMember=re.mi;
-            	var size=0;
-            	for(i in re.fl){
-            		size=re.fl[i]['size'];
-            		if(!size && typeof size != "undefined" && size != 0)
-            			//console.log(111);
-            			re.fl[i]['size']='----';
-            		else if(size<=1024 )
-            			re.fl[i]['size']=(size/1).toFixed(2)+'B';
-            		else if(size>1024&&size<=1024*1024)
-            			re.fl[i]['size']=(size/1024).toFixed(2)+'KB';
-            		else if(size>1024*1024&&size<1024*1024*1024)
-            			re.fl[i]['size']=(size/1024/1024).toFixed(2)+'MB';
-            		else
-            			re.fl[i]['size']=(size/1024/1024/1024).toFixed(2)+'GB';
-            	}
-            	$rootScope.fileList=re.fl;
-            	//$rootScope.$apply();
-            	/*for(i in re.ml){
-            		switch(re.ml[i]['type']){
-            			case 'upload': 
-            				re.ml[i]['type']='上传了文件';
-            				break;
-            			case 'create': 
-            				re.ml[i]['type']='创建了文件';
-            				break;
-            			case 'modify': 
-            				re.ml[i]['type']='修改了文件';
-            				break;
-            			case 'send': 
-            				re.ml[i]['type']='';
-            				break;
-            			case 'delete': 
-            				re.ml[i]['type']='删除了文件';
-            				break;
-            			case 'new': 
-            				re.ml[i]['type']='创建了群组';
-            				break;
-            			default :
-            				break;
-            		}
-            	}*/
-            	for(i in re.ml)
-            	{
-            		if(re.ml[i]['type']=='create'&&re.ml[i]['file_type']=='folder')
-            			re.ml[i]['type']='create-f';
-            	}
-            	$rootScope.notiList=re.ml;
-            	$scope.loading=false;
-            	//$scope.$apply();
-            	//获取该群组数据完毕后设置该gid为未读
-            	$rootScope.readedList.forEach(function(value,index,array){
-            		if(value==$rootScope.openGroupId)
-            			$rootScope.readedList.splice(index,1);
-            	});
-				//$rootScope.readedList.remove($rootScope.openGroupId);
-            }).error(function(){
-            	location.href="";
-            });
+	    if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
+	    	$rootScope.belong=$routeParams.fid;
+	    else
+	    	$rootScope.belong=null;
+	    if(typeof $rootScope.belong!=='undefined' && $rootScope.belong!=null && $rootScope.belong!='')
+	    {
+	    	if(typeof $rootScope.notiList!=='undefined'||$rootScope.notiList!=null)
+	    	{
+	    		$scope.loading=true;
+	    		$scope.msgLoading=false;
+	    		 $http({
+	                method: 'GET',
+	                url: '/api/folder',
+	                params: {'fid':$rootScope.belong,'t':'single'}
+	            }).success(function(re){
+	            	var size=0;
+	            	for(i in re.fl){
+	            		size=re.fl[i]['size'];
+	            		if(!size && typeof size != "undefined" && size != 0)
+	            			//console.log(111);
+	            			re.fl[i]['size']='----';
+	            		else if(size<=1024 )
+	            			re.fl[i]['size']=(size/1).toFixed(2)+'B';
+	            		else if(size>1024&&size<=1024*1024)
+	            			re.fl[i]['size']=(size/1024).toFixed(2)+'KB';
+	            		else if(size>1024*1024&&size<1024*1024*1024)
+	            			re.fl[i]['size']=(size/1024/1024).toFixed(2)+'MB';
+	            		else
+	            			re.fl[i]['size']=(size/1024/1024/1024).toFixed(2)+'GB';
+	            	}
+	            	$rootScope.fileList=re.fl;
+	            	$rootScope.openFolder=re.folder;
+	            	$scope.loading=false;
+	            }).error(function(re){
+	            });
+	    	}
+	    	else
+	    	{
+	    		$scope.msgLoading=true;
+	    	//查询该群组ID的文件和通知数据
+		    $http({
+	                method: 'GET',
+	                url: '/api/folder',
+	                params: {'fid':$rootScope.belong}
+	            }).success(function(re){
+	            	//console.log(re);
+	            	/*$rootScope.groupList.forEach(function(value,index,array){
+	            		if(value['group_id']==$rootScope.openGroupId)
+	            			$rootScope.groupList[index]['num']=null;
+	            	});*/
+	            	$rootScope.groupInfo=re.gi;
+	            	$rootScope.openGroupName=re.gi[0]['name'];
+	            	$rootScope.groupMember=re.mi;
+	            	var size=0;
+	            	for(i in re.fl){
+	            		size=re.fl[i]['size'];
+	            		if(!size && typeof size != "undefined" && size != 0)
+	            			//console.log(111);
+	            			re.fl[i]['size']='----';
+	            		else if(size<=1024 )
+	            			re.fl[i]['size']=(size/1).toFixed(2)+'B';
+	            		else if(size>1024&&size<=1024*1024)
+	            			re.fl[i]['size']=(size/1024).toFixed(2)+'KB';
+	            		else if(size>1024*1024&&size<1024*1024*1024)
+	            			re.fl[i]['size']=(size/1024/1024).toFixed(2)+'MB';
+	            		else
+	            			re.fl[i]['size']=(size/1024/1024/1024).toFixed(2)+'GB';
+	            	}
+	            	$rootScope.fileList=re.fl;
+	            	//$scope.msgLoading=false;
+	            	//$rootScope.$apply();
+	            	/*for(i in re.ml){
+	            		switch(re.ml[i]['type']){
+	            			case 'upload': 
+	            				re.ml[i]['type']='上传了文件';
+	            				break;
+	            			case 'create': 
+	            				re.ml[i]['type']='创建了文件';
+	            				break;
+	            			case 'modify': 
+	            				re.ml[i]['type']='修改了文件';
+	            				break;
+	            			case 'send': 
+	            				re.ml[i]['type']='';
+	            				break;
+	            			case 'delete': 
+	            				re.ml[i]['type']='删除了文件';
+	            				break;
+	            			case 'new': 
+	            				re.ml[i]['type']='创建了群组';
+	            				break;
+	            			default :
+	            				break;
+	            		}
+	            	}*/
+	            	for(i in re.ml)
+	            	{
+	            		if(re.ml[i]['type']=='create'&&re.ml[i]['file_type']=='folder')
+	            			re.ml[i]['type']='create-f';
+	            	}
+	            	$rootScope.notiList=re.ml;
+	            	$rootScope.openFolder=re.folder;
+	            	$scope.loading=false;
+	            	$scope.msgLoading=false;
+	            	//$scope.$apply();
+	            	//获取该群组数据完毕后设置该gid为未读
+	            	$rootScope.readedList.forEach(function(value,index,array){
+	            		if(value==$rootScope.openGroupId)
+	            			$rootScope.readedList.splice(index,1);
+	            	});
+					//$rootScope.readedList.remove($rootScope.openGroupId);
+	            }).error(function(){
+	            	//location.href="";
+	            });
+	        }
+	    }
+	    else
+	    {
+	    	$scope.msgLoading=true;
+		    //查询该群组ID的文件和通知数据
+		    $http({
+	                method: 'GET',
+	                url: '/api/group',
+	                params: {'gid':$rootScope.openGroupId}
+	            }).success(function(re){
+	            	//console.log(re);
+	            	//当前目录
+	            	$rootScope.belong=0;
+	            	//点击群组时去掉提醒的消息值
+	            	$rootScope.groupList.forEach(function(value,index,array){
+	            		if(value['group_id']==$rootScope.openGroupId)
+	            			$rootScope.groupList[index]['num']=null;
+	            	});
+	            	$rootScope.groupInfo=re.gi;
+	            	$rootScope.openGroupName=re.gi[0]['name'];
+	            	$rootScope.groupMember=re.mi;
+	            	var size=0;
+	            	for(i in re.fl){
+	            		size=re.fl[i]['size'];
+	            		if(!size && typeof size != "undefined" && size != 0)
+	            			//console.log(111);
+	            			re.fl[i]['size']='----';
+	            		else if(size<=1024 )
+	            			re.fl[i]['size']=(size/1).toFixed(2)+'B';
+	            		else if(size>1024&&size<=1024*1024)
+	            			re.fl[i]['size']=(size/1024).toFixed(2)+'KB';
+	            		else if(size>1024*1024&&size<1024*1024*1024)
+	            			re.fl[i]['size']=(size/1024/1024).toFixed(2)+'MB';
+	            		else
+	            			re.fl[i]['size']=(size/1024/1024/1024).toFixed(2)+'GB';
+	            	}
+	            	$rootScope.fileList=re.fl;
+	            	//$rootScope.$apply();
+	            	/*for(i in re.ml){
+	            		switch(re.ml[i]['type']){
+	            			case 'upload': 
+	            				re.ml[i]['type']='上传了文件';
+	            				break;
+	            			case 'create': 
+	            				re.ml[i]['type']='创建了文件';
+	            				break;
+	            			case 'modify': 
+	            				re.ml[i]['type']='修改了文件';
+	            				break;
+	            			case 'send': 
+	            				re.ml[i]['type']='';
+	            				break;
+	            			case 'delete': 
+	            				re.ml[i]['type']='删除了文件';
+	            				break;
+	            			case 'new': 
+	            				re.ml[i]['type']='创建了群组';
+	            				break;
+	            			default :
+	            				break;
+	            		}
+	            	}*/
+	            	for(i in re.ml)
+	            	{
+	            		if(re.ml[i]['type']=='create'&&re.ml[i]['file_type']=='folder')
+	            			re.ml[i]['type']='create-f';
+	            	}
+	            	$rootScope.notiList=re.ml;
+	            	$scope.loading=false;
+	            	$scope.msgLoading=false;
+	            	//$scope.$apply();
+	            	//获取该群组数据完毕后设置该gid为未读
+	            	$rootScope.readedList.forEach(function(value,index,array){
+	            		if(value==$rootScope.openGroupId)
+	            			$rootScope.readedList.splice(index,1);
+	            	});
+					//$rootScope.readedList.remove($rootScope.openGroupId);
+	            }).error(function(){
+	            	location.href="";
+	            });
+        }
 	});
 	//鼠标任何点击事件产生选择的file
 	$scope.select=function(file){
 		//console.log(keyCode);
 		//console.log(event.which);
+		console.log()
 		if(event.which==1||event.which==2)
 		{
 			if(typeof keyCode!=='undefined')
 			{
+				//console.log(111);
 				if(keyCode==17)
-					$scope.selectedFile.push(file);
+				{
+					if(typeof $scope.selectedFile=='undefined')
+					{
+						$scope.selectedFile=[];
+						$scope.selectedFile.push(file);
+					}
+					else
+						$scope.selectedFile.push(file);
+				}
 				else
 				{
 					$scope.selectedFile=[];
@@ -710,6 +1085,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		{
 			if(typeof $scope.selectedFile=='undefined'||$scope.selectedFile.length==1)
 			{
+				console.log(222);
 				$scope.selectedFile=[];
 				$scope.selectedFile.push(file);
 				if(file.share=='1')
@@ -722,6 +1098,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 					});
 			}
 			else{
+				console.log(333);
 				$('tbody tr').smartMenu($scope.dropMulMenuData, {
 			    	name: "mulDrop"    
 				});				
@@ -762,7 +1139,43 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	}
 	//打开文件或者文件夹方法
 	$scope.oepnOrForward=function(file){
-		console.log(file);
+		//console.log(file);
+		if(file.type=='folder')
+		{
+			//打开文件夹
+			$rootScope.openFolder=file;
+			$rootScope.forward('/folder/'+file.fid);
+		}
+		else if(file.type=='note')
+		{
+			$rootScope.forwardTo('/note/'+file.fid);
+		}
+		else if(file.type=='md')
+		{
+			$rootScope.forward('/md/'+file.fid);
+		}
+		else if(file.type=='table')
+		{
+			$rootScope.forward('/table/'+file.fid);
+		}
+		//以下为可预览的office内容
+		else if(file.type=='office')
+		{
+			$rootScope.forward('/office/'+file.fid);
+		}
+		//pdf内容
+		else if(file.type=='pdf')
+		{
+			$rootScope.forward('/pdf/'+file.fid);
+		}
+		else if(file.type=='text')
+		{
+			$rootScope.forward('/text/'+file.fid);
+		}
+		else
+		{
+			$rootScope.forward('/detail/'+file.fid);
+		}
 		delete $scope.selectedFile;
 	}
 	//ng-repeat之后执行的方法
@@ -774,7 +1187,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	　　	dttable.fnClearTable(); //清空一下table
 	　　	dttable.fnDestroy(); //还原初始化了的datatable
 			}*/
-			console.log($('.table')[0]);
+			//console.log($('.table')[0]);
           $('.table').DataTable({
           	//"bRetrieve": true,
 			"bAutoWidth":true,
