@@ -1,0 +1,47 @@
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Bulb Editor</title>
+	<link rel="stylesheet" href="bulbeditor/main.min.e26aab01.css">
+    <link rel="stylesheet" href="bulbeditor/group-bulb.min.3457d71e.css">
+</head>
+<body>
+	<img id="loading" src="bulbeditor/enter-loading.gif" alt="正在进入..."/>
+	<div id="wrapper" style="height:100%; width: 100%">
+	</div>
+</body>
+<script src="bulbeditor/vendors.min.47edc9ed.js"></script>
+<script src="bulbeditor/bulb.min.82e3a6da.js"></script>
+<!-- <script src="bulbeditor/1870d3bd.index.js"></script> -->
+<script type="text/javascript">
+var wrapperEl = document.getElementById('wrapper'),
+	loadingEl = document.getElementById('loading');
+var watchLoading = function(){
+	var noteViewEl = document.getElementsByClassName('note-view-wrapper');
+	//console.log(noteViewEl.innerHTML);
+	
+	if(noteViewEl.length > 0) {
+		loadingEl.style.display = 'none';		
+	} else {
+		setTimeout(watchLoading, 50);
+	}
+};
+watchLoading();
+var editor = new BulbEditor({
+	parentEl: wrapperEl,
+});
+function getContent(){
+	return editor.getContent(true);
+}
+function setContent(content){
+	editor.setContent(content,true);
+	editor.initialize(true);
+}
+//setContent();
+//editor.setContent('<div yne-bulb-block="paragraph" style="line-height: 1.5; font-size: 14px;"><span style="font-size:42px">施工方的规定</span></div>', true);
+//editor.setContent('<note xmlns="http://note.youdao.com" schema-version="1.0.0"><head/><body><para><text>fdgdfg</text><inline-styles><font-size><from>0</from><to>6</to><value>22</value></font-size></inline-styles><styles/></para></body></note>');
+console.log(editor.getContent(true));
+console.log(editor);
+console.log(editor.bind());
+</script>
+</html>
