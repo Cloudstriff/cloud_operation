@@ -259,12 +259,16 @@ class Index extends Base
                     $msgList=array_merge($this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id'),$msgList[3]);
                 else
                     $msgList=$this->divSortWithfield($this->divSortWithfield($msgList[1],$msgList[0],'id'),$msgList[2],'id');
+                $msgIdList='';
                 foreach ($msgList as $k => $v)
                 {
+                    if($k==count($msgList))
+                        $msgIdList.=$v['id'];
+                    else
+                        $msgIdList.=$v['id'].',';
                     //$msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
-                    $this->dispatchModel->setReaded($v['id'],$this->user->id);
                 }
-                
+                $this->dispatchModel->setReaded($msgIdList,$this->user->id);
                 return ['gi'=>$groupInfo,'mi'=>$memberInfo,'fl'=>$unModFileList,'ml'=>$msgList];
 
 
