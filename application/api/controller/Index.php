@@ -41,6 +41,12 @@ class Index extends Base
     	$apiList=get_class_methods(__CLASS__);
     	$this->ajaxReturn($this->getMethods(__CLASS__,'public'));
     }
+    //上传文件方法
+    public function uploadFile()
+    {
+        C('default_return_type','text/html');
+        print_r($_FILES);
+    }
     //删除文件方法，暂时归类到回收站
     public function delete()
     {
@@ -365,7 +371,7 @@ class Index extends Base
                     break;
                 }
                 $count++;
-                if($count==3)
+                if($count==10)
                 {
                     return ['nl'=>$numList,'ni'=>$notiItemList];
                     break;
