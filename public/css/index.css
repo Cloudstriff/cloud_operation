@@ -229,7 +229,7 @@
 						.show .file-list::-webkit-scrollbar-corner {
 							  background-color: black;
 						} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
-							  .t-head{ font-weight: bold; height: 34px; line-height: 34px; margin-left: 10px; margin-top: -20px;}
+							  .t-head{ font-weight: bold; height: 34px; line-height: 34px; margin-left: 10px; margin-top: -10px;}
 						.show .file-name{width:200px;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 						.show .file-name span:hover{text-decoration: underline;}
 						.dataTables_scrollBody::-webkit-scrollbar {

@@ -1399,12 +1399,132 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 			});
 		}
 	}
-	//group方法在页面生成时判断用户是否为该群组内用户
-	/*$scope.load=function(){
-		$http.get('/api/info')
-		.success(function(re) {
-			$rootScope.createItemList = re.cfl;
-			$rootScope.groupList= re.gl;
-			console.log($rootScope.groupList);
-		});*/
+	$scope.uploadFile=function(){
+		fileUploader=$('input[multiple=true]');
+        if(fileUploader.length==0)
+        {
+            var fileUploader=$('<input type="file" multiple="true" style="position: absolute; top: -1000px; left: -1000px;">');
+            $('body').append(fileUploader);      
+        }
+        fileUploader.click();
+        fileUploader.change(function(){
+        	//console.log(fileUploader[0].files);
+        	for(i in fileUploader[0].files)
+        	{
+	        	var formData=new FormData();
+	        	formData.append('files',fileUploader[0].files[i]);
+	        	var uploadItem=$.ajax({
+			　　　　type: "POST",
+			　　　　url: "api/uploadFile",
+			　　　　data: formData ,　　//这里上传的数据使用了formData 对象
+			　　　　processData : false, 
+			　　　　//必须false才会自动加上正确的Content-Type 
+			　　　　contentType : false , 
+			　　　　//async: false,
+			　　　　//这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定，然后再返回交给ajax使用
+			　　　　xhr: function(){
+			　　　　　　var xhr = $.ajaxSettings.xhr();
+			　　　　　　if(onprogress && xhr.upload) {
+			　　　　　　　　xhr.upload.addEventListener("progress" , onprogress, false);
+			　　　　　　　　return xhr;
+			　　　　　　}
+			　　　　},
+					success:function(re){
+						console.log(re);
+					},
+					error:function(re){
+
+					}
+			　　});
+	        }
+        	function onprogress(evt){
+			　　var loaded = evt.loaded;     //已经上传大小情况 
+				var tot = evt.total;      //附件总大小 
+				var per = Math.floor(100*loaded/tot);  //已经上传的百分比 
+				console.log(per+'%');
+			}
+			$(this).remove();
+        	/*var xhr = new XMLHttpRequest();  
+		    xhr.onreadystatechange = function(){  
+		        if(xhr.readyState==4 && xhr.status==200){  
+		            console.log('上传完成');  
+		        }  
+		    }  
+		  
+		    //侦查当前附件上传情况  
+		    xhr.upload.onprogress = function(evt){  
+		        //侦查附件上传情况  
+		        //通过事件对象侦查  
+		        //该匿名函数表达式大概0.05-0.1秒执行一次  
+		        //console.log(evt);  
+		        //console.log(evt.loaded);  //已经上传大小情况  
+		        //evt.total; 附件总大小  
+		        var loaded = evt.loaded;  
+		        var tot = evt.total;  
+		        var per = Math.floor(100*loaded/tot);  //已经上传的百分比  
+		        //var son =  document.getElementById('son');
+		        console.log(per+"%");  
+		        //son.innerHTML = per+"%";  
+		        //son.style.width=per+"%";  
+		    }  
+		  
+		    xhr.open("post","api/uploadFile");  
+		    xhr.send(formData);*/
+        	/*$.ajax({
+        		url:'api/uploadFile',
+        		type: 'post',
+        		data: formData,
+        		//dataType:"json",
+        		contentType: false,
+				processData: false,
+				xhr: function(){
+		　　　　　　var xhr = $.ajaxSettings.xhr();
+		　　　　　　xhr.upload.onprogress = function(evt){  
+				        //侦查附件上传情况  
+				        //通过事件对象侦查  
+				        //该匿名函数表达式大概0.05-0.1秒执行一次  
+				        //console.log(evt);  
+				        //console.log(evt.loaded);  //已经上传大小情况  
+				        //evt.total; 附件总大小  
+				        var loaded = evt.loaded;  
+				        var tot = evt.total;  
+				        var per = Math.floor(100*loaded/tot);  //已经上传的百分比  
+				        //var son =  document.getElementById('son');
+				        console.log(per+"%");  
+				        //son.innerHTML = per+"%";  
+				        //son.style.width=per+"%";  
+				    } 
+		　　　　},
+        		success:function(re){
+
+        		},
+        		error:function(re){
+
+        		}
+        	});*/
+        	
+        	/*$http({
+        		url:'api/uploadFile',
+        		type: 'post',
+        		data: formData,
+        	}).success(function(re){
+
+        	}).error(function(re){
+
+        	});*/
+        });
+        
+	}
+	$scope.uploadFolder=function(){
+        	folderUploader=$('input[webkitdirectory]');
+	        if(folderUploader.length==0)
+	        {
+	            var folderUploader=$('<input type="file" webkitdirectory="" style="position: absolute; top: -1000px; left: -1000px;">');
+	            $('body').append(folderUploader);      
+	        }
+	        folderUploader.click();
+	        folderUploader.change(function(){
+	        	console.log(folderUploader[0].files);
+	        });
+        }
 }])
