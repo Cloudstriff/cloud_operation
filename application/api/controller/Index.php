@@ -1,9 +1,12 @@
 <?php
 namespace app\api\controller;
 use app\common\controller\Base;
+use app\common\vendor\Upload;
+//use app\common\behavior\Upload;
 //use app\api\model\MemberModel;
 class Index extends Base
 {
+    private $_upload;
     private $memberModel;
     private $groupModel;
     private $fileModel;
@@ -17,9 +20,19 @@ class Index extends Base
     private $groupNotiSendmsgView;
     private $groupNotiCreateGroupView;
     private $msgModel;
+    //上传文件规则
+    private static $_uploadConfig=array(
+            'maxSize'    =>    20971520, //大小限制为10M=10*1024*1024Byte
+            'rootPath'   =>    'public/uploads/directory/',
+            'saveName'   =>    array('uniqid',''),
+            //'exts'       =>    array('zip','rar', 'doc', 'docx', 'pdf','txt','ppt','pptx','xsl','xslx'),
+            'autoSub'    =>    true,  //关闭自动创建子目录，默认用日期作为子目录名
+            //'subName'    =>    array('date','Ymd'),//默认用日期作为子目录名
+        );
     public function __construct()
     {
         parent::__construct();
+        $this->_upload=new Upload(self::$_uploadConfig);
         $this->msgModel=D('api/Msg');
         $this->memberModel=D('api/Member');
         $this->groupModel=D('api/Group');
@@ -33,7 +46,10 @@ class Index extends Base
         $this->notiCometView=D('api/ViewNotiComet');
         $this->groupNotiSendmsgView=D('api/ViewGroupNotiSendmsg');
         $this->groupNotiCreateGroupView=D('api/ViewGroupNotiCreateGroup');
-        define(LOCK,true);
+        if(!S('fileType'))
+        {
+            S('fileType',M('FileType')->field('code,ext_list as exts')->where('state=1')->select());
+        }
     }
     //获取服务器端API列表
     public function api()
@@ -45,7 +61,37 @@ class Index extends Base
     public function uploadFile()
     {
         C('default_return_type','text/html');
-        print_r($_FILES);
+        $belong=I('get.belong');
+        $gid=I('get.gid');
+        if(in_array($gid,$this->user->groupList))
+        {
+            $info=$this->_upload->uploadOne($_FILES['files']);
+            if(!$info)
+            {
+                $msg=$this->_upload->getError();
+                $this->ajaxReturn(['status'=>0,'msg'=>$msg]);
+            }
+            //写入数据库操作
+            $input->msgType='upload';
+            $input->object=$this->user->id;
+            $input->name=$info['name'];
+            $input->belong=$belong;
+            $input->gid=$gid;
+            $input->type=$this->_getFileType($info['ext']);
+            $input->ext=$info['ext'];
+            $input->url=$this->_upload->rootPath.$info['savepath'].$info['savename'];
+            $input->size=$info['size'];
+            $input->_time=time();
+            //var_dump($input);
+            //print_r(S('fileType'));
+            //exit();
+            //return ['status'=>1,'file'=>$input];
+            $re=$this->fileModel->addUnModFile($input);
+            if($re==1)
+                return ['status'=>1];
+            return ['status'=>0];
+        }       
+        return ['status'=>0];
     }
     //删除文件方法，暂时归类到回收站
     public function delete()
@@ -363,11 +409,17 @@ class Index extends Base
                 $notiItemList=$this->notiCometView->findNotiByGid($this->user->id,$openGid);
                 if(!empty($notiItemList['notiItem']))
                 {
+                    $msgIdList='';
                     foreach ($notiItemList['notiItem'] as $k => $v)
                     {
-                        //$notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
-                        $this->dispatchModel->setReaded($v['id'],$this->user->id);
+                        //$notiItemList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);                                               
+                        if($k==count($notiItemList['notiItem']))
+                            $msgIdList.=$v['id'];
+                        else
+                            $msgIdList.=$v['id'].',';
+                            //$msgList[$k]['avatar_url']=$this->encryptAvatar($v['avatar_url']);
                     }
+                    $this->dispatchModel->setReaded($msgIdList,$this->user->id);
                 }
                 if($numList||$notiItemList)
                 {
@@ -375,7 +427,7 @@ class Index extends Base
                     break;
                 }
                 $count++;
-                if($count==10)
+                if($count==3)
                 {
                     return ['nl'=>$numList,'ni'=>$notiItemList];
                     break;
@@ -434,7 +486,7 @@ class Index extends Base
             else
             {
                 //不可編輯文件中判斷是否為office之類的可在線預覽內容的文件
-                $fileInfo=$this->fileModel->getGroupIdTypeUrl($fid);
+                $fileInfo=$this->fileModel->getDetail($fid);
                 if($fileInfo['group_id']!=false)
                 {
                     if(in_array($fileInfo['group_id'],$this->user->groupList))
@@ -442,23 +494,31 @@ class Index extends Base
                         //通过url读取office之类文件的内容,并返回
                         //这里必须去查看一下office在线预览的接口
                         switch ($fileInfo['type']) {
-                            case 'office':
+                            case 'word':
+                                # code...
+                                break;
+                            case 'ppt':
+                                # code...
+                                break;
+                            case 'excel':
                                 # code...
                                 break;
                             case 'text':
-                                C('default_return_type','text/plain');
-                                header("Content-Type: text/plain; charset=utf-8");
+                                //C('default_return_type','text/plain');
+                                //header("Content-Type: text/plain; charset=utf-8");
                                 $text = file_get_contents($fileInfo['url'],true);
                                 //读取的txt文件为gbk格式，必须转化成utf-8才能配合header头部格式正常显示
                                 $text=iconv("gb2312","utf-8",$text);
-                                echo $text;
-                                exit(0);                               
+                                $fileInfo['content']=$text;
+                                return $fileInfo;
+                                //echo $text;
+                                //exit(0);                               
                                 break;
                             case 'pdf':
                                 # code...
                                 break;
                             default:
-                                # code...
+                                return $fileInfo;
                                 break;
                         }
                     }
@@ -842,5 +902,18 @@ class Index extends Base
             }
         }
         return $returnArr;
+    }
+    //判断上传文件所属类型方法
+    private function _getFileType($ext)
+    {
+        $fileTypeList=S('fileType');
+        foreach ($fileTypeList as $k => $v) 
+        {
+            if(strstr($v['exts'],$ext))
+            {
+                return $v['code'];
+            }
+        }
+        return 'other';
     }
 }

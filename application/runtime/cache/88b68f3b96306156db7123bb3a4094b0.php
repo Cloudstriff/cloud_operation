@@ -1,0 +1,3 @@
+<?php
+//000000000000a:9:{i:0;s:2:"id";i:1;s:4:"type";i:2;s:4:"time";i:3;s:8:"group_id";i:4;s:6:"object";i:5;s:7:"content";i:6;s:9:"user_name";i:7;s:10:"avatar_url";s:5:"_type";a:8:{s:2:"id";s:16:"int(10) unsigned";s:4:"type";s:11:"varchar(10)";s:4:"time";s:16:"int(10) unsigned";s:8:"group_id";s:16:"int(10) unsigned";s:6:"object";s:16:"int(10) unsigned";s:7:"content";s:12:"varchar(200)";s:9:"user_name";s:11:"varchar(30)";s:10:"avatar_url";s:12:"varchar(200)";}}
+?>

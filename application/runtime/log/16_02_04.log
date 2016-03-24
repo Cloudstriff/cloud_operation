@@ -1,0 +1,57 @@
+[ 2016-02-04T12:10:00+08:00 ] ::1 ::1 /group/170801
+[log] localhost/group/170801 [运行时间：0.165010s] [吞吐率：6.06req/s] [内存消耗：1,644.20kb] [文件加载：36]
+[notic] [2048] Declaration of app\index\controller\Index::show() should be compatible with think\Controller::show($content, $vars = Array) C:\wamp\www\application\index\controller\Index.php 第 6 行.
+
+[ 2016-02-04T12:10:01+08:00 ] ::1 ::1 /api/info
+[log] localhost/api/info [运行时间：0.245014s] [吞吐率：4.08req/s] [内存消耗：2,205.86kb] [文件加载：39]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+
+[ 2016-02-04T12:10:01+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.124007s] [吞吐率：8.06req/s] [内存消耗：699.86kb] [文件加载：22]
+[error] [0] url suffix deny[C:\wamp\www\thinkphp\library\think\App.php : 367]
+
+[ 2016-02-04T12:10:01+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.142008s] [吞吐率：7.04req/s] [内存消耗：695.93kb] [文件加载：23]
+
+[ 2016-02-04T12:10:01+08:00 ] ::1 ::1 /api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D
+[log] localhost/api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D [运行时间：0.179010s] [吞吐率：5.59req/s] [内存消耗：3,523.27kb] [文件加载：38]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+
+[ 2016-02-04T12:10:34+08:00 ] ::1 ::1 /group/170801
+[log] localhost/group/170801 [运行时间：0.103006s] [吞吐率：9.71req/s] [内存消耗：1,644.13kb] [文件加载：36]
+[notic] [2048] Declaration of app\index\controller\Index::show() should be compatible with think\Controller::show($content, $vars = Array) C:\wamp\www\application\index\controller\Index.php 第 6 行.
+
+[ 2016-02-04T12:10:34+08:00 ] ::1 ::1 /api/info
+[log] localhost/api/info [运行时间：0.136008s] [吞吐率：7.35req/s] [内存消耗：2,205.69kb] [文件加载：39]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+
+[ 2016-02-04T12:10:34+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.131008s] [吞吐率：7.63req/s] [内存消耗：699.86kb] [文件加载：22]
+[error] [0] url suffix deny[C:\wamp\www\thinkphp\library\think\App.php : 367]
+
+[ 2016-02-04T12:10:34+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.135008s] [吞吐率：7.41req/s] [内存消耗：695.93kb] [文件加载：23]
+
+[ 2016-02-04T12:10:34+08:00 ] ::1 ::1 /api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D
+[log] localhost/api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D [运行时间：0.136008s] [吞吐率：7.35req/s] [内存消耗：3,523.27kb] [文件加载：38]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+
+[ 2016-02-04T12:10:43+08:00 ] ::1 ::1 /group/170801
+[log] localhost/group/170801 [运行时间：0.144008s] [吞吐率：6.94req/s] [内存消耗：1,643.80kb] [文件加载：36]
+[notic] [2048] Declaration of app\index\controller\Index::show() should be compatible with think\Controller::show($content, $vars = Array) C:\wamp\www\application\index\controller\Index.php 第 6 行.
+
+[ 2016-02-04T12:10:44+08:00 ] ::1 ::1 /api/info
+[log] localhost/api/info [运行时间：0.145008s] [吞吐率：6.90req/s] [内存消耗：2,205.86kb] [文件加载：39]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+
+[ 2016-02-04T12:10:44+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.091005s] [吞吐率：10.99req/s] [内存消耗：699.86kb] [文件加载：22]
+[error] [0] url suffix deny[C:\wamp\www\thinkphp\library\think\App.php : 367]
+
+[ 2016-02-04T12:10:44+08:00 ] ::1 ::1 /favicon.ico
+[log] localhost/favicon.ico [运行时间：0.096005s] [吞吐率：10.42req/s] [内存消耗：695.93kb] [文件加载：23]
+
+[ 2016-02-04T12:10:44+08:00 ] ::1 ::1 /api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D
+[log] localhost/api/Index/image/img/wIJotAsHe6oELelgdgX4oc8K0GAoc43zGzPU2YAMcNNtAFGDbSwywo2qB1wcZrNAAf9IBjC97e6Nzva1EdqgKfDp5TQcoyzCPCuIsZ3Lg6aKIxZSK0kO0fFNafY%3D [运行时间：0.167009s] [吞吐率：5.99req/s] [内存消耗：3,523.27kb] [文件加载：38]
+[notic] [8] Undefined variable: cipher C:\wamp\www\application\common\controller\Base.php 第 62 行.
+

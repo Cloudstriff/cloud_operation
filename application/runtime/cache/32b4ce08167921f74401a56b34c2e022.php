@@ -1,0 +1,3 @@
+<?php
+//000000000000a:11:{i:0;a:2:{s:4:"code";s:5:"excel";s:4:"exts";s:8:"xls,xlsx";}i:1;a:2:{s:4:"code";s:6:"folder";s:4:"exts";s:3:"dir";}i:2;a:2:{s:4:"code";s:5:"image";s:4:"exts";s:15:"jpg,png,gif,bmp";}i:3;a:2:{s:4:"code";s:2:"md";s:4:"exts";s:2:"md";}i:4;a:2:{s:4:"code";s:4:"note";s:4:"exts";s:4:"note";}i:5;a:2:{s:4:"code";s:6:"office";s:4:"exts";s:26:"doc,docx,xls,xlsx,ppt,pptx";}i:6;a:2:{s:4:"code";s:5:"other";s:4:"exts";N;}i:7;a:2:{s:4:"code";s:3:"pdf";s:4:"exts";s:3:"pdf";}i:8;a:2:{s:4:"code";s:3:"ppt";s:4:"exts";s:8:"ppt,pptx";}i:9;a:2:{s:4:"code";s:5:"table";s:4:"exts";s:5:"table";}i:10;a:2:{s:4:"code";s:4:"text";s:4:"exts";s:3:"txt";}}
+?>

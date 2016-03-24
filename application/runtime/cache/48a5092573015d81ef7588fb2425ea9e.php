@@ -1,0 +1,3 @@
+<?php
+//000000000000a:10:{i:0;s:2:"id";i:1;s:7:"file_id";i:2;s:4:"name";i:3;s:6:"msg_id";i:4;s:3:"url";i:5;s:4:"size";i:6;s:8:"uploader";i:7;s:4:"time";s:3:"_pk";s:2:"id";s:5:"_type";a:8:{s:2:"id";s:16:"int(11) unsigned";s:7:"file_id";s:16:"int(11) unsigned";s:4:"name";s:11:"varchar(30)";s:6:"msg_id";s:16:"int(10) unsigned";s:3:"url";s:12:"varchar(200)";s:4:"size";s:14:"float unsigned";s:8:"uploader";s:16:"int(11) unsigned";s:4:"time";s:16:"int(10) unsigned";}}
+?>

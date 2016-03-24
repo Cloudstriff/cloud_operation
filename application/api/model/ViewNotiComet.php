@@ -53,12 +53,16 @@ class ViewNotiComet extends Model
 						array_push($notiSendIdList,$v['msg_id']);
 						break;
 					case 'delete':
-						$fileMsgIdList[$v['code']]=$v['msg_id'];
+						$temp=['type'=>$v['code'],'id'=>$v['msg_id']];
+						array_push($fileMsgIdList,$temp);
 						array_push($notiDeleteIdList,$v['msg_id']);
 						break;
 					default:
-						$fileMsgIdList[$v['code']]=$v['msg_id'];
+						$temp=['type'=>$v['code'],'id'=>$v['msg_id']];
+						array_push($fileMsgIdList,$temp);
+						//$fileMsgIdList[$v['code']]=$v['msg_id'];
 						array_push($notiIdList,$v['msg_id']);
+						//return ['fm'=>$fileMsgIdList,'nd'=>$notiIdList];
 						break;
 				}
 			}
@@ -66,6 +70,7 @@ class ViewNotiComet extends Model
 			//执行查询
 			$where=null;
 			$bind=null;
+			$re1=[];
 			if(!empty($notiIdList))
 			{
 				$idList='';
@@ -74,9 +79,9 @@ class ViewNotiComet extends Model
 					foreach ($notiIdList as $k => $v) 
 					{
 						if($k==count($notiIdList)-1)
-							$idList.=$v['msg_id'];
+							$idList.=$v;
 						else
-							$idList.=$v['msg_id'].',';
+							$idList.=$v.',';
 					}
 					$where['id']=array('in',$idList);
 				}
@@ -84,8 +89,9 @@ class ViewNotiComet extends Model
 				{
 					$where['id']=$notiIdList[0];
 				}
-				$re1=M('ViewGroupNoti')->field('*')->where($where)->select();
+				$re1=M('ViewGroupNoti')->fetchSql(false)->field('*')->where($where)->select();
 			}
+			//return ['arrayId'=>$notiIdList,'re'=>$fileMsgIdList];
 			if(!empty($notiDeleteIdList))
 			{
 				$idList='';
@@ -94,9 +100,9 @@ class ViewNotiComet extends Model
 					foreach ($notiDeleteIdList as $k => $v) 
 					{
 						if($k==count($notiDeleteIdList)-1)
-							$idList.=$v['msg_id'];
+							$idList.=$v;
 						else
-							$idList.=$v['msg_id'].',';
+							$idList.=$v.',';
 					}
 					$where['id']=array('in',$idList);
 				}
@@ -114,9 +120,9 @@ class ViewNotiComet extends Model
 					foreach ($notiSendIdList as $k => $v) 
 					{
 						if($k==count($notiSendIdList)-1)
-							$idList.=$v['msg_id'];
+							$idList.=$v;
 						else
-							$idList.=$v['msg_id'].',';
+							$idList.=$v.',';
 					}
 					$where['id']=array('in',$idList);
 				}
@@ -134,9 +140,9 @@ class ViewNotiComet extends Model
 					foreach ($notiCreateIdList as $k => $v) 
 					{
 						if($k==count($notiCreateIdList)-1)
-							$idList.=$v['msg_id'];
+							$idList.=$v;
 						else
-							$idList.=$v['msg_id'].',';
+							$idList.=$v.',';
 					}
 					$where['id']=array('in',$idList);
 				}
@@ -157,29 +163,30 @@ class ViewNotiComet extends Model
             	$re=$re1;
         	//查询对应的文件信息
         	$fileList=[];//存储文件信息的数组
-        	foreach ($fileMsgIdList as $type => $msgId) 
+        	foreach ($fileMsgIdList as $k => $v) 
         	{
-        		switch ($type) 
+        		switch ($v['type']) 
         		{
         			case 'create':
         				//查询file和modfile表获取文件信息，limit=1，order by id desc
-        				$file=D('api/ModFile')->getFileInfoByMsgId($msgId);
-        				$fileList[]=$file;
+        				$file=D('api/ModFile')->getFileInfoByMsgId($v['id']);
+        				array_push($fileList,$file);
         				break;
         			case 'upload':
         				//查询file和unmodfile表和file表获取文件信息
-        				$file=D('api/UnmodFile')->getFileInfoByMsgId($msgId);
-        				$fileList[]=$file;
+        				$file=D('api/UnmodFile')->getFileInfoByMsgId($v['id']);
+        				array_push($fileList,$file);
+        				//$fileList[]=$file;
         				break;
         			case 'modify':
         				//查询file和modfile表获取文件信息，limit=1，order by id desc
-        				$file=D('api/ModFile')->getFileInfoByMsgId($msgId);
-        				$fileList[]=$file;
+        				$file=D('api/ModFile')->getFileInfoByMsgId($v['id']);
+        				array_push($fileList,$file);
         				break;
         			case 'delete':
         				//查询delete_file表获取文件信息
-        				$file=D('api/DeleteFile')->getFileInfoByMsgId($msgId);
-        				$fileList[]=$file;
+        				$file=D('api/DeleteFile')->getFileInfoByMsgId($v['id']);
+        				array_push($fileList,$file);
         				break;
         			default:
         				# code...
@@ -204,7 +211,7 @@ class ViewNotiComet extends Model
                         $temp[]=$v;
                 }
         		//反向排序
-        		krsort($temp);
+        		//krsort($temp);
         		$fileList=$temp;
         	}
         	else

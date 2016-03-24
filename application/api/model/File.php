@@ -56,6 +56,12 @@ class File extends Model
 		$data=$this->field('group_id,count(co_mod_file.id) as version')->join('__MOD_FILE__ on co_file.id=__MOD_FILE__.file_id')->where('co_file.id=:id')->bind(':id',$fid)->order('co_mod_file.id desc')->limit(0,1)->select();
 		return $data[0];
 	}
+	//查询文件详细信息方法
+	public function getDetail($fid)
+	{
+		$data=$this->field('co_file.id as fid,group_id,co_unmod_file.name,url,user_name as uploader,co_unmod_file.time,belong,size,co_file.type')->join('__UNMOD_FILE__ on co_file.id=__UNMOD_FILE__.file_id')->join('co_user on co_unmod_file.uploader=co_user.id')->where('co_file.id=:id')->bind(':id',$fid)->select();
+		return $data[0];
+	}
 	//文件加星方法
 	public function addStar($fid)
 	{
@@ -173,7 +179,7 @@ class File extends Model
 		}
 		return false;
 	}
-	//插入文件方法
+	//插入可编辑文件方法
 	public function _addModFile($input)
 	{
 		//最终决定用这个
@@ -252,6 +258,13 @@ class File extends Model
 		if($re!==false)
 			return true;
 		return false;*/
+	}
+	//插入上传文件方法
+	public function addUnModFile($input)
+	{
+		//最终决定用这个
+		$nativeModel=D('common/Native');
+		return $nativeModel->procedureWithFlag('add_unmod_file',$input);
 	}
 }
 //": [ SQL语句 ] : SET @msgType = 'create';SET @object = '170801';SET @name = 'dfsfsd';SET @belong = '0';SET @gid = '170802';SET @type = 'folder';SET @ext = 'dir';SET @content = ''; CALL add_mod_file(@msgType,@object,@name,@belong,@gid,@type,@ext,@content);"
