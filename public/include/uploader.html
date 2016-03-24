@@ -1,0 +1,32 @@
+<div class="file-uploader minimize"  ng-show="uploading" ng-class="{minimize: minimize}">
+    <div class="file-uploader-hd">
+    <span class="uploader-hd-title" ng-if="finishes().length == runnings().length + waitings().length + finishes().length" >上传文件</span>
+        <!-- <svg class="icon-status glyphicon glyphicon-chevron-down" title="收起/展开" ng-click="minimize = !minimize">
+            <use class="default" ng-if="!minimize" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#dialog_collapse"></use>
+            <use class="hover" ng-if="!minimize" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#dialog_collapse_hover"></use>
+        </svg> -->
+        <!-- <span class="icon-status glyphicon glyphicon-chevron-down"></span> -->
+        <button type="button" class="close btn-large icon-close" data-dismiss="modal" ng-click="closeUploader()">&times;<span class="sr-only">Close</span></button>
+    </div>
+    <ul class="file-uploader-bd">
+            <li class="uploader-item finish" ng-class="{nofull: !fullScreen, done: uploader.status=='done', error: uploader.status=='error'}" ng-repeat="uploader in uploadFiles">
+                <i class="file-icon" file-icon="uploader" ng-click="openFile(uploader.gid, uploader.id)"><svg class="file_icon other"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#type_other"></use></svg></i>
+                <p class="file-name" ng-click="openFile(uploader.gid, uploader.id)">{{uploader.name}}</p>
+                <p class="file-size" >{{uploader.size}}</p>
+                <svg class="icon-locate" title="打开文件夹" ng-click="locationFile(uploader.gid, uploader.id)">
+                    <use class="default" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#folder_opener"></use>
+                    <use class="hover" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#folder_opener_hover"></use>
+                </svg>
+                <svg class="icon-success" ng-show="uploader.status=='done'">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#file_upload_success"></use>
+                </svg>
+                <svg class="icon-error" ng-show="">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#file_upload_error"></use>
+                </svg>
+                <div class="progress" ng-hide="uploader.status=='done'">
+                    <span class="uploader-progress" status="uploader.status" style="width: {{uploader.sent/uploader.total*160}}px;"></span>
+                </div>
+                <span class="finish-text" ng-show="uploader.status=='done'">上传完成</span>
+            </li>
+    </ul>
+</div>

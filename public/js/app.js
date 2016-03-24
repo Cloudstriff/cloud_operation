@@ -30,6 +30,31 @@ noteApp.config(['$routeProvider', '$locationProvider',function($routeProvider,$l
 		}).when('/group/:gid/folder/:fid',{
 			templateUrl: path+'/tpl/folder.html',
 			controller: 'groupCtrl'
+		}).when('/group/:gid/detail/:nid',{
+			templateUrl: path+'/tpl/detail.html',
+			controller: 'detailCtrl'
+		}).when('/group/:gid/folder/:fid/detail/:nid',{
+			templateUrl: path+'/tpl/detail.html',
+			controller: 'detailCtrl'
+		}).when('/group/:gid/text/:nid',{
+			templateUrl: path+'/tpl/text.html',
+			controller: 'textCtrl'
+		}).when('/group/:gid/folder/:fid/text/:nid',{
+			templateUrl: path+'/tpl/text.html',
+			controller: 'textCtrl'
+		}).when('/group/:gid/md/create',{
+			templateUrl: path+'/tpl/create-md.html',
+			controller: 'mdCtrl'
+		}).when('/group/:gid/folder/:fid/md/create',{
+			templateUrl: path+'/tpl/create-md.html',
+			controller: 'mdCtrl'
+		}).when('/group/:gid/md/:nid',{
+			templateUrl: path+'/tpl/preview-md.html',
+			controller: 'mdCtrl'
+		}).when('/group/:gid/folder/:fid/md/:nid',{
+			templateUrl: path+'/tpl/preview-md.html',
+			controller: 'mdCtrl'
 		}).otherwise({redirectTo:'/'});
 		$locationProvider.html5Mode(true);//启动html5模式
 	}]);
+noteApp.value('groupList',{});

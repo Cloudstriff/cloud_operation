@@ -87,10 +87,10 @@
 		<div class="file-list" file-table-height ng-show="loading==false">
 		<table class="table table-hover" id="file-table">     
             <tbody >
-                <tr hover="true" ng-repeat="file in fileList" ng-class="{selected:isSelected(file)}" ng-mousedown="select(file)" ng-dblclick="oepnOrForward(file)" >
+                <tr hover="true" ng-repeat="file in fileList" ng-class="{selected:isSelected(file)}" ng-mousedown="select(file)" ng-dblclick="openOrForward(file)" >
                 	<td width="35%">
-                		<div class="cursor-p f-l m-r-8" ng-class="file.type" ng-click="oepnOrForward(file)"></div>
-                		<div class="file-name f-l"><span class="cursor-p" ng-bind="file.name" ng-click="oepnOrForward(file)"></span></div>
+                		<div class="cursor-p f-l m-r-8" ng-class="file.type" ng-click="openOrForward(file)"></div>
+                		<div class="file-name f-l"><span class="cursor-p" ng-bind="file.name" ng-click="openOrForward(file)"></span></div>
                 	</td>
 					<td width="18%">
 						<div class="btn-list">
@@ -111,6 +111,7 @@
             	</tr>
             </tbody>            
         </table>
+        <div ng-include="'/public/include/uploader.html'"></div>
         </div>
         <div class="enter-loading" ng-show="loading"></div>
 	</div>

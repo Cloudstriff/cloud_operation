@@ -155,7 +155,20 @@ noteDirectives.directive('publishBtn', function(){
 		replace : true*/
 	}
 });
-
+//上传文件进度条指令
+noteDirectives.directive('status', function(){
+	return {
+		restrict: 'A',
+		link:function(scope,element,attr){
+				//console.log($('.main-left').height());
+				//element.change(function(){
+					//element.width(element.attr('value')/element.attr('max')+'%');
+				//});
+		}
+		/*template: '<div>Hello</div>',
+		replace : true*/
+	}
+});
 /*noteDirectives.directive('noteDirectives_2', ['$scope', function($scope){
 	
 }])*/

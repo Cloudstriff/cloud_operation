@@ -1,0 +1,13 @@
+<div class="note-head">
+    <span class="glyphicon glyphicon-chevron-left cursor-p btn-lg" ng-click="restore()">返回</span>
+    <div class="title i-b"><span style="font-size: 22px;">{{file.name}}</span></div>
+    <div class="publish i-b">
+    	<button class="btn btn-default" ng-click="download()" style="width: 120px;"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;下载({{file.size}})</button>
+    	<span>info</span><span>分享</span><span>新窗口打开</span><span class="cursor-p" style=""> &nbsp;第1版</span>
+    </div>
+</div>
+<div class="note-content">
+	<div style="margin: 20px;">
+	{{file.content}}
+	</div>
+</div>

@@ -1,23 +1,23 @@
 var noteCtrls = angular.module('noteCtrls', []);
-//åŠ è½½æ§åˆ¶å™¨
+//¼ÓÔØ¿ØÖÆÆ÷
 noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParams','$http','groupList',function($scope,$location,$rootScope,$routeParams,$http,groupList){
 		
-		//æœç´¢è¾“å…¥å€¼æ¨¡å‹	
+		//ËÑË÷ÊäÈëÖµÄ£ĞÍ	
 		//$rootScope.sContent='';
-		//å…è®¸åˆ›å»ºæ–‡ä»¶åˆ—è¡¨
+		//ÔÊĞí´´½¨ÎÄ¼şÁĞ±í
 		$rootScope.createItemList=[];
 		$rootScope.openGroupId='';
 		$rootScope.direct=false;
-		//æ–¹æ³•åŒºåŸŸ
+		//·½·¨ÇøÓò
 		$scope.getTime=function(){
 		var date=new Date();
 		return date.toLocaleDateString();
 		};
-		//åˆ›å»ºç¾¤ç»„æ–¹æ³•
+		//´´½¨Èº×é·½·¨
 		$scope.createGroup=function(){
 		$('#group-c').modal();
 		};
-		//è¿”å›ä¸Šä¸€ä¸ªé¡µé¢æ–¹æ³•
+		//·µ»ØÉÏÒ»¸öÒ³Ãæ·½·¨
 		$rootScope.restore=function(){
 			var urlList=location.pathname.split('/');
 			urlList.pop();
@@ -25,21 +25,21 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			$location.path(urlList.join('/'));
 			//$location.path(document.referrer);
 		}
-		//ç¾¤ç»„æˆå‘˜ã€è®¾ç½®è·¯ç”±è·³è½¬æ–¹æ³•
+		//Èº×é³ÉÔ±¡¢ÉèÖÃÂ·ÓÉÌø×ª·½·¨
 		$rootScope.forward=function(url){
 			$location.path('/group/'+$rootScope.openGroupId+url);
 		}
 		$rootScope.forwardTo=function(url){
 			$location.path($location.path()+url);
 		}
-		//å¤åˆ¶åˆ†äº«é“¾æ¥æ–¹æ³•
+		//¸´ÖÆ·ÖÏíÁ´½Ó·½·¨
 		$scope.copyLink=function(){
-			$('#input-link')[0].select(); //é€‰æ‹©å¯¹è±¡ 
+			$('#input-link')[0].select(); //Ñ¡Ôñ¶ÔÏó 
 			document.execCommand("Copy");
-			$('#btn-copy').html('å¤åˆ¶æˆåŠŸ').attr('class','btn btn-default').attr('disabled',true);
+			$('#btn-copy').html('¸´ÖÆ³É¹¦').attr('class','btn btn-default').attr('disabled',true);
 			/*setCopy($('#input-link').val());*/
 		}
-		//æ‰“å¼€ç¾¤ç»„æ–¹æ³•
+		//´ò¿ªÈº×é·½·¨
 		$scope.forwardGroup=function(group){
 			$rootScope.openGroupName=group.name;
 			if($rootScope.openGroupId==group.group_id)
@@ -50,7 +50,7 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			else
 				$location.path('/group/'+group.group_id);
 		};
-		//æœç´¢æ¡†å›è½¦äº‹ä»¶
+		//ËÑË÷¿ò»Ø³µÊÂ¼ş
 		$scope.enter = function(e) {
 			//console.log(e);
 			if (e.charCode == 13)
@@ -61,7 +61,7 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 				//$rootScope.forward('/search/'+$rootScope.sContent);
 			}
 		}
-			//cometè·å–ç¾¤é€šçŸ¥
+			//comet»ñÈ¡ÈºÍ¨Öª
 	$rootScope.cometNoti=function(){
 		/*$http({
 			method:'POST',
@@ -93,14 +93,14 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 				//console.log(re.ni);
 				if(re.ni!==null)
 				{
-					//console.log('re.niå­˜åœ¨');
-					if(typeof re.ni.notiItem!=='undefined' && re.ni.notiItem.length!=0)
+					//console.log('re.ni´æÔÚ');
+					if(re.ni.notiItem.length!=0)
 					{
-						//console.log('re.nié•¿åº¦ä¸ç­‰äº0');
+						//console.log('re.ni³¤¶È²»µÈÓÚ0');
 						if(re.ni.notiItem[0].group_id==$rootScope.openGroupId)
 						{
-							/*console.log('re.niå±äºå½“å‰ç¾¤ç»„');
-							console.log('æ‰“å°å‡ºé€šçŸ¥åˆ—è¡¨');
+							/*console.log('re.niÊôÓÚµ±Ç°Èº×é');
+							console.log('´òÓ¡³öÍ¨ÖªÁĞ±í');
 							console.log($rootScope.notiList);*/
 							for(i in re.ni.notiItem)
 							{
@@ -111,64 +111,18 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 								$rootScope.notiList=$rootScope.notiList.concat(re.ni.notiItem);
 							else
 								$rootScope.notiList=re.ni.notiItem;
-							//æ’å…¥æˆ–æ›¿æ¢æ–‡ä»¶æ ‘
-							
-							if(re.ni.fileList!=null && re.ni.fileList.length>=1)/* && typeof re.ni.fileList.length!='undefined' && re.ni.fileList.length>1*/
+							//²åÈë»òÌæ»»ÎÄ¼şÊ÷
+							if(re.ni.fileList!=null && typeof re.ni.fileList.length=='undefined')
 							{
-								//console.log(111);
-								if($rootScope.fileList!=null)
-								{
-									//console.log(333);
-									for(i in $rootScope.fileList)
-									{
-										//console.log('å¾ªç¯1');
-										for(j in re.ni.fileList)
-										{
-											//console.log('å¾ªç¯2');
-											if($rootScope.fileList[i].fid==re.ni.fileList[j].fid)
-											{
-												//console.log(666);
-												if(typeof re.ni.fileList[j].state!='undefined' && re.ni.fileList[j].state==0)
-												{
-													//console.log('æœ‰state');
-													$rootScope.fileList.splice(i,1);
-												}
-												else
-													$rootScope.fileList[i]=re.ni.fileList[j];
-												break;
-											}
-											else if(j==re.ni.fileList.length-1)
-											{
-												//console.log(555);
-												$rootScope.fileList.unshift(re.ni.fileList[j]);
-												re.ni.fileList.splice(j,1);
-											}
-											//console.log(j);
-										}
-										
-									}
-									console.log($rootScope.fileList);
-								}
-								else
-								{
-									$rootScope.fileList=[];
-									$rootScope.fileList.concat(re.ni.fileList);
-								}
-								$rootScope.$apply();
-								//console.log($rootScope.fileList);
-							}
-							else if(re.ni.fileList!=null) /*&& typeof re.ni.fileList.length=='undefined'&& re.ni.fileList.length<=1*/ 
-							{
-								//console.log(222);
 								//console.log($rootScope.fileList);
 								if($rootScope.fileList!=null && typeof $rootScope.fileList.length!='undefined' && $rootScope.fileList.length>=1)
 								{
-									//console.log('è¿›å…¥');
+									//console.log('½øÈë´íÎóÑ­»·');
 									for(i in $rootScope.fileList)
 									{
 										if($rootScope.fileList[i].fid==re.ni.fileList.fid)
 										{
-											//å¦‚æœæœ‰ç›¸åŒfidè€Œä¸”state=0åˆ™è¡¨ç¤ºæ˜¯åˆ é™¤æ–‡ä»¶
+											//Èç¹ûÓĞÏàÍ¬fid¶øÇÒstate=0Ôò±íÊ¾ÊÇÉ¾³ıÎÄ¼ş
 											if(typeof re.ni.fileList.state!='undefined' && re.ni.fileList.state==0)
 												$rootScope.fileList.splice(i,1);
 											else
@@ -181,14 +135,40 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 								}
 								else
 								{
-									//console.log('è¿›å…¥å¾ªç¯2');
+									//console.log('½øÈëÑ­»·2');
 									$rootScope.fileList=[];
 									$rootScope.fileList.push(re.ni.fileList);
 								}
 								//$rootScope.fileList.unshift(re.ni.fileList);
 							}
-							$rootScope.$apply();
-							/*console.log('æ‰“å°å‡ºè¿æ¥åçš„é€šçŸ¥åˆ—è¡¨');
+							else if(re.ni.fileList!=null && typeof re.ni.fileList.length!='undefined')
+							{
+								if($rootScope.fileList!=null)
+								{
+									for(i in $rootScope.fileList)
+									{
+										for(j in re.ni.fileList)
+										{
+											if($rootScope.fileList[i].fid==re.ni.fileList[j].fid)
+											{
+												if(typeof re.ni.fileList[j].state!='undefined' && re.ni.fileList[j].state==0)
+													$rootScope.fileList.splice(i,1);
+												else
+													$rootScope.fileList[i]=re.ni.fileList[j];
+											}
+											else if(j==re.ni.fileList.length-1)
+												$rootScope.fileList.unshift(re.ni.fileList[j]);
+										}
+										
+									}
+								}
+								else
+								{
+									$rootScope.fileList=[];
+									$rootScope.fileList.concat(re.ni.fileList);
+								}
+							}
+							/*console.log('´òÓ¡³öÁ¬½ÓºóµÄÍ¨ÖªÁĞ±í');
 							console.log($rootScope.notiList);*/
 							//$rootScope.$apply();
 						}
@@ -219,7 +199,7 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			//params: {'rl':$rootScope.readedList}
 		});
 	}
-		//cometæ–¹æ³•
+		//comet·½·¨
 		$rootScope.cometMsg=function(){
 			$http({
 		    url: '/api/msg',
@@ -227,23 +207,23 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			}).success(function(re){
 				if(re.status==1){
 					$('#icon-msg img').attr('src','/public/imgs/icon-msg-new.png');
-		        	console.log('æœ‰'+re.num+'æ¡æ–°çš„ç¾¤æ¶ˆæ¯');
+		        	console.log('ÓĞ'+re.num+'ÌõĞÂµÄÈºÏûÏ¢');
 		        	$("[data-toggle='tooltip']").tooltip();
 				}
 		        else
 		        	$rootScope.cometMsg();
 			}).error(function(){
-    			//å‡ºé”™é‡æ–°è¿›è¡Œè¯·æ±‚
+    			//³ö´íÖØĞÂ½øĞĞÇëÇó
     			$rootScope.cometMsg();
     		});
 		}
 
-		//åˆå§‹åŒ–åŠ è½½æ•°æ®æ–¹æ³•
+		//³õÊ¼»¯¼ÓÔØÊı¾İ·½·¨
 		$scope.load=function(){
 			//$rootScope.sContent='';
 			$.post('/api/info')
     		.success(function(re) {
-    			//å¼€å§‹ç¾¤æ¶ˆæ¯è½®è¯¢æ¥å£
+    			//¿ªÊ¼ÈºÏûÏ¢ÂÖÑ¯½Ó¿Ú
     			$rootScope.cometMsg();
     			$rootScope.createItemList = re.cfl;
     			//console.log($rootScope.createItemList);
@@ -276,12 +256,12 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 				};*/
     		});
 		}
-		//è·å–ç¾¤æ¶ˆæ¯æ–¹æ³•
+		//»ñÈ¡ÈºÏûÏ¢·½·¨
 		$rootScope.readMsg=function(){
-			//å¼¹å‡ºæ¡†
+			//µ¯³ö¿ò
 			$('#read-msg').modal('toggle');
 			return ;
-			//httpæŸ¥çœ‹æ•°æ®
+			//http²é¿´Êı¾İ
 			$http({
 		    url: '/api/getMsg',
 		    params:null,
@@ -294,29 +274,29 @@ noteCtrls.controller('mainCtrl', ['$scope','$location','$rootScope','$routeParam
 			});
 			$rootScope.longPolling();
 		}
-		//æ–¹æ³•åŒºåŸŸEnd
+		//·½·¨ÇøÓòEnd
 	}]);
-//å…¬å…±æ§åˆ¶å™¨
+//¹«¹²¿ØÖÆÆ÷
 noteCtrls.controller('publicCtrl',['$scope','$location',function($scope,$location){
-	//å±æ€§åŒºåŸŸ
-	//æœç´¢è¾“å…¥å€¼æ¨¡å‹
+	//ÊôĞÔÇøÓò
+	//ËÑË÷ÊäÈëÖµÄ£ĞÍ
 	//$scope.sContent='';
-	//$scope.createItemList=[{name:'æ–‡ä»¶å¤¹',type:'folder'},{name:'ç¬”è®°',type:'note'},{name:'Markdown',type:'mark'}];
-	//å±æ€§åŒºåŸŸEnd
-	//æ–¹æ³•åŒºåŸŸ
-	//æ–¹æ³•åŒºåŸŸEnd
+	//$scope.createItemList=[{name:'ÎÄ¼ş¼Ğ',type:'folder'},{name:'±Ê¼Ç',type:'note'},{name:'Markdown',type:'mark'}];
+	//ÊôĞÔÇøÓòEnd
+	//·½·¨ÇøÓò
+	//·½·¨ÇøÓòEnd
 }]);
-//æœç´¢ç‰ˆå—æ§åˆ¶å™¨
+//ËÑË÷°æ¿é¿ØÖÆÆ÷
 noteCtrls.controller('searchCtrl',['$scope','$rootScope','$routeParams',function($scope,$rootScope,$routeParams){
 	$rootScope.openGroupId=$routeParams.gid;
 	$scope.sContent=$routeParams.sContent;
 	$scope.sFinished=false;
-	//æ‰§è¡Œæœç´¢
+	//Ö´ĞĞËÑË÷
 	//sleep(5000);
-	//æœç´¢å®Œæ¯•
+	//ËÑË÷Íê±Ï
 	$scope.sFinished=true;
 }]);
-//ç¬”è®°ç‰ˆå—æ§åˆ¶å™¨
+//±Ê¼Ç°æ¿é¿ØÖÆÆ÷
 noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$location',function($scope,$rootScope,$routeParams,$http,$location){
 	$rootScope.openGroupId=$routeParams.gid;
 	if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
@@ -339,17 +319,17 @@ noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$
 	//else
 		//$rootScope.fid=0;
 	$scope.temp={content:'',title:''};
-	//å‘å¸ƒç¬”è®°
+	//·¢²¼±Ê¼Ç
 	$scope.publish=function(){
 		if($scope.temp.title==null)
 		{
 			bootbox.alert({  
 	            buttons: {  
 	               ok: {  
-	                    label: 'ç¡®å®š',  
+	                    label: 'È·¶¨',  
 	                }  
 	            },  
-	            message: 'è¯·è¾“å…¥æ ‡é¢˜',  
+	            message: 'ÇëÊäÈë±êÌâ',  
 	            callback: function() {  
 	                $('.note-head .title input').focus();
 	            },    
@@ -366,28 +346,28 @@ noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$
 				if(re.status==1)
 					$rootScope.restore();
 				else{
-					bootbox.alert('å‘å¸ƒå¤±è´¥ï¼');
+					bootbox.alert('·¢²¼Ê§°Ü£¡');
 					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;å‘å¸ƒ');
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;·¢²¼');
 				}
 			}).error(function(){
-				bootbox.alert('å‘å¸ƒå¤±è´¥ï¼');
+				bootbox.alert('·¢²¼Ê§°Ü£¡');
 				$('.note-head').find('button[publish-btn]').width(60);
-				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;å‘å¸ƒ');
+				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;·¢²¼');
 			});
 		}
 	}
-	//ä¿å­˜ç¬”è®°
+	//±£´æ±Ê¼Ç
 	$scope.save=function(){
 		if($scope.file.name==null)
 		{
 			bootbox.alert({  
 	            buttons: {  
 	               ok: {  
-	                    label: 'ç¡®å®š',  
+	                    label: 'È·¶¨',  
 	                }  
 	            },  
-	            message: 'è¯·è¾“å…¥æ ‡é¢˜',  
+	            message: 'ÇëÊäÈë±êÌâ',  
 	            callback: function() {  
 	                $('.note-head .title input').focus();
 	            },    
@@ -395,7 +375,7 @@ noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$
 		}
 		else
 		{
-			$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;æ­£åœ¨ä¿å­˜');
+			$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ÕıÔÚ±£´æ');
 			$scope.file.content=$scope.findNoteContent();
 			$http({
 				url:'api/modifyFile',
@@ -408,30 +388,30 @@ noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$
 					bootbox.alert({  
 			            buttons: {  
 			               ok: {  
-			                    label: 'æ›´æ–°',  
+			                    label: '¸üĞÂ',  
 			                },
 			               cancel: {
-			               		label: 'å–æ¶ˆ',
+			               		label: 'È¡Ïû',
 			               } 
 			            },  
-			            message: 'å½“å‰ç¼–è¾‘ç‰ˆæœ¬ä¸æœ€æ–°ç‰ˆæœ¬ä¸ä¸€è‡´ï¼Œæ˜¯å¦æ›´æ–°åˆ°æœ€æ–°ç‰ˆæœ¬ï¼Ÿ',  
+			            message: 'µ±Ç°±à¼­°æ±¾Óë×îĞÂ°æ±¾²»Ò»ÖÂ£¬ÊÇ·ñ¸üĞÂµ½×îĞÂ°æ±¾£¿',  
 			            callback: function() {  
-			                //æ‰§è¡ŒæŸ¥è¯¢æ–‡ä»¶å†…å®¹å¹¶æ›´æ–°æ“ä½œ
-			                console.log('æ‰§è¡ŒæŸ¥è¯¢æ–‡ä»¶å†…å®¹å¹¶æ›´æ–°æ“ä½œ');
+			                //Ö´ĞĞ²éÑ¯ÎÄ¼şÄÚÈİ²¢¸üĞÂ²Ù×÷
+			                console.log('Ö´ĞĞ²éÑ¯ÎÄ¼şÄÚÈİ²¢¸üĞÂ²Ù×÷');
 			            },    
 			        });
 					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;±£´æ');
 				}
 				else{
-					bootbox.alert('ä¿å­˜å¤±è´¥ï¼');
+					bootbox.alert('±£´æÊ§°Ü£¡');
 					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
+					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;±£´æ');
 				}
 			}).error(function(){
-				bootbox.alert('ä¿å­˜å¤±è´¥ï¼');
+				bootbox.alert('±£´æÊ§°Ü£¡');
 				$('.note-head').find('button[publish-btn]').width(60);
-				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
+				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;±£´æ');
 			});
 		}
 	}
@@ -452,224 +432,19 @@ noteCtrls.controller('noteCtrl',['$scope','$rootScope','$routeParams','$http','$
 		$(wrapper).find('.note-view').html(content);
 	}
 }]);
-//ç¬”è®°ç‰ˆå—æ§åˆ¶å™¨
-noteCtrls.controller('mdCtrl',['$scope','$rootScope','$routeParams','$http','$location',function($scope,$rootScope,$routeParams,$http,$location){
-	$scope.findMdContent=function(){
-		var fr=document.getElementById("md-editor");
-		var win = fr.window || fr.contentWindow;
-		var frdoc=fr.contentDocument || iframe.contentWindow.document;
-		console.log(frdoc.getElementById('preview').innerHTML);
-		return;
-		return win.getContent();
-	}
-	$scope.setMdContent=function(content){
-		console.log(1);
-		var fr=document.getElementById("md-editor");
-		var win = fr.window || fr.contentWindow;
-		var frdoc=fr.contentDocument || iframe.contentWindow.document;
-		frdoc.getElementById('preview').innerHTML=content;
-		//console.log(win.);
-		//win.setContent(content);
-		//win.set();
-	}
-	$rootScope.openGroupId=$routeParams.gid;
-	if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
-		$rootScope.belong=$routeParams.fid;
-	else
-		$rootScope.belong=0;
-	if($routeParams.nid!=null)
-	{
-		$scope.fid=$routeParams.nid;	
-		$http({
-			url: 'api/file',
-			params: { fid: $scope.fid,t: 'mod'}
-		}).success(function(re){
-			$scope.file=re;
-			$scope.setMdContent($scope.file.content);
-		}).error(function(re){
-
-		});
-	}
-	else
-	{
-		//$scope.setMdContent('<p data-source-line="1">22222222222</p>');
-	}
-	//else
-		//$rootScope.fid=0;
-	$scope.temp={content:'',title:''};
-	//å‘å¸ƒç¬”è®°
-	$scope.publish=function(){
-		if($scope.temp.title==null)
-		{
-			bootbox.alert({  
-	            buttons: {  
-	               ok: {  
-	                    label: 'ç¡®å®š',  
-	                }  
-	            },  
-	            message: 'è¯·è¾“å…¥æ ‡é¢˜',  
-	            callback: function() {  
-	                $('.note-head .title input').focus();
-	            },    
-	        });
-		}
-		else
-		{
-			$scope.findMdContent();
-			return;
-			$scope.temp.content= $scope.findMdContent();
-			$http({
-				url: 'api/newFile',
-				method: 'POST',
-				data: {content:$scope.temp.content,title:$scope.temp.title,belong:$rootScope.belong,gid:$rootScope.openGroupId,type:'note'}
-			}).success(function(re){
-				if(re.status==1)
-					$rootScope.restore();
-				else{
-					bootbox.alert('å‘å¸ƒå¤±è´¥ï¼');
-					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;å‘å¸ƒ');
-				}
-			}).error(function(){
-				bootbox.alert('å‘å¸ƒå¤±è´¥ï¼');
-				$('.note-head').find('button[publish-btn]').width(60);
-				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;å‘å¸ƒ');
-			});
-		}
-	}
-	//ä¿å­˜ç¬”è®°
-	$scope.save=function(){
-		if($scope.file.name==null)
-		{
-			bootbox.alert({  
-	            buttons: {  
-	               ok: {  
-	                    label: 'ç¡®å®š',  
-	                }  
-	            },  
-	            message: 'è¯·è¾“å…¥æ ‡é¢˜',  
-	            callback: function() {  
-	                $('.note-head .title input').focus();
-	            },    
-	        });
-		}
-		else
-		{
-			$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;æ­£åœ¨ä¿å­˜');
-			$scope.file.content=$scope.findNoteContent();
-			$http({
-				url:'api/modifyFile',
-				data:$scope.file,
-				method:'POST'
-			}).success(function(re){
-				if(re.status==1)
-					$rootScope.restore();
-				else if(re.status==2){
-					bootbox.alert({  
-			            buttons: {  
-			               ok: {  
-			                    label: 'æ›´æ–°',  
-			                },
-			               cancel: {
-			               		label: 'å–æ¶ˆ',
-			               } 
-			            },  
-			            message: 'å½“å‰ç¼–è¾‘ç‰ˆæœ¬ä¸æœ€æ–°ç‰ˆæœ¬ä¸ä¸€è‡´ï¼Œæ˜¯å¦æ›´æ–°åˆ°æœ€æ–°ç‰ˆæœ¬ï¼Ÿ',  
-			            callback: function() {  
-			                //æ‰§è¡ŒæŸ¥è¯¢æ–‡ä»¶å†…å®¹å¹¶æ›´æ–°æ“ä½œ
-			                console.log('æ‰§è¡ŒæŸ¥è¯¢æ–‡ä»¶å†…å®¹å¹¶æ›´æ–°æ“ä½œ');
-			            },    
-			        });
-					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
-				}
-				else{
-					bootbox.alert('ä¿å­˜å¤±è´¥ï¼');
-					$('.note-head').find('button[publish-btn]').width(60);
-					$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
-				}
-			}).error(function(){
-				bootbox.alert('ä¿å­˜å¤±è´¥ï¼');
-				$('.note-head').find('button[publish-btn]').width(60);
-				$('.note-head').find('button[publish-btn]').html('<span class="glyphicon glyphicon-open"></span>&nbsp;ä¿å­˜');
-			});
-		}
-	}
-}]);
-//ç¬”è®°ç‰ˆå—æ§åˆ¶å™¨
-noteCtrls.controller('detailCtrl',['$scope','$rootScope','$routeParams','$http','$location',function($scope,$rootScope,$routeParams,$http,$location){
-	$rootScope.openGroupId=$routeParams.gid;
-	if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
-		$rootScope.belong=$routeParams.fid;
-	else
-		$rootScope.belong=0;
-	if($routeParams.nid!=null)
-	{
-		$scope.fid=$routeParams.nid;	
-		$http({
-			url: 'api/file',
-			params: { fid: $scope.fid,t: 'unmod'}
-		}).success(function(re){
-			re.size=calSize(re.size);
-			$scope.file=re;
-		}).error(function(re){
-
-		});
-	}
-	$scope.download=function(){
-		downloadFrame=$('#download-frame');
-        if(downloadFrame.length==0)
-        {
-            var downloadFrame=$('<iframe id="download-frame">');
-            downloadFrame.css('display','none');
-            $('body').append(downloadFrame);      
-        }
-        downloadFrame.attr('src','/api/download/'+$scope.file.fid);
-	}
-}]);
-noteCtrls.controller('textCtrl',['$scope','$rootScope','$routeParams','$http','$location',function($scope,$rootScope,$routeParams,$http,$location){
-	$rootScope.openGroupId=$routeParams.gid;
-	if(typeof $routeParams.fid!=='undefined'&&$routeParams.fid!=null)
-		$rootScope.belong=$routeParams.fid;
-	else
-		$rootScope.belong=0;
-	if($routeParams.nid!=null)
-	{
-		$scope.fid=$routeParams.nid;	
-		$http({
-			url: 'api/file',
-			params: { fid: $scope.fid,t: 'unmod'}
-		}).success(function(re){
-			re.size=calSize(re.size);
-			$scope.file=re;
-		}).error(function(re){
-
-		});
-	}
-	$scope.download=function(){
-		downloadFrame=$('#download-frame');
-        if(downloadFrame.length==0)
-        {
-            var downloadFrame=$('<iframe id="download-frame">');
-            downloadFrame.css('display','none');
-            $('body').append(downloadFrame);      
-        }
-        downloadFrame.attr('src','/api/download/'+$scope.file.fid);
-	}
-}]);
-//è®¾ç½®æˆå‘˜ç®¡ç†ç‰ˆå—æ§åˆ¶å™¨
+//ÉèÖÃ³ÉÔ±¹ÜÀí°æ¿é¿ØÖÆÆ÷
 noteCtrls.controller('membersCtrl', ['$scope','$rootScope','$http','$location','$routeParams', function($scope,$rootScope,$http,$location,$routeParams){
 	$scope.members='Angular';
 	$scope.option='Hello';
 	$rootScope.openGroupId=$routeParams.gid;
 	}]);
-//è®¾ç½®ç¾¤ç»„ç®¡ç†ç‰ˆå—æ§åˆ¶å™¨
+//ÉèÖÃÈº×é¹ÜÀí°æ¿é¿ØÖÆÆ÷
 noteCtrls.controller('optionsCtrl', ['$scope','$rootScope','$http','$location','$routeParams', function($scope,$rootScope,$http,$location,$routeParams){
 	$scope.members='Angular';
 	$scope.option='Hello';
 	$rootScope.openGroupId=$routeParams.gid;
 	}]);
-//ç¾¤ç»„æ§åˆ¶å™¨
+//Èº×é¿ØÖÆÆ÷
 noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$routeParams',function($scope,$rootScope,$http,$location,$routeParams){
 	
 	$scope.expanded=true;
@@ -680,7 +455,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	$scope.type='folder';
 	$scope.text='text';
 	$rootScope.readedList=[];
-	//æ–‡ä»¶ç›®å½•è¿”å›
+	//ÎÄ¼şÄ¿Â¼·µ»Ø
 	$scope.back=function(){
 		var forwarFolder=$rootScope.openFolder.belong;
 		if(forwarFolder==0)
@@ -688,12 +463,12 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		else
 			$rootScope.forward('/folder/'+forwarFolder);
 	}
-	//åˆ›å»ºæ–‡ä»¶oræ–‡ä»¶å¤¹
+	//´´½¨ÎÄ¼şorÎÄ¼ş¼Ğ
 	$scope.createFile=function(type){
 		switch(type)
 		{
 			case 'folder':
-				newFolder=$('<tr hover="true"><td><div class="cursor-p f-l m-r-8 folder"></div><input style="width:300px" value="æ–°å»ºæ–‡ä»¶å¤¹"></td></tr>');
+				newFolder=$('<tr hover="true"><td><div class="cursor-p f-l m-r-8 folder"></div><input style="width:300px" value="ĞÂ½¨ÎÄ¼ş¼Ğ"></td></tr>');
 				$('tbody').prepend(newFolder);
 				newFolder.find('input')[0].select();
 				newFolder.find('input').keyup(function(e){
@@ -711,18 +486,18 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            				//$rootScope.fileList.unshift(re.file);
 	            				//console.log($rootScope.fileList);
 	            				newFolder.remove();
-	            				$('.alert-success').html('åˆ›å»ºæˆåŠŸï¼');
+	            				$('.alert-success').html('´´½¨³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
 	            				newFolder.remove();
-	            				$('.alert-success').html('åˆ›å»ºå¤±è´¥ï¼');
+	            				$('.alert-success').html('´´½¨Ê§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            		}).error(function(){
 	            			newFolder.remove();
-	            			$('.alert-success').html('åˆ›å»ºå¤±è´¥ï¼');
+	            			$('.alert-success').html('´´½¨Ê§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 	            		});
 	            		//parent=$(this).parent();
@@ -745,18 +520,18 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            				//$rootScope.fileList.unshift(re.file);
 	            				//console.log($rootScope.fileList); 
 	            				newFolder.remove();
-	            				$('.alert-success').html('åˆ›å»ºæˆåŠŸï¼');
+	            				$('.alert-success').html('´´½¨³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
 	            				newFolder.remove();
-	            				$('.alert-success').html('åˆ›å»ºå¤±è´¥ï¼');
+	            				$('.alert-success').html('´´½¨Ê§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            		}).error(function(){
 	            			newFolder.remove();
-	            			$('.alert-success').html('åˆ›å»ºå¤±è´¥ï¼');
+	            			$('.alert-success').html('´´½¨Ê§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 	            		});
 	            		//parent=$(this).parent();
@@ -765,29 +540,29 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            });
 				break;
 			case 'md':
-				$rootScope.forwardTo('/md/create');
+				console.log('´´½¨Markdown');
 				break;
 			case 'note':
 				$rootScope.forwardTo('/note/create');
 				break;
 			case 'table':
-				console.log('åˆ›å»ºtable');
+				console.log('´´½¨table');
 				break;
 			default :
 				break;
 		}
 	};
-	//å•ä¸ªæ–‡ä»¶å³é”®èœå•é¡¹
+	//µ¥¸öÎÄ¼şÓÒ¼ü²Ëµ¥Ïî
 	$scope.dropMenuData = [
 	    [{
-	        text: "å†å²ç‰ˆæœ¬",
+	        text: "ÀúÊ·°æ±¾",
 	        func: function() {
 	            console.log($scope.selectedFile);
 	            //console.log($(this)[0]);
 	            ///$(this).css("padding", "10px");
 	        }
 	    }, {
-	        text: "é‡å‘½å",
+	        text: "ÖØÃüÃû",
 	        func: function() {
 	            $(this).find('.file-name').hide();
 	            inputField=$('<input rename style="width:300px" value="'+$scope.selectedFile[0]['name']+'">');
@@ -807,17 +582,17 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		}).success(function(re){
 	            			if(re.status==1)
 	            			{			
-	            				$('.alert-success').html('é‡å‘½åæˆåŠŸï¼');
+	            				$('.alert-success').html('ÖØÃüÃû³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
-	            				$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            				$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 								$scope.selectedFile[0]['name']=oldName;
 	            			}
 	            		}).error(function(){
-	            			$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            			$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 							$scope.selectedFile[0]['name']=oldName;
 	            		});
@@ -837,17 +612,17 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		}).success(function(re){
 	            			if(re.status==1)
 	            			{			
-	            				$('.alert-success').html('é‡å‘½åæˆåŠŸï¼');
+	            				$('.alert-success').html('ÖØÃüÃû³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
-	            				$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            				$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 								$scope.selectedFile[0]['name']=oldName;
 	            			}
 	            		}).error(function(){
-	            			$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            			$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 							$scope.selectedFile[0]['name']=oldName;
 	            		});        	
@@ -859,7 +634,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        }
 	     ,
 	    }, {
-	        text: "åˆ é™¤",
+	        text: "É¾³ı",
 	        func: function() {
 	        	console.log($scope.selectedFile);
 	            $http({
@@ -868,23 +643,23 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            }).success(function(re){
 	            	if(re.status==1)
 	            	{
-	            		$('.alert-success').html('æˆåŠŸåˆ é™¤æ–‡ä»¶ï¼');
+	            		$('.alert-success').html('³É¹¦É¾³ıÎÄ¼ş£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 					}
 					else
 					{
-						$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+						$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 					}
 	            }).error(function(re){
-	            	$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+	            	$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 	            });
 	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
-	        text: "ä¸‹è½½åˆ°æœ¬åœ°",
+	        text: "ÏÂÔØµ½±¾µØ",
 	        func: function() {
 	        	if($scope.enableDownload($scope.selectedFile[0]))
 	            	$scope.download($scope.selectedFile[0]);
@@ -892,7 +667,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        }
 	     ,
 	    }, {
-	        text: "åˆ†äº«",
+	        text: "·ÖÏí",
 	        func: function() {
 	            $scope.share($scope.selectedFile[0]);
 	        }
@@ -901,14 +676,14 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	];
 	$scope.dropMenuDataNoShare = [
 	    [{
-	        text: "å†å²ç‰ˆæœ¬",
+	        text: "ÀúÊ·°æ±¾",
 	        func: function() {
 	            console.log($scope.selectedFile);
 	            //console.log($(this)[0]);
 	            ///$(this).css("padding", "10px");
 	        }
 	    }, {
-	        text: "é‡å‘½å",
+	        text: "ÖØÃüÃû",
 	        func: function() {
 	            $(this).find('.file-name').hide();
 	            inputField=$('<input rename style="width:300px" value="'+$scope.selectedFile[0]['name']+'">');
@@ -928,17 +703,17 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		}).success(function(re){
 	            			if(re.status==1)
 	            			{			
-	            				$('.alert-success').html('é‡å‘½åæˆåŠŸï¼');
+	            				$('.alert-success').html('ÖØÃüÃû³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
-	            				$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            				$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 								$scope.selectedFile[0]['name']=oldName;
 	            			}
 	            		}).error(function(){
-	            			$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            			$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 							$scope.selectedFile[0]['name']=oldName;
 	            		});
@@ -958,17 +733,17 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            		}).success(function(re){
 	            			if(re.status==1)
 	            			{			
-	            				$('.alert-success').html('é‡å‘½åæˆåŠŸï¼');
+	            				$('.alert-success').html('ÖØÃüÃû³É¹¦£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 	            			}
 	            			else
 	            			{
-	            				$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            				$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 								$('.alert-success').fadeIn().fadeOut(2000);
 								$scope.selectedFile[0]['name']=oldName;
 	            			}
 	            		}).error(function(){
-	            			$('.alert-success').html('é‡å‘½åå¤±è´¥ï¼');
+	            			$('.alert-success').html('ÖØÃüÃûÊ§°Ü£¡');
 							$('.alert-success').fadeIn().fadeOut(2000);
 							$scope.selectedFile[0]['name']=oldName;
 	            		});        	
@@ -980,7 +755,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        }
 	     ,
 	    }, {
-	        text: "åˆ é™¤",
+	        text: "É¾³ı",
 	        func: function() {
 	            $http({
 	            	url: 'api/delete',
@@ -988,23 +763,23 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            }).success(function(re){
 	            	if(re.status==1)
 	            	{
-	            		$('.alert-success').html('æˆåŠŸåˆ é™¤æ–‡ä»¶ï¼');
+	            		$('.alert-success').html('³É¹¦É¾³ıÎÄ¼ş£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 					}
 					else
 					{
-						$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+						$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 					}
 	            }).error(function(re){
-	            	$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+	            	$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 	            });
 	            //$scope.selectedFile=[];
 	        }
 	     ,
 	    }, {
-	        text: "ä¸‹è½½åˆ°æœ¬åœ°",
+	        text: "ÏÂÔØµ½±¾µØ",
 	        func: function() {
 	        	if($scope.enableDownload($scope.selectedFile[0]))
 	            	$scope.download($scope.selectedFile[0]);
@@ -1012,19 +787,19 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	        }
 	     ,
 	    }, {
-	        text: "å–æ¶ˆåˆ†äº«",
+	        text: "È¡Ïû·ÖÏí",
 	        func: function() {
 	            $scope.unshare($scope.selectedFile[0]);
 	        }
 	     ,
 	    }, ],
 	];
-	//å¤šä¸ªå³é”®èœå•å€¼
+	//¶à¸öÓÒ¼ü²Ëµ¥Öµ
 	$scope.dropMulMenuData = [
 	    [{
-	        text: "åˆ é™¤",
+	        text: "É¾³ı",
 	        func: function() {
-	        	//console.log($scope.selectedFile);
+	        	console.log($scope.selectedFile);
 	        	var fid='';
 	            for(i in $scope.selectedFile)
 	            {
@@ -1039,7 +814,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            }).success(function(re){
 	            	if(re.status==1)
 	            	{
-	            		$('.alert-success').html('æˆåŠŸåˆ é™¤æ–‡ä»¶ï¼');
+	            		$('.alert-success').html('³É¹¦É¾³ıÎÄ¼ş£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 						$scope.selectedFile=[];
 						$scope.$broadcast('$routeChangeSuccess');
@@ -1047,20 +822,20 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 					}
 					else
 					{
-						$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+						$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 						$('.alert-success').fadeIn().fadeOut(2000);
 						//$scope.selectedFile=null;
 					}
 					
 	            }).error(function(re){
-	            	$('.alert-success').html('åˆ é™¤æ–‡ä»¶å¤±è´¥ï¼');
+	            	$('.alert-success').html('É¾³ıÎÄ¼şÊ§°Ü£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 					//$scope.selectedFile=null;
 	            });
 	        }
 	     ,
 	    },{
-	        text: "ä¸‹è½½åˆ°æœ¬åœ°",
+	        text: "ÏÂÔØµ½±¾µØ",
 	        func: function() {
 	        	enableDownloadList=[];
 	            $scope.selectedFile.forEach(function(value,index,array){
@@ -1073,14 +848,14 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	     ,
 	    }],
 	    /*[{
-	        text: "åˆ é™¤",
+	        text: "É¾³ı",
 	        func: function() {
 	            var src = $(this).attr("src");
 	            window.open(src.replace("/s512", ""));    
 	        }
 	    }]*/
 	];
-	//ç‚¹å‡»ç¾¤ç»„æ—¶åˆ·æ–°ç¾¤ç»„æ•°æ®
+	//µã»÷Èº×éÊ±Ë¢ĞÂÈº×éÊı¾İ
 	$scope.$on('$routeChangeSuccess', function (){
 		$scope.loading=true;
 		$scope.msgLoading=false;
@@ -1125,7 +900,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	    	else
 	    	{
 	    		$scope.msgLoading=true;
-	    	//æŸ¥è¯¢è¯¥ç¾¤ç»„IDçš„æ–‡ä»¶å’Œé€šçŸ¥æ•°æ®
+	    	//²éÑ¯¸ÃÈº×éIDµÄÎÄ¼şºÍÍ¨ÖªÊı¾İ
 		    $http({
 	                method: 'GET',
 	                url: '/api/folder',
@@ -1160,22 +935,22 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            	/*for(i in re.ml){
 	            		switch(re.ml[i]['type']){
 	            			case 'upload': 
-	            				re.ml[i]['type']='ä¸Šä¼ äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='ÉÏ´«ÁËÎÄ¼ş';
 	            				break;
 	            			case 'create': 
-	            				re.ml[i]['type']='åˆ›å»ºäº†æ–‡ä»¶';
+	            				re.ml[i]['type']='´´½¨ÁËÎÄ¼ş';
 	            				break;
 	            			case 'modify': 
-	            				re.ml[i]['type']='ä¿®æ”¹äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='ĞŞ¸ÄÁËÎÄ¼ş';
 	            				break;
 	            			case 'send': 
 	            				re.ml[i]['type']='';
 	            				break;
 	            			case 'delete': 
-	            				re.ml[i]['type']='åˆ é™¤äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='É¾³ıÁËÎÄ¼ş';
 	            				break;
 	            			case 'new': 
-	            				re.ml[i]['type']='åˆ›å»ºäº†ç¾¤ç»„';
+	            				re.ml[i]['type']='´´½¨ÁËÈº×é';
 	            				break;
 	            			default :
 	            				break;
@@ -1191,7 +966,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            	$scope.loading=false;
 	            	$scope.msgLoading=false;
 	            	//$scope.$apply();
-	            	//è·å–è¯¥ç¾¤ç»„æ•°æ®å®Œæ¯•åè®¾ç½®è¯¥gidä¸ºæœªè¯»
+	            	//»ñÈ¡¸ÃÈº×éÊı¾İÍê±ÏºóÉèÖÃ¸ÃgidÎªÎ´¶Á
 	            	$rootScope.readedList.forEach(function(value,index,array){
 	            		if(value==$rootScope.openGroupId)
 	            			$rootScope.readedList.splice(index,1);
@@ -1205,16 +980,16 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	    else
 	    {
 	    	$scope.msgLoading=true;
-		    //æŸ¥è¯¢è¯¥ç¾¤ç»„IDçš„æ–‡ä»¶å’Œé€šçŸ¥æ•°æ®
+		    //²éÑ¯¸ÃÈº×éIDµÄÎÄ¼şºÍÍ¨ÖªÊı¾İ
 		    $http({
 	                method: 'GET',
 	                url: '/api/group',
 	                params: {'gid':$rootScope.openGroupId}
 	            }).success(function(re){
 	            	//console.log(re);
-	            	//å½“å‰ç›®å½•
+	            	//µ±Ç°Ä¿Â¼
 	            	$rootScope.belong=0;
-	            	//ç‚¹å‡»ç¾¤ç»„æ—¶å»æ‰æé†’çš„æ¶ˆæ¯å€¼
+	            	//µã»÷Èº×éÊ±È¥µôÌáĞÑµÄÏûÏ¢Öµ
 	            	$rootScope.groupList.forEach(function(value,index,array){
 	            		if(value['group_id']==$rootScope.openGroupId)
 	            			$rootScope.groupList[index]['num']=null;
@@ -1242,22 +1017,22 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            	/*for(i in re.ml){
 	            		switch(re.ml[i]['type']){
 	            			case 'upload': 
-	            				re.ml[i]['type']='ä¸Šä¼ äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='ÉÏ´«ÁËÎÄ¼ş';
 	            				break;
 	            			case 'create': 
-	            				re.ml[i]['type']='åˆ›å»ºäº†æ–‡ä»¶';
+	            				re.ml[i]['type']='´´½¨ÁËÎÄ¼ş';
 	            				break;
 	            			case 'modify': 
-	            				re.ml[i]['type']='ä¿®æ”¹äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='ĞŞ¸ÄÁËÎÄ¼ş';
 	            				break;
 	            			case 'send': 
 	            				re.ml[i]['type']='';
 	            				break;
 	            			case 'delete': 
-	            				re.ml[i]['type']='åˆ é™¤äº†æ–‡ä»¶';
+	            				re.ml[i]['type']='É¾³ıÁËÎÄ¼ş';
 	            				break;
 	            			case 'new': 
-	            				re.ml[i]['type']='åˆ›å»ºäº†ç¾¤ç»„';
+	            				re.ml[i]['type']='´´½¨ÁËÈº×é';
 	            				break;
 	            			default :
 	            				break;
@@ -1272,7 +1047,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            	$scope.loading=false;
 	            	$scope.msgLoading=false;
 	            	//$scope.$apply();
-	            	//è·å–è¯¥ç¾¤ç»„æ•°æ®å®Œæ¯•åè®¾ç½®è¯¥gidä¸ºæœªè¯»
+	            	//»ñÈ¡¸ÃÈº×éÊı¾İÍê±ÏºóÉèÖÃ¸ÃgidÎªÎ´¶Á
 	            	$rootScope.readedList.forEach(function(value,index,array){
 	            		if(value==$rootScope.openGroupId)
 	            			$rootScope.readedList.splice(index,1);
@@ -1283,7 +1058,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 	            });
         }
 	});
-	//é¼ æ ‡ä»»ä½•ç‚¹å‡»äº‹ä»¶äº§ç”Ÿé€‰æ‹©çš„file
+	//Êó±êÈÎºÎµã»÷ÊÂ¼ş²úÉúÑ¡ÔñµÄfile
 	$scope.select=function(file){
 		//console.log(keyCode);
 		//console.log(event.which);
@@ -1327,7 +1102,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 					});
 			}
 			else{
-				//console.log(333);
+				console.log(333);
 				$('tbody tr').smartMenu($scope.dropMulMenuData, {
 			    	name: "mulDrop"    
 				});				
@@ -1336,7 +1111,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		//console.log($scope.selectedFile);
 		//$scope.selectedFile=file;
 	}
-	//æ£€æŸ¥å½“å‰fileæ˜¯å¦ä¸ºé€‰æ‹©çš„file
+	//¼ì²éµ±Ç°fileÊÇ·ñÎªÑ¡ÔñµÄfile
 	$scope.isSelected=function(file){
 		//console.log($scope.selectedFile);
 		if(typeof $scope.selectedFile !== 'undefined')
@@ -1366,12 +1141,12 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 			return false;
 		}
 	}
-	//æ‰“å¼€æ–‡ä»¶æˆ–è€…æ–‡ä»¶å¤¹æ–¹æ³•
-	$scope.openOrForward=function(file){
+	//´ò¿ªÎÄ¼ş»òÕßÎÄ¼ş¼Ğ·½·¨
+	$scope.oepnOrForward=function(file){
 		//console.log(file);
 		if(file.type=='folder')
 		{
-			//æ‰“å¼€æ–‡ä»¶å¤¹
+			//´ò¿ªÎÄ¼ş¼Ğ
 			$rootScope.openFolder=file;
 			$rootScope.forward('/folder/'+file.fid);
 		}
@@ -1387,20 +1162,12 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		{
 			$rootScope.forward('/table/'+file.fid);
 		}
-		//ä»¥ä¸‹ä¸ºå¯é¢„è§ˆçš„officeå†…å®¹
-		else if(file.type=='word')
+		//ÒÔÏÂÎª¿ÉÔ¤ÀÀµÄofficeÄÚÈİ
+		else if(file.type=='office')
 		{
 			$rootScope.forward('/office/'+file.fid);
 		}
-		else if(file.type=='excel')
-		{
-			$rootScope.forward('/office/'+file.fid);
-		}
-		else if(file.type=='ppt')
-		{
-			$rootScope.forward('/office/'+file.fid);
-		}
-		//pdfå†…å®¹
+		//pdfÄÚÈİ
 		else if(file.type=='pdf')
 		{
 			$rootScope.forward('/pdf/'+file.fid);
@@ -1415,14 +1182,14 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		}
 		delete $scope.selectedFile;
 	}
-	//ng-repeatä¹‹åæ‰§è¡Œçš„æ–¹æ³•
+	//ng-repeatÖ®ºóÖ´ĞĞµÄ·½·¨
 	$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-          //ä¸‹é¢æ˜¯åœ¨table renderå®Œæˆåæ‰§è¡Œçš„js
+          //ÏÂÃæÊÇÔÚtable renderÍê³ÉºóÖ´ĞĞµÄjs
 	      /*if ($('.table').hasClass('dataTable')) 
 	      {
-	ã€€ã€€	dttable = $('.table').dataTable();
-	ã€€ã€€	dttable.fnClearTable(); //æ¸…ç©ºä¸€ä¸‹table
-	ã€€ã€€	dttable.fnDestroy(); //è¿˜åŸåˆå§‹åŒ–äº†çš„datatable
+	¡¡¡¡	dttable = $('.table').dataTable();
+	¡¡¡¡	dttable.fnClearTable(); //Çå¿ÕÒ»ÏÂtable
+	¡¡¡¡	dttable.fnDestroy(); //»¹Ô­³õÊ¼»¯ÁËµÄdatatable
 			}*/
 			//console.log($('.table')[0]);
           $('.table').DataTable({
@@ -1478,18 +1245,18 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 					$(this).width('20.5%');
 			});
 
-			//å³é”®èœå•åˆå§‹åŒ–			
+			//ÓÒ¼ü²Ëµ¥³õÊ¼»¯			
 			$('tbody tr').smartMenu($scope.dropMenuData, {
 			    name: "drop"    
 			});
 	});
-	//åˆ¤æ–­æ–‡ä»¶æ˜¯å¦å¯ä¸‹è½½
+	//ÅĞ¶ÏÎÄ¼şÊÇ·ñ¿ÉÏÂÔØ
 	$scope.enableDownload=function(file){
 		if(in_array(file.type,$rootScope.unableDownloadList))
 			return false;
 		return true;
 	}
-	//å•ä¸ªæ–‡ä»¶ä¸‹è½½æ–¹æ³•
+	//µ¥¸öÎÄ¼şÏÂÔØ·½·¨
 	$scope.download=function(file){
 		downloadFrame=$('#download-frame');
         if(downloadFrame.length==0)
@@ -1512,7 +1279,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
         	myframe.attr('src','/api/download/170800');
         }*/
 	}
-	//å¤šä¸ªæ–‡ä»¶ä¸‹è½½æ–¹æ³•
+	//¶à¸öÎÄ¼şÏÂÔØ·½·¨
 	$scope.mulDownload=function(fileList){
 		downloadFrame=$('#download-frame');
         if(downloadFrame.length==0)
@@ -1531,7 +1298,7 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
         }
         downloadFrame.attr('src','/api/mulDownload?fid='+fid);
 	}
-	//åˆ†äº«æ–‡ä»¶æ–¹æ³•
+	//·ÖÏíÎÄ¼ş·½·¨
 	$scope.share=function(file){
 		$http({
 			url:'api/share',
@@ -1540,20 +1307,20 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		}).success(function(re){
 			if(re.status==1){
 				file.share='1';
-				$('#btn-copy').html('å¤åˆ¶é“¾æ¥').attr('class','btn btn-primary').attr('disabled',false);
+				$('#btn-copy').html('¸´ÖÆÁ´½Ó').attr('class','btn btn-primary').attr('disabled',false);
 				$('#share-link input[type=text]').val(re.link);
 				$('#share-link').modal();
 			}
 			else{
-				$('.alert-success').html('é“¾æ¥ç”Ÿæˆå¤±è´¥ï¼');
+				$('.alert-success').html('Á´½ÓÉú³ÉÊ§°Ü£¡');
 				$('.alert-success').fadeIn().fadeOut(2000);
 			}
 		}).error(function(re){
-			$('.alert-success').html('é“¾æ¥ç”Ÿæˆå¤±è´¥ï¼');
+			$('.alert-success').html('Á´½ÓÉú³ÉÊ§°Ü£¡');
 			$('.alert-success').fadeIn().fadeOut(2000);
 		});
 	}
-	//å–æ¶ˆåˆ†äº«æ–‡ä»¶æ–¹æ³•
+	//È¡Ïû·ÖÏíÎÄ¼ş·½·¨
 	$scope.unshare=function(file){
 		console.log(file);
 		$http({
@@ -1563,20 +1330,20 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		}).success(function(re){
 			if(re.status==1){
 				file.share='0';
-				$('.alert-success').html('å–æ¶ˆåˆ†äº«æˆåŠŸï¼');
+				$('.alert-success').html('È¡Ïû·ÖÏí³É¹¦£¡');
 				$('.alert-success').fadeIn().fadeOut(2000);
 			}
 			else{
-				$('.alert-success').html('å–æ¶ˆåˆ†äº«å¤±è´¥ï¼');
+				$('.alert-success').html('È¡Ïû·ÖÏíÊ§°Ü£¡');
 				$('.alert-success').fadeIn().fadeOut(2000);
 			}
 		}).error(function(re){
-			$('.alert-success').html('å–æ¶ˆåˆ†äº«å¤±è´¥ï¼');
+			$('.alert-success').html('È¡Ïû·ÖÏíÊ§°Ü£¡');
 			$('.alert-success').fadeIn().fadeOut(2000);
 		});
 	}
 	
-	//åŠ æ˜Ÿæ–‡ä»¶æ–¹æ³•
+	//¼ÓĞÇÎÄ¼ş·½·¨
 	$scope.star=function(file){
 		//console.log(file);
 		//console.log($scope.fileList);
@@ -1601,16 +1368,16 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 				url:'/api/addStar/'+file.fid
 			}).success(function(re){
 				if(re.status==1){
-					$('.alert-success').html('æ·»åŠ æ˜Ÿæ ‡æˆåŠŸï¼');
+					$('.alert-success').html('Ìí¼ÓĞÇ±ê³É¹¦£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 				}
 				else{
-					$('.alert-success').html('æ“ä½œå¤±è´¥ï¼');
+					$('.alert-success').html('²Ù×÷Ê§°Ü£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 					file.star='0';
 				}
 			}).error(function(re){
-				$('.alert-success').html('æ“ä½œå¤±è´¥ï¼');
+				$('.alert-success').html('²Ù×÷Ê§°Ü£¡');
 				$('.alert-success').fadeIn().fadeOut(2000);
 				file.star='0';
 			});
@@ -1621,129 +1388,22 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 				url:'/api/delStar/'+file.fid
 			}).success(function(re){
 				if(re.status==1){
-					$('.alert-success').html('å–æ¶ˆæ˜Ÿæ ‡æˆåŠŸï¼');
+					$('.alert-success').html('È¡ÏûĞÇ±ê³É¹¦£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 				}
 				else{
-					$('.alert-success').html('æ“ä½œå¤±è´¥ï¼');
+					$('.alert-success').html('²Ù×÷Ê§°Ü£¡');
 					$('.alert-success').fadeIn().fadeOut(2000);
 					file.star='1';
 				}
 			}).error(function(re){
-				$('.alert-success').html('æ“ä½œå¤±è´¥ï¼');
+				$('.alert-success').html('²Ù×÷Ê§°Ü£¡');
 				$('.alert-success').fadeIn().fadeOut(2000);
 				file.star='1';
 			});
 		}
 	}
-	//$scope.uploading=false;
-	$scope.uploadFile=function(){
-		//$scope.$broadcast('uploadFile');
-		//return;
-		//$scope.uploading=false;
-		fileUploader=$('input[multiple=true]');
-        if(fileUploader.length==0)
-        {
-            var fileUploader=$('<input type="file" multiple="true" style="position: absolute; top: -1000px; left: -1000px;">');
-            $('body').append(fileUploader);      
-        }
-        fileUploader.click();
-        fileUploader.change(function(){
-        	$scope.uploading=true;
-        	//$scope.$apply();
-        	if(typeof $scope.uploadFiles=='undefined')
-        	{
-        		$scope.uploadFiles=[];
-        		for(var i=0; i<fileUploader[0].files.length;i++)
-	        	{
-	        		var size=fileUploader[0].files[i].size;
-	        		if(size<=1024 )
-            			size=(size/1).toFixed(2)+'B';
-            		else if(size>1024&&size<=1024*1024)
-            			size=(size/1024).toFixed(2)+'KB';
-            		else if(size>1024*1024&&size<1024*1024*1024)
-            			size=(size/1024/1024).toFixed(2)+'MB';
-            		else
-            			size=(size/1024/1024/1024).toFixed(2)+'GB';
-	        		var temp={'name':fileUploader[0].files[i].name,'size':size,'total':fileUploader[0].files[i].size,'type':fileUploader[0].files[i].type,'sent':0,'status':true};
-	        		$scope.uploadFiles.push(temp);
-	        	}
-        		//$scope.uploadFiles=fileUploader[0].files;
-        	}
-        	else
-        	{
-	        	for(var i=0; i<fileUploader[0].files.length;i++)
-	        	{
-	        		var size=fileUploader[0].files[i].size;
-	        		if(size<=1024 )
-            			size=(size/1).toFixed(2)+'B';
-            		else if(size>1024&&size<=1024*1024)
-            			size=(size/1024).toFixed(2)+'KB';
-            		else if(size>1024*1024&&size<1024*1024*1024)
-            			size=(size/1024/1024).toFixed(2)+'MB';
-            		else
-            			size=(size/1024/1024/1024).toFixed(2)+'GB';
-	        		var temp={'name':fileUploader[0].files[i].name,'size':size,'total':fileUploader[0].files[i].size,'type':fileUploader[0].files[i].type,'sent':0,'status':true};
-	        		$scope.uploadFiles.unshift(temp);
-	        	}
-        	}
-        	//$scope.uploadFiles=fileUploader[0].files;
-        	$scope.$apply();
-        	//console.log(fileUploader[0].files);
-        	var count=0;
-        	for(var i=0; i<fileUploader[0].files.length;i++)
-        	{
-        		//console.log(fileUploader[0].files[i]);
-        		count=i;
-        		//$scope.uploadFiles
-	        	var formData=new FormData();
-	        	formData.append('files',fileUploader[0].files[i]);
-	        	(function(index){
-                    $.ajax({
-                            type: "POST",
-                            url: "/api/uploadFile"+'?belong='+$rootScope.belong+'&gid='+$rootScope.openGroupId,
-                            data: formData,//è¿™é‡Œä¸Šä¼ çš„æ•°æ®ä½¿ç”¨äº†formData å¯¹è±¡
-                            processData: false,
-                            //å¿…é¡»falseæ‰ä¼šè‡ªåŠ¨åŠ ä¸Šæ­£ç¡®çš„Content-Type
-                            contentType: false,
-                            //async: false,
-                            //è¿™é‡Œæˆ‘ä»¬å…ˆæ‹¿åˆ°jQueryäº§ç”Ÿçš„ XMLHttpRequestå¯¹è±¡ï¼Œä¸ºå…¶å¢åŠ  progress äº‹ä»¶ç»‘å®šï¼Œç„¶åå†è¿”å›äº¤ç»™ajaxä½¿ç”¨
-                            xhr: function () {
-                                var xhr = $.ajaxSettings.xhr();
-                                if (onprogress && xhr.upload) {
-                                    xhr.upload.addEventListener("progress", function (evt) {
-                                        var loaded = evt.loaded;     //å·²ç»ä¸Šä¼ å¤§å°æƒ…å†µ
-                                        var tot = evt.total;      //é™„ä»¶æ€»å¤§å°
-                                        var per = Math.floor(100 * loaded / tot);  //å·²ç»ä¸Šä¼ çš„ç™¾åˆ†æ¯”
-                                        //console.log(per+'%');
-                                        $scope.uploadFiles[index].sent = loaded;
-                                        $scope.$apply();
-                                    }, false);
-                                    return xhr;
-                                }
-                            },
-                            success: function (re) {
-                                $scope.uploadFiles[index].status='done';
-                                $scope.$apply();
-                            },
-                            error: function (re) {
 
-                            }
-                        }
-                    );
-                })(i);
-        	}
-        	function onprogress(evt){
-			ã€€ã€€var loaded = evt.loaded;     //å·²ç»ä¸Šä¼ å¤§å°æƒ…å†µ 
-				var tot = evt.total;      //é™„ä»¶æ€»å¤§å° 
-				var per = Math.floor(100*loaded/tot);  //å·²ç»ä¸Šä¼ çš„ç™¾åˆ†æ¯” 
-				console.log(per+'%');
-			}
-			$(this).remove();
-			//console.log($scope.uploadFiles);
-        });
-        
-	}
 	$scope.closeUploader=function(){
 		$scope.uploading=false;
 		$scope.uploadFiles=[];
@@ -1764,33 +1424,33 @@ noteCtrls.controller('groupCtrl',['$scope','$rootScope','$http','$location','$ro
 		        	var formData=new FormData();
 		        	formData.append('files',folderUploader[0].files[i]);
 		        	var uploadItem=$.ajax({
-				ã€€ã€€ã€€ã€€type: "POST",
-				ã€€ã€€ã€€ã€€url: "api/uploadFolder",
-				ã€€ã€€ã€€ã€€data: formData ,ã€€ã€€//è¿™é‡Œä¸Šä¼ çš„æ•°æ®ä½¿ç”¨äº†formData å¯¹è±¡
-				ã€€ã€€ã€€ã€€processData : false, 
-				ã€€ã€€ã€€ã€€//å¿…é¡»falseæ‰ä¼šè‡ªåŠ¨åŠ ä¸Šæ­£ç¡®çš„Content-Type 
-				ã€€ã€€ã€€ã€€contentType : false , 
-				ã€€ã€€ã€€ã€€//async: false,
-				ã€€ã€€ã€€ã€€//è¿™é‡Œæˆ‘ä»¬å…ˆæ‹¿åˆ°jQueryäº§ç”Ÿçš„ XMLHttpRequestå¯¹è±¡ï¼Œä¸ºå…¶å¢åŠ  progress äº‹ä»¶ç»‘å®šï¼Œç„¶åå†è¿”å›äº¤ç»™ajaxä½¿ç”¨
-				ã€€ã€€ã€€ã€€xhr: function(){
-				ã€€ã€€ã€€ã€€ã€€ã€€var xhr = $.ajaxSettings.xhr();
-				ã€€ã€€ã€€ã€€ã€€ã€€if(onprogress && xhr.upload) {
-				ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€xhr.upload.addEventListener("progress" , onprogress, false);
-				ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€return xhr;
-				ã€€ã€€ã€€ã€€ã€€ã€€}
-				ã€€ã€€ã€€ã€€},
+				¡¡¡¡¡¡¡¡type: "POST",
+				¡¡¡¡¡¡¡¡url: "api/uploadFolder",
+				¡¡¡¡¡¡¡¡data: formData ,¡¡¡¡//ÕâÀïÉÏ´«µÄÊı¾İÊ¹ÓÃÁËformData ¶ÔÏó
+				¡¡¡¡¡¡¡¡processData : false, 
+				¡¡¡¡¡¡¡¡//±ØĞëfalse²Å»á×Ô¶¯¼ÓÉÏÕıÈ·µÄContent-Type 
+				¡¡¡¡¡¡¡¡contentType : false , 
+				¡¡¡¡¡¡¡¡//async: false,
+				¡¡¡¡¡¡¡¡//ÕâÀïÎÒÃÇÏÈÄÃµ½jQuery²úÉúµÄ XMLHttpRequest¶ÔÏó£¬ÎªÆäÔö¼Ó progress ÊÂ¼ş°ó¶¨£¬È»ºóÔÙ·µ»Ø½»¸øajaxÊ¹ÓÃ
+				¡¡¡¡¡¡¡¡xhr: function(){
+				¡¡¡¡¡¡¡¡¡¡¡¡var xhr = $.ajaxSettings.xhr();
+				¡¡¡¡¡¡¡¡¡¡¡¡if(onprogress && xhr.upload) {
+				¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡xhr.upload.addEventListener("progress" , onprogress, false);
+				¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡return xhr;
+				¡¡¡¡¡¡¡¡¡¡¡¡}
+				¡¡¡¡¡¡¡¡},
 						success:function(re){
 							//console.log(re);
 						},
 						error:function(re){
 
 						}
-				ã€€ã€€});
+				¡¡¡¡});
 		        }
 		        function onprogress(evt){
-				ã€€ã€€var loaded = evt.loaded;     //å·²ç»ä¸Šä¼ å¤§å°æƒ…å†µ 
-					var tot = evt.total;      //é™„ä»¶æ€»å¤§å° 
-					var per = Math.floor(100*loaded/tot);  //å·²ç»ä¸Šä¼ çš„ç™¾åˆ†æ¯” 
+				¡¡¡¡var loaded = evt.loaded;     //ÒÑ¾­ÉÏ´«´óĞ¡Çé¿ö 
+					var tot = evt.total;      //¸½¼ş×Ü´óĞ¡ 
+					var per = Math.floor(100*loaded/tot);  //ÒÑ¾­ÉÏ´«µÄ°Ù·Ö±È 
 					console.log(per+'%');
 				}
 				$(this).remove();
@@ -1815,43 +1475,34 @@ noteCtrls.controller('uploaderCtrl',['$scope','$rootScope','$http','$location','
         	{
 	        	var formData=new FormData();
 	        	formData.append('files',fileUploader[0].files[i]);
-	        	(function(index){
-                    $.ajax({
-                            type: "POST",
-                            url: "api/uploadFile",
-                            data: formData,//è¿™é‡Œä¸Šä¼ çš„æ•°æ®ä½¿ç”¨äº†formData å¯¹è±¡
-                            processData: false,
-                            //å¿…é¡»falseæ‰ä¼šè‡ªåŠ¨åŠ ä¸Šæ­£ç¡®çš„Content-Type
-                            contentType: false,
-                            //async: false,
-                            //è¿™é‡Œæˆ‘ä»¬å…ˆæ‹¿åˆ°jQueryäº§ç”Ÿçš„ XMLHttpRequestå¯¹è±¡ï¼Œä¸ºå…¶å¢åŠ  progress äº‹ä»¶ç»‘å®šï¼Œç„¶åå†è¿”å›äº¤ç»™ajaxä½¿ç”¨
-                            xhr: function () {
-                                var xhr = $.ajaxSettings.xhr();
-                                if (onprogress && xhr.upload) {
-                                    xhr.upload.addEventListener("progress", function (evt) {
-                                        var loaded = evt.loaded;     //å·²ç»ä¸Šä¼ å¤§å°æƒ…å†µ
-                                        var tot = evt.total;      //é™„ä»¶æ€»å¤§å°
-                                        var per = Math.floor(100 * loaded / tot);  //å·²ç»ä¸Šä¼ çš„ç™¾åˆ†æ¯”
-                                        //console.log(per+'%');
-                                        $scope.uploadFiles[index].sent = loaded;
-                                    }, false);
-                                    return xhr;
-                                }
-                            },
-                            success: function (re) {
-                                //console.log(re);
-                            },
-                            error: function (re) {
+	        	var uploadItem=$.ajax({
+			¡¡¡¡¡¡¡¡type: "POST",
+			¡¡¡¡¡¡¡¡url: "api/uploadFile",
+			¡¡¡¡¡¡¡¡data: formData ,¡¡¡¡//ÕâÀïÉÏ´«µÄÊı¾İÊ¹ÓÃÁËformData ¶ÔÏó
+			¡¡¡¡¡¡¡¡processData : false, 
+			¡¡¡¡¡¡¡¡//±ØĞëfalse²Å»á×Ô¶¯¼ÓÉÏÕıÈ·µÄContent-Type 
+			¡¡¡¡¡¡¡¡contentType : false , 
+			¡¡¡¡¡¡¡¡//async: false,
+			¡¡¡¡¡¡¡¡//ÕâÀïÎÒÃÇÏÈÄÃµ½jQuery²úÉúµÄ XMLHttpRequest¶ÔÏó£¬ÎªÆäÔö¼Ó progress ÊÂ¼ş°ó¶¨£¬È»ºóÔÙ·µ»Ø½»¸øajaxÊ¹ÓÃ
+			¡¡¡¡¡¡¡¡xhr: function(){
+			¡¡¡¡¡¡¡¡¡¡¡¡var xhr = $.ajaxSettings.xhr();
+			¡¡¡¡¡¡¡¡¡¡¡¡if(onprogress && xhr.upload) {
+			¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡xhr.upload.addEventListener("progress" , onprogress, false);
+			¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡return xhr;
+			¡¡¡¡¡¡¡¡¡¡¡¡}
+			¡¡¡¡¡¡¡¡},
+					success:function(re){
+						//console.log(re);
+					},
+					error:function(re){
 
-                            }
-                        }
-                    );
-                })(i);
+					}
+			¡¡¡¡});
         	}
         	function onprogress(evt){
-			ã€€ã€€var loaded = evt.loaded;     //å·²ç»ä¸Šä¼ å¤§å°æƒ…å†µ 
-				var tot = evt.total;      //é™„ä»¶æ€»å¤§å° 
-				var per = Math.floor(100*loaded/tot);  //å·²ç»ä¸Šä¼ çš„ç™¾åˆ†æ¯” 
+			¡¡¡¡var loaded = evt.loaded;     //ÒÑ¾­ÉÏ´«´óĞ¡Çé¿ö 
+				var tot = evt.total;      //¸½¼ş×Ü´óĞ¡ 
+				var per = Math.floor(100*loaded/tot);  //ÒÑ¾­ÉÏ´«µÄ°Ù·Ö±È 
 				console.log(per+'%');
 			}
 			$(this).remove();

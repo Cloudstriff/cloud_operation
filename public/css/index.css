@@ -53,7 +53,10 @@
 		.text{width: 24px; height: 20px; background: url('/public/imgs/type/text.png') no-repeat;}
 		.note{ width: 24px; height: 20px; background: url('/public/imgs/type/note.png') no-repeat;}
 		.image{ width: 24px; height: 20px; background: url('/public/imgs/type/image.png') no-repeat;}
+		.word{ width: 24px; height: 20px; background: url('/public/imgs/type/word.png') no-repeat;}
+		.md{ width: 24px; height: 20px; background: url('/public/imgs/type/md.png') no-repeat;}
 		.office{ width: 24px; height: 20px; background: url('/public/imgs/type/word.png') no-repeat;}
+		.other{ width: 24px; height: 20px; background: url('/public/imgs/type/other.png') no-repeat;}
 		.allfileSelected { background: #e8f6f9; color: #3fbed8;}
 		.allfileSelected>.icon-all-file{ background: url(/public/imgs/icon-all-file-hover.png) no-repeat 2px 9px;}
 		.starSelected{ background: #e8f6f9; color: #3fbed8;}
@@ -200,7 +203,7 @@
 							.show .head .re-all-file{ color: #13b0cf; }
 								.show .head .re-all-file:hover{ text-decoration: underline;}
 						.show .file-table{ width: 100%; }
-						.show .file-list{ overflow-y: auto; width:100%; border-top:1px solid #ddd;}
+						.show .file-list{ overflow-y: auto; width:100%; border-top:1px solid #ddd; position: relative;}
 							.show .file-list::-webkit-scrollbar {
 							    width: 10px;
 							    display: block;
@@ -403,3 +406,257 @@
 							}
 							.open-file{ margin-left: 105px; color:#c8c8c8; }
 								.open-file:hover{ color: #398dee;}
+.file-uploader {
+    display: inline-block;
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0 1px 16px 0 rgba(154, 154, 154, 0.4);
+    width: 100%;
+    max-width: 390px;
+    background: rgba(255, 255, 255, 0.98);
+}
+.file-uploader::-webkit-scrollbar {
+    height: 8px;
+    width: 10px;
+    background: transparent;
+    border-radius: 5px;
+    display: block;
+}
+.file-uploader::-webkit-scrollbar-button {
+    display: none;
+}
+.file-uploader::-webkit-scrollbar-thumb {
+    width: 10px;
+    min-height: 15px;
+    background: rgba(118, 176, 243, 0.3);
+    border-radius: 0;
+    margin-right: 1px;
+}
+.file-uploader::-webkit-scrollbar-track {
+    background-color: transparent;
+    display: block;
+}
+.file-uploader::-webkit-scrollbar-track-piece {
+    background: transparent;
+}
+.file-uploader::-webkit-scrollbar {
+	    width: 10px;
+	    display: block;
+	    z-index: 10;
+	    position: absolute;
+	} /* 这是针对缺省样式 (必须的) */
+	 .file-uploader::-webkit-scrollbar-track {
+		  background-color: white;
+		  display: block;	  
+		} /* 滚动条的滑轨背景颜色 */
+		.file-uploader::-webkit-scrollbar-thumb {	
+	   display: block;
+	   position: absolute;
+	   background: #c6edf6; border-radius: 0;
+				    			opacity: 0.6;	
+				    			z-index: 10;
+				    			filter:alpha(opacity=80);/*  IE滤镜，透明度50% */
+		-moz-opacity:0.8;/*  Firefox私有，透明度50% */
+		opacity:0.8;/* 其他，透明度50%	  */  
+} /* 滑块颜色 */
+
+.file-uploader::-webkit-scrollbar-button {
+	  display: none;
+} /* 滑轨两头的监听按钮颜色 */
+
+.file-uploader::-webkit-scrollbar-corner {
+	  background-color: black;
+} /*横向滚动条和纵向滚动条相交处尖角的颜色*/
+.file-uploader .file-uploader-hd {
+    position: relative;
+    width: 100%;
+    height: 36px;
+}
+.file-uploader .file-uploader-hd .uploader-hd-title {
+    padding: 0 20px;
+    font-size: 14px;
+    line-height: 36px;
+    color: #777;
+}
+.file-uploader .file-uploader-hd .icon-status {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    width: 16px;
+    height: 16px;
+}
+
+.file-uploader .icon-close, .file-uploader .icon-status {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+svg:not([fill]) {
+    fill: currentColor;
+}
+.file-uploader .file-uploader-hd .icon-status .default {
+    display: block;
+}
+.default {
+    height: 100%;
+    background: url(images/fac20088.gray_note_mark.png) center center no-repeat;
+}
+.file-uploader .file-uploader-hd .icon-status .hover {
+    display: none;
+}
+.file-uploader .file-uploader-hd .icon-close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    width: 14px;
+    height: 14px;
+}
+.file-uploader .icon-close, .file-uploader .icon-status {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+svg:not([fill]) {
+    fill: currentColor;
+}
+.file-uploader .file-uploader-hd .icon-close .default {
+    display: block;
+}
+.default {
+    height: 100%;
+    background: url(/public/imgs/fac20088.gray_note_mark.png) center center no-repeat;
+}
+.file-uploader .file-uploader-hd .icon-close .hover {
+    display: none;
+}
+.file-uploader .file-uploader-bd {
+    max-height: 200px;
+    overflow: auto;
+}
+ul {
+    list-style: none;
+}
+.file-uploader .file-uploader-bd .uploader-item {
+    position: relative;
+    margin: 10px 0;
+    width: 100%;
+    height: 40px;
+    font-size: 12px;
+}
+.file-uploader .file-uploader-bd .uploader-item.done.nofull .file-icon {
+    cursor: pointer;
+}
+.file-uploader .file-uploader-bd .uploader-item .file-icon {
+    margin-left: 20px;
+    display: inline-block;
+}
+svg:not([fill]) {
+    fill: currentColor;
+}
+svg.file_icon {
+    width: 24px;
+    height: 26px;
+    vertical-align: middle;
+}
+.file-uploader .file-uploader-bd .uploader-item.done.nofull .file-name {
+    cursor: pointer;
+}
+.file-uploader .file-uploader-bd .uploader-item .file-name {
+    position: absolute;
+    display: inline-block;
+    left: 64px;
+    top: 0;
+    font-size: 12px;
+    color: #595959;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-user-select: text;
+    cursor: text;
+}
+.file-uploader .file-uploader-bd .uploader-item .file-name:hover{
+	text-decoration: underline;
+}
+.file-uploader .file-uploader-bd .uploader-item .file-size {
+    position: absolute;
+    display: inline-block;
+    right: 20px;
+    top: 14px;
+    color: #bbb;
+    font-size: 12px;
+    -webkit-user-select: text;
+    cursor: text;
+}
+.file-uploader .file-uploader-bd .uploader-item .icon-locate {
+    width: 16px;
+    height: 16px;
+    left: 284px;
+    top: 15px;
+}
+.file-uploader .file-uploader-bd .uploader-item .icon-locate .default, .file-uploader .file-uploader-bd .uploader-item .icon-cancel .default {
+    display: block;
+}
+.default {
+    height: 100%;
+    background: url(/public/imgs/fac20088.gray_note_mark.png) center center no-repeat;
+}
+.file-uploader .file-uploader-bd .uploader-item .icon-locate .hover, .file-uploader .file-uploader-bd .uploader-item .icon-cancel .hover {
+    display: none;
+}
+.file-uploader .file-uploader-bd .uploader-item .icon-success, .file-uploader .file-uploader-bd .uploader-item .icon-error, .file-uploader .file-uploader-bd .uploader-item .icon-locate {
+    position: absolute;
+    top: 16px;
+    left: 250px;
+    z-index: 10;
+    width: 14px;
+    height: 14px;
+}
+svg:not([fill]) {
+    fill: currentColor;
+}
+.file-uploader .file-uploader-bd .uploader-item .icon-error, .file-uploader .file-uploader-bd .uploader-item .icon-locate {
+    position: absolute;
+    top: 16px;
+    left: 250px;
+    z-index: 10;
+    width: 14px;
+    height: 14px;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
+    display: none !important;
+}
+svg:not([fill]) {
+    fill: currentColor;
+}
+.file-uploader .file-uploader-bd .uploader-item .progress.done {
+    width: 0% !important;
+}
+.file-uploader .file-uploader-bd .uploader-item .progress {
+    position: absolute;
+    top: 22px;
+    left: 65px;
+    border-radius: 8px;
+    width: 160px;
+    height: 4px;
+    background: #e4e4e4;
+}
+.file-uploader .file-uploader-bd .uploader-item .progress.done .uploader-progress {
+    width: 0% !important;
+}
+.file-uploader .file-uploader-bd .uploader-item .progress .uploader-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 8px;
+    height: 4px;
+    background: #398dee;
+}
+.file-uploader .file-uploader-bd .uploader-item .finish-text {
+    position: absolute;
+    top: 20px;
+    left: 64px;
+    color: #bbb;
+}

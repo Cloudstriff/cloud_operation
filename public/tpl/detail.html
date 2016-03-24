@@ -1,0 +1,21 @@
+<div class="note-head">
+    <span class="glyphicon glyphicon-chevron-left cursor-p btn-lg" ng-click="restore()">返回</span>
+    <div class="title i-b"><span style="font-size: 22px;">{{file.name}}</span></div>
+    <div class="publish i-b">
+    	<!-- <button class="btn btn-default" ng-click="save()" publish-btn><span class="glyphicon glyphicon-open"></span>&nbsp;下载</button> -->
+    	<span>info</span><span>分享</span><span>新窗口打开</span>
+    </div>
+</div>
+<div class="note-content">
+	<div style="width:100%;">
+		<br/><br/><br/>
+		<div style="margin-left: 40%; margin-top: 40px;">
+			<!-- <div class="other" style="margin-left: 30px;"></div> -->
+			<div class="file-name f-l" style="font-weight: bold; font-size: 18px;">{{file.name}}&nbsp;</div><div class="f-l cursor-p" style="border: 1px solid;"> &nbsp;第1版</div>
+			<div class="clear"></div>
+			<div class="more">{{file.uploader}} &nbsp;{{file.time|date:'yyyy-M-dd HH:mm'}} &nbsp;创建&nbsp;&nbsp;&nbsp;&nbsp;<!-- 所在位置：{{file.belong}} --></div><br/>
+			<button class="btn btn-primary" ng-click="download()"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;下载({{file.size}})</button>
+		</div>
+
+	</div>
+</div>

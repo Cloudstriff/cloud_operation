@@ -1,3 +1,0 @@
-使用了formdata之后
-需要修改的地方：addThread.html   
-release.js
